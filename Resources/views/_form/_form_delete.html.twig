@@ -1,0 +1,9 @@
+{% if delete_form is defined %}
+{{ form_start(delete_form) }}
+    <div class="row">
+        {% if delete_form.submit_delete is defined %}
+            {{ form_row(delete_form.submit_delete) }}
+        {% endif %}
+    </div>
+{{ form_end(delete_form) }}
+{% endif %}

@@ -1,0 +1,49 @@
+ADMIN.DEFAULT_DELETE : Delete
+ADMIN.DEFAULT_SUBMIT: Save
+ADMIN.DEFAULT_SUBMIT_CLOSE: Save & Close
+ADMIN.DEFAULT_SUBMIT_PREVIEW: Save & Preview
+
+ADMIN.MENU_DASHBOARD : Dashboard
+
+GENERAL_LABEL_ACTIVE : Active
+GENERAL_LABEL_TITLE: Title
+GENERAL_LABEL_ICON : Icon
+GENERAL_LABEL_CODE : Code
+
+#en_EN: English (English)
+en_US: English (United States)
+
+admin.general.title: NFQ cPanel
+
+general.saved_successfully : Your data was saved successfully!
+general.updated_successfully  : Your data was updated successfully!
+general.deleted_successfully : Your data was removed successfully!
+#Not Available
+na.short: N/A
+na.long: Not Available
+
+generic.actions: Actions
+generic.remove: Remove
+generic.showing: Showing
+generic.showing_to: to
+generic.showing_of: of
+generic.showing_entries: entries
+generic.next: Next
+generic.previous: Previous
+generic.first: First
+generic.last: Last
+generic.clear: Clear
+generic.type: Type
+generic.value: Value
+generic.group: Group
+generic.element: Element
+generic.from: From
+generic.to: To
+generic.reset_search_params: Reset search and sorting params
+generic.choose: Choose
+generic.yes: Yes
+generic.no: No
+generic.note: Note
+generic.welcome: Welcome!
+generic.per_page: Per page
+generic.places.placeholder: Choose place

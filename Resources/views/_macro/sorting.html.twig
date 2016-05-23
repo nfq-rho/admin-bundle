@@ -1,0 +1,45 @@
+{% macro sortUrl(name, sortField, translation, searchField) %}
+    {% set _sort = app.request.query.get('sort') %}
+    {% if app.request.query.get('direction') == 'ASC' %}
+        {% set inverseDirection = 'DESC' %}
+    {% else %}
+        {% set inverseDirection = 'ASC' %}
+    {% endif %}
+
+    {% set _url = url(name, app.request.query.all|merge({'sort': sortField, 'direction': inverseDirection } )) %}
+    {% if _sort and _sort == sortField %}
+        {% set _cls = "sorting_" ~ app.request.query.get('direction')|default('ASC')|lower %}
+    {% endif %}
+
+    <a href="{{ _url }}">{{ translation|trans }}</a>
+
+    {% if searchField %}
+        {% if searchField is boolean %}
+            {% set searchField = sortField %}
+        {% endif %}
+
+        {% set currentByField = app.request.query.get('_sByFld', []) %}
+        {% set newByField = currentByField|merge([searchField])|unique %}
+        &nbsp;
+        {% if searchField in currentByField %}
+            {% set resetField = currentByField|unsetByValue(searchField) %}
+            <a href="{{ url(name, app.request.query.all|merge({'_sByFld': resetField})) }}"><i class="fa fa-minus-circle">&nbsp;</i></a>
+        {% else %}
+            <a href="{{ url(name, app.request.query.all|merge({'_sByFld': newByField})) }}"><i class="fa fa-plus-circle">&nbsp;</i></a>
+        {% endif %}
+    {% endif %}
+
+    <a href="{{ _url }}" class="{{ _cls|default('sorting') }}"></a>
+{% endmacro %}
+
+{% macro getHiddenFields() %}
+    <input type="hidden" name="sort" value="{{ app.request.get('sort') }}" />
+    <input type="hidden" name="direction" value="{{ app.request.get('direction') }}" />
+    <input type="hidden" name="perPage" value="{{ app.request.get('perPage') }}" />
+{% endmacro %}
+
+{% macro getSearchFields() %}
+    {% for key, field in app.request.query.get('_sByFld', []) %}
+        <input type="hidden" name="_sByFld[{{ key }}]" value="{{ field }}" />
+    {% endfor %}
+{% endmacro %}

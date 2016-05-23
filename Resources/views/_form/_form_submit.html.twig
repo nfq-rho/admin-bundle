@@ -1,0 +1,16 @@
+<div class="row">
+    <div class="form-group">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-10">
+                {{ form_widget(form.submit) }}
+
+                {% if form.submit_close is defined %}
+                    {{ form_widget(form.submit_close) }}
+                {% endif %}
+
+                {% if form.submit_preview is defined %}
+                    {{ form_widget(form.submit_preview) }}
+                {% endif %}
+        </div>
+    </div>
+</div>

@@ -1,0 +1,46 @@
+imports:
+    - { resource: config.yml }
+
+services:
+    monolog.formatter.session:
+        class: Monolog\Formatter\LineFormatter
+        arguments:
+            - "[%%datetime%%] [%%extra.session_id%%] %%channel%%.%%level_name%%: %%message%%\n"
+
+framework:
+    test: ~
+    session:
+        storage_id: session.storage.mock_file
+    profiler:
+        collect: false
+    secret: %secret%
+
+monolog:
+    channels: [ "fatal", "search", "webservice.hb", "doctrine" ]
+    handlers:
+        main:
+            type:   stream
+            path:   "%kernel.logs_dir%/%kernel.environment%.log"
+            level:  debug
+            channels: [ "!doctrine", "!search", "!webservice.hb", "!fatal", "!es.provider" ]
+            formatter: monolog.formatter.session
+        fatal:
+            type:   stream
+            path:   "%kernel.logs_dir%/%kernel.environment%.fatal.log"
+            level:  critical
+            channels: [ "fatal", "app" ]
+        doctrine:
+            type:   stream
+            path:   "%kernel.logs_dir%/%kernel.environment%.doctrine.log"
+            level:  debug
+            channels: [ "doctrine" ]
+        search:
+            type:   stream
+            path:   "%kernel.logs_dir%/%kernel.environment%.search.log"
+            level:  debug
+            channels: [ "search" ]
+        wshb:
+            type:   stream
+            path:   "%kernel.logs_dir%/%kernel.environment%.hotelbeds.log"
+            level:  debug
+            channels: [ "webservice.hb" ]

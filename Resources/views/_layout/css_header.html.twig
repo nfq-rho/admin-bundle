@@ -1,0 +1,13 @@
+{% block css %}
+    {% stylesheets filter='cssrewrite'
+    '@NfqAdminBundle/Resources/public/css/bootstrap.min.css'
+    '@NfqAdminBundle/Resources/public/font-awesome/css/font-awesome.css'
+    '@NfqAdminBundle/Resources/public/css/sb-admin.css'
+    '@NfqAdminBundle/Resources/public/css/plugins/select2/select2-bootstrap.css'
+    '@NfqAdminBundle/Resources/public/css/plugins/select2/select2.css'
+    '@NfqAdminBundle/Resources/public/css/bootstrap-editable.css'
+    '@NfqAdminBundle/Resources/public/css/styles.css'
+    %}
+    <link href="{{ asset_url }}" rel="stylesheet" media="all" />
+    {% endstylesheets %}
+{% endblock %}

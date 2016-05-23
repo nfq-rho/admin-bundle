@@ -1,0 +1,52 @@
+{% import 'NfqAdminBundle:_macro:sorting.html.twig' as nfqSorting %}
+{% set currentLocale = app.request.locale %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>{% block title %}{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    {% embed 'NfqAdminBundle:_layout:css_header.html.twig' %}{% endembed %}
+    {% block extra_css %}{% endblock %}
+    {% embed 'NfqAdminBundle:_layout:js_header.html.twig' %}{% endembed %}
+</head>
+<body data-locale={{ currentLocale }}>
+    <div id="wrapper">
+        <nav class="navbar navbar-default navbar-fixed-top" role="navigation" style="margin-bottom: 0">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".sidebar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                {% block logo %}
+                <a class="navbar-brand" href="{{ url('admin_index') }}">{{ 'admin.general.title'|trans }}</a>
+                {% endblock logo %}
+            </div>
+
+            <ul class="nav navbar-top-links navbar-right">
+                {% include 'NfqAdminBundle::navigation_top.html.twig' %}
+            </ul>
+
+            <div class="navbar-default navbar-static-side" role="navigation">
+                {% include 'NfqAdminBundle::navigation.html.twig' %}
+            </div>
+        </nav>
+
+        <!-- /.navbar-static-side -->
+        <div id="page-wrapper">
+            {% include 'NfqAdminBundle::notices.html.twig' %}
+            {% block submenu %}{% endblock %}
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+
+    <!-- Loading animation -->
+    <div class="spinner hide"></div>
+
+    {% embed 'NfqAdminBundle:_layout:js_footer.html.twig' %}{% endembed %}
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,14 @@
+<div class="sidebar-collapse">
+    {% if 'knp_menu' is loaded %}
+        {{ knp_menu_render('NfqAdminBundle:AdminMenuBuilder:buildSideMenu', { 'template': 'NfqAdminBundle:Menu:_knp_menu.html.twig'}) }}
+    {% else %}
+        <ul class="nav" id="side-menu">
+            {% if app.environment == 'dev' %}
+                <li class="{% if main_menu|default('dashboard') == 'dashboard' %}{% endif %}">
+                    <a href="{{ url('admin_index') }}"><i
+                                class="fa fa-dashboard fa-fw"></i> {{ 'ADMIN.MENU_DASHBOARD'|trans }}</a>
+                </li>
+            {% endif %}
+        </ul>
+    {% endif %}
+</div>

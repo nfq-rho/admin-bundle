@@ -1,0 +1,32 @@
+{
+    "name": "nfq-rho/admin-bundle",
+    "description": "NFQ Administration bundle",
+    "keywords": ["NFQ", "admin"],
+    "type": "symfony-bundle",
+    "require": {
+        "php": ">=5.4",
+        "symfony/symfony": "~2.3",
+        "symfony/assetic-bundle": "~2.6",
+        "doctrine/orm": "~2.5",
+        "doctrine/doctrine-bundle": "~1.5",
+        "sensio/framework-extra-bundle": "~3.0",
+
+        "knplabs/knp-menu-bundle": "~2"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~4.7"
+    },
+    "autoload": {
+        "psr-4": { "Nfq\\AdminBundle\\": "" }
+    },
+    "suggest": {
+        "knplabs/knp-paginator-bundle" : "For pagination support",
+        "whiteoctober/Pagerfanta" : "For pagination support",
+        "ocramius/proxy-manager": "In order to use Pagerfanta pagination, you must also add this dependency"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "0.x-dev"
+        }
+    }
+}

@@ -1,0 +1,16 @@
+{% set isModal = app.request.query.get('isModal') %}
+{% set formTheme = 'NfqAdminBundle:_form:bootstrap_3_horizontal_layout.html.twig' %}
+{% if isModal %}
+    {% set formTheme = 'NfqAdminBundle::editCreateForm.html.twig' %}
+{% endif %}
+{% block edit_form_theme %}
+    {% form_theme form formTheme %}
+{% endblock %}
+
+{% block delete_form_theme %}
+    {% if delete_form is defined and delete_form is not empty %}
+        {% form_theme delete_form formTheme %}
+    {% elseif deleteForm is defined and deleteForm is not empty %}
+        {% form_theme deleteForm formTheme %}
+    {% endif %}
+{% endblock %}
