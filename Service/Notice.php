@@ -29,12 +29,7 @@ class Notice implements LoggerAwareInterface
      * @var Session
      */
     protected $session;
-
-    /**
-     * @var Logger
-     */
-    protected $logger;
-
+    
     /**
      * @param Session $session
      */
