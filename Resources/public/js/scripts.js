@@ -77,7 +77,7 @@ $(document).ready(function () {
                 url += '&isModal=1';
             }
         } else {
-            url += '?isModal=1';
+            url += url.indexOf('#') == 0 ? '' : '?isModal=1';
         }
 
         if (url.indexOf('#') == 0) {
