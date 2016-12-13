@@ -4,7 +4,7 @@
     "keywords": ["NFQ", "admin"],
     "type": "symfony-bundle",
     "require": {
-        "php": "^7.1",
+        "php": "^7.0",
         "symfony/symfony": "3.1.*",
         "symfony/assetic-bundle": "~2.6",
         "doctrine/orm": "~2.5",
