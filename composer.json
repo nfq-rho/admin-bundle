@@ -5,7 +5,7 @@
     "type": "symfony-bundle",
     "require": {
         "php": ">=7.0",
-        "symfony/symfony": "3.1.*",
+        "symfony/symfony": "~3",
         "symfony/assetic-bundle": "~2.6",
         "doctrine/orm": "~2.5",
         "doctrine/doctrine-bundle": "~1.5",
