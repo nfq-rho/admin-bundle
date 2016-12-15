@@ -11,6 +11,7 @@
 
 namespace Nfq\AdminBundle\Service;
 
+use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormFactory;
@@ -243,7 +244,7 @@ class FormManager
     ) {
         $submitOptions = $this->getSubmitOptions($submit);
 
-        $formType = is_null($formType) ? 'form' : $formType;
+        $formType = is_null($formType) ? FormType::class : $formType;
 
         $formBuilder = $this->getFormFactory()->createBuilder($formType, $data, $formOptions);
         $formBuilder->setAction($action)->setMethod($this->methods[$method]);
