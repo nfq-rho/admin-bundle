@@ -12,7 +12,9 @@
 namespace Nfq\AdminBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
@@ -33,7 +35,7 @@ abstract class TranslatableType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $this->locale = $options['locale'];
-        $builder->add('locale', 'hidden');
+        $builder->add('locale', HiddenType::class);
 
         $this->callBuildForm($builder, $options);
     }
@@ -46,9 +48,17 @@ abstract class TranslatableType extends AbstractType
     abstract protected function callBuildForm(FormBuilderInterface $builder, array $options);
 
     /**
-     * @param OptionsResolverInterface $resolver
+     * @param OptionsResolver $resolver
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $this->setDefaultOptions($resolver);
+    }
+
+    /**
+     * @param OptionsResolver $resolver
+     */
+    public function setDefaultOptions(OptionsResolver $resolver)
     {
         $resolver->setRequired(['locale']);
 
@@ -56,10 +66,10 @@ abstract class TranslatableType extends AbstractType
     }
 
     /**
-     * @param OptionsResolverInterface $resolver
+     * @param OptionsResolver $resolver
      * @return void
      */
-    abstract protected function callSetDefaultOptions(OptionsResolverInterface $resolver);
+    abstract protected function callSetDefaultOptions(OptionsResolver $resolver);
 
     /**
      * @return string

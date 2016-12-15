@@ -12,6 +12,8 @@
 namespace Nfq\AdminBundle\PlaceManager\Form;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -28,13 +30,13 @@ class PlaceType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('place_name', 'text', [
+            ->add('place_name', TextType::class, [
                 'required' => false,
             ])
-            ->add('places', 'choice', [
+            ->add('places', ChoiceType::class, [
                 'multiple' => true,
                 'required' => false,
-                'empty_value' => 'generic.placeholder.places',
+                'placeholder' => 'generic.placeholder.places',
                 'choices' => $options['places'],
             ]);
     }
@@ -46,7 +48,7 @@ class PlaceType extends AbstractType
     {
         $resolver
             ->setRequired(['places'])
-            ->setAllowedTypes(['places' => 'array']);
+            ->setAllowedTypes('places', 'array');
     }
 
     /**
