@@ -37,7 +37,7 @@ class PlaceType extends AbstractType
                 'multiple' => true,
                 'required' => false,
                 'placeholder' => 'generic.placeholder.places',
-                'choices' => $options['places'],
+                'choices' => array_flip($options['places']),
             ]);
     }
 
