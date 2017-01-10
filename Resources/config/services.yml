@@ -55,7 +55,7 @@ services:
     nfq_admin.form_ext.tiny_mce:
           class: Nfq\AdminBundle\Form\Extension\TinyMCEExtension
           tags:
-              - { name: form.type_extension, extended_type: Symfony\Component\Form\Extension\Core\Type\TextareaType }
+              - { name: form.type_extension, extended_type: Symfony\Component\Form\Extension\Core\Type\TextareaType, alias: textarea }
 
     #validators
     nfq_admin.validator.limit.place_limit:
