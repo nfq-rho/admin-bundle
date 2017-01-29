@@ -32,8 +32,8 @@ services:
         tags:
             - { name: kernel.event_subscriber }
 
-    nfq_admin.response_listener:
-        class: Nfq\AdminBundle\EventListener\ResponseListener
+    nfq_admin.modal_response_listener:
+        class: Nfq\AdminBundle\EventListener\ModalResponseListener
         tags:
             - { name: kernel.event_subscriber }
 
@@ -55,7 +55,7 @@ services:
     nfq_admin.form_ext.tiny_mce:
           class: Nfq\AdminBundle\Form\Extension\TinyMCEExtension
           tags:
-              - { name: form.type_extension, alias: textarea }
+              - { name: form.type_extension, extended_type: Symfony\Component\Form\Extension\Core\Type\TextareaType, alias: textarea }
 
     #validators
     nfq_admin.validator.limit.place_limit:

@@ -12,6 +12,7 @@
 namespace Nfq\AdminBundle\Form\Extension;
 
 use Symfony\Component\Form\AbstractTypeExtension;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 
@@ -46,6 +47,6 @@ class TinyMCEExtension extends AbstractTypeExtension
      */
     public function getExtendedType()
     {
-        return 'textarea';
+        return TextareaType::class;
     }
 }

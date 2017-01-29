@@ -11,6 +11,8 @@
 
 namespace Nfq\AdminBundle\Service;
 
+use Symfony\Component\Form\Extension\Core\Type\FormType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -242,18 +244,18 @@ class FormManager
     ) {
         $submitOptions = $this->getSubmitOptions($submit);
 
-        $formType = is_null($formType) ? 'form' : $formType;
+        $formType = is_null($formType) ? FormType::class : $formType;
 
         $formBuilder = $this->getFormFactory()->createBuilder($formType, $data, $formOptions);
         $formBuilder->setAction($action)->setMethod($this->methods[$method]);
 
-        isset($submitOptions[self::SUBMIT_STANDARD]) && $formBuilder->add('submit', 'submit',
+        isset($submitOptions[self::SUBMIT_STANDARD]) && $formBuilder->add('submit', SubmitType::class,
             $submitOptions[self::SUBMIT_STANDARD]);
-        isset($submitOptions[self::SUBMIT_CLOSE]) && $formBuilder->add('submit_close', 'submit',
+        isset($submitOptions[self::SUBMIT_CLOSE]) && $formBuilder->add('submit_close', SubmitType::class,
             $submitOptions[self::SUBMIT_CLOSE]);
-        isset($submitOptions[self::SUBMIT_PREVIEW]) && $formBuilder->add('submit_preview', 'submit',
+        isset($submitOptions[self::SUBMIT_PREVIEW]) && $formBuilder->add('submit_preview', SubmitType::class,
             $submitOptions[self::SUBMIT_PREVIEW]);
-        isset($submitOptions[self::SUBMIT_DELETE]) && $formBuilder->add('submit_delete', 'submit',
+        isset($submitOptions[self::SUBMIT_DELETE]) && $formBuilder->add('submit_delete', SubmitType::class,
             $submitOptions[self::SUBMIT_DELETE]);
 
         return $formBuilder;
