@@ -11,6 +11,12 @@
 
 namespace Nfq\AdminBundle\Tests\Functional;
 
+use Nfq\AdminBundle\EventListener\LocaleListener;
+use Nfq\AdminBundle\EventListener\ModalResponseListener;
+use Nfq\AdminBundle\Form\Extension\TinyMCEExtension;
+use Nfq\AdminBundle\Service\FormManager;
+use Nfq\AdminBundle\Service\Generic\Actions\GenericActions;
+use Nfq\AdminBundle\Service\Notice;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 /**
@@ -56,27 +62,27 @@ class ServiceCreationTest extends WebTestCase
         return [
             [
                 'nfq_admin.form_service',
-                'Nfq\\AdminBundle\\Service\\Form',
+                FormManager::class,
             ],
             [
                 'nfq_admin.notice_service',
-                'Nfq\\AdminBundle\\Service\\Notice',
+                Notice::class,
             ],
             [
                 'nfq_admin.locale_listener',
-                'Nfq\\AdminBundle\\EventListener\\LocaleListener',
+                LocaleListener::class,
             ],
             [
-                'nfq_admin.response_listener',
-                'Nfq\\AdminBundle\\EventListener\\ResponseListener',
+                'nfq_admin.modal_response_listener',
+                ModalResponseListener::class,
             ],
             [
                 'nfq_admin.generic_actions_service',
-                'Nfq\\AdminBundle\\Service\\Generic\\Actions\\GenericActions',
+                GenericActions::class,
             ],
             [
                 'nfq_admin.form_ext.tiny_mce',
-                'Nfq\\AdminBundle\\Form\\Extension\\TinyMCEExtension',
+                TinyMCEExtension::class,
             ],
         ];
     }

@@ -5,8 +5,6 @@ cache:
     - $HOME/.composer/cache
 
 php:
-  - 5.4
-  - 5.5
   - 5.6
   - 7.0
   - hhvm
@@ -30,30 +28,17 @@ install:
   - if [[ $setup = 'lowest' ]]; then travis_retry composer update --prefer-dist --no-interaction --prefer-lowest --prefer-stable; fi
 
 script:
-  - vendor/bin/phpunit -c phpunit.dist.xml --verbose --coverage-text --coverage-clover=coverage.xml
+  - ./vendor/bin/phpunit -c phpunit.dist.xml --coverage-text --coverage-clover=coverage.xml
 
 after_success:
   - codecov
 
 matrix:
   include:
-    - php: 5.4
-      env: setup=lowest
-    - php: 5.4
-      env: setup=stable
-    - php: 5.5
-      env: setup=lowest
-    - php: 5.5
-      env: setup=stable
-    - php: 5.6
-      env: setup=lowest
     - php: 5.6
       env: setup=stable
-    - php: 7.0
-      env: setup=lowest
     - php: 7.0
       env: setup=stable
   allow_failures:
     - php: hhvm
-    - php: 7.0
   fast_finish: true
