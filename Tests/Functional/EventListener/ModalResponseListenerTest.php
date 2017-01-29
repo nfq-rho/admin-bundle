@@ -16,13 +16,13 @@ use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
-use Nfq\AdminBundle\EventListener\ResponseListener;
+use Nfq\AdminBundle\EventListener\ModalResponseListener;
 
 /**
- * Class ResponseListenerTest
+ * Class ModalResponseListenerTest
  * @package Nfq\AdminBundle\Tests\Functional\EventListener
  */
-class ResponseListenerTest extends \PHPUnit_Framework_TestCase
+class ModalResponseListenerTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @return array
@@ -116,14 +116,14 @@ class ResponseListenerTest extends \PHPUnit_Framework_TestCase
     private function getResponseForControllerResultEvent($isModal = false)
     {
         list($redirectResponse, $kernel, $request) = $this->getEventConfiguration($isModal);
-        $request->attributes->set('_template', 'template');
-        $request->headers->set('x-thermomix-header', 'JsonResponse');
+
         $event = new GetResponseForControllerResultEvent(
             $kernel,
             $request,
             HttpKernelInterface::MASTER_REQUEST,
             $redirectResponse
         );
+
         $event->setControllerResult(array());
         return $event;
     }
@@ -141,11 +141,11 @@ class ResponseListenerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @return \Nfq\AdminBundle\EventListener\ResponseListener
+     * @return ModalResponseListener
      */
     private function getResponseListener()
     {
-        $responseListener = new ResponseListener();
+        $responseListener = new ModalResponseListener();
         return $responseListener;
     }
 

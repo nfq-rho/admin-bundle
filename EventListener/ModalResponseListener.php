@@ -19,7 +19,7 @@ use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
- * Class ResponseListener
+ * Class ModalResponseListener
  * @package Nfq\AdminBundle\EventListener
  */
 class ModalResponseListener implements EventSubscriberInterface
