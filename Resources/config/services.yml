@@ -32,8 +32,8 @@ services:
         tags:
             - { name: kernel.event_subscriber }
 
-    nfq_admin.response_listener:
-        class: Nfq\AdminBundle\EventListener\ResponseListener
+    nfq_admin.modal_response_listener:
+        class: Nfq\AdminBundle\EventListener\ModalResponseListener
         tags:
             - { name: kernel.event_subscriber }
 

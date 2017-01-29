@@ -13,6 +13,7 @@ namespace Nfq\AdminBundle\EventListener;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -21,7 +22,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  * Class ResponseListener
  * @package Nfq\AdminBundle\EventListener
  */
-class ResponseListener implements EventSubscriberInterface
+class ModalResponseListener implements EventSubscriberInterface
 {
     /**
      * @return array
@@ -41,7 +42,6 @@ class ResponseListener implements EventSubscriberInterface
         $request = $event->getRequest();
         $response = $event->getResponse();
 
-        //This listener does only apply when in modal mode
         if (!$request->query->has('isModal')) {
             return;
         }
@@ -55,7 +55,7 @@ class ResponseListener implements EventSubscriberInterface
         $modalResponse = new JsonResponse();
 
         if ($response instanceof RedirectResponse) {
-            $this->setTargetPath($event);
+            $this->setTargetPath($request);
 
             $redirectUrl = $response->getTargetUrl();
 
@@ -74,11 +74,17 @@ class ResponseListener implements EventSubscriberInterface
     }
 
     /**
-     * @param FilterResponseEvent $event
+     * @param Reuqest $request
      */
-    private function setTargetPath(FilterResponseEvent $event)
+    private function setTargetPath(Request $request)
     {
-        $event->getRequest()->getSession()->set('_security.admin_area.target_path',
-            $event->getRequest()->server->get('HTTP_REFERER'));
+        if (!$request>getSession()) {
+            return;
+        }
+
+        $request->getSession()->set(
+            '_security.admin_area.target_path',
+            $request->server->get('HTTP_REFERER')
+        );
     }
 }
