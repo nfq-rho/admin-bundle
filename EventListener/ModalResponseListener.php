@@ -42,7 +42,7 @@ class ModalResponseListener implements EventSubscriberInterface
         $request = $event->getRequest();
         $response = $event->getResponse();
 
-        if (!$request->query->has('isModal')) {
+        if (!$request->query->has('isModal') || false == $request->query->get('isModal', false)) {
             return;
         }
 
@@ -74,11 +74,12 @@ class ModalResponseListener implements EventSubscriberInterface
     }
 
     /**
-     * @param Reuqest $request
+     * @param Request $request
      */
-    private function setTargetPath(Request $request)
+    protected function setTargetPath(Request $request)
     {
-        if (!$request>getSession()) {
+        if (!$request->hasSession()
+        ) {
             return;
         }
 

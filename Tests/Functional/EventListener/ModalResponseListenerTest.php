@@ -11,9 +11,10 @@
 
 namespace Nfq\AdminBundle\Tests\Functional\EventListener;
 
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
-use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Nfq\AdminBundle\EventListener\ModalResponseListener;
@@ -29,20 +30,21 @@ class ModalResponseListenerTest extends \PHPUnit_Framework_TestCase
      */
     public function getTestOnKernelResponseData()
     {
-        $out = array();
+        $out = [];
 
         // case #0: Check if return is Modal
         $isModal = true;
-        $expected = array(
-            'instance' => 'Symfony\Component\HttpFoundation\JsonResponse',
+        $expected = [
+            'instance' => JsonResponse::class,
             'content' => '{"status":"redirect","content":"redirectUri"}'
-        );
-        $out[] = array($isModal, $expected);
+        ];
+        $out[] = [$isModal, $expected];
 
         // case #1: check if its not Modal
         $isModal = false;
-        $expected = 'Symfony\Component\HttpFoundation\RedirectResponse';
-        $out[] = array($isModal, $expected);
+        $expected = RedirectResponse::class;
+        $out[] = [$isModal, $expected];
+
         return $out;
     }
 
@@ -53,9 +55,9 @@ class ModalResponseListenerTest extends \PHPUnit_Framework_TestCase
      */
     public function testOnKernelResponse($isModal, $expected)
     {
-        /** @var \Symfony\Component\HttpKernel\Event\FilterResponseEvent $event */
         $event = $this->getFilterResponseEvent($isModal);
-        $responseListener = $this->getResponseListener($event);
+        $responseListener = $this->getResponseListener();
+
         $responseListener->onKernelResponse($event);
 
         if (is_array($expected)) {
@@ -76,7 +78,7 @@ class ModalResponseListenerTest extends \PHPUnit_Framework_TestCase
         // case #0: Check if return is Modal
         $isModal = true;
         $expected = array(
-            'instance' => 'Symfony\Component\HttpFoundation\JsonResponse',
+            'instance' => JsonResponse::class,
             'content' => '{"status":"error","content":["content"]}'
         );
         $out[] = array($isModal, $expected);
@@ -93,7 +95,7 @@ class ModalResponseListenerTest extends \PHPUnit_Framework_TestCase
             KernelEvents::RESPONSE => [['onKernelResponse', 10]],
         ];
 
-        $this->assertSame($expect, ResponseListener::getSubscribedEvents());
+        $this->assertSame($expect, ModalResponseListener::getSubscribedEvents());
     }
 
     /**
@@ -101,42 +103,25 @@ class ModalResponseListenerTest extends \PHPUnit_Framework_TestCase
      */
     private function getRedirectResponseMock()
     {
-        $redirectResponse = $this->getMockBuilder('\Symfony\Component\HttpFoundation\RedirectResponse')
+        $redirectResponse = $this->getMockBuilder(RedirectResponse::class)
             ->disableOriginalConstructor()
             ->getMock();
+
         $redirectResponse->method('getTargetUrl')->willReturn('redirectUri');
+
         return $redirectResponse;
     }
 
-
     /**
      * @param bool $isModal
-     * @return array
-     */
-    private function getResponseForControllerResultEvent($isModal = false)
-    {
-        list($redirectResponse, $kernel, $request) = $this->getEventConfiguration($isModal);
-
-        $event = new GetResponseForControllerResultEvent(
-            $kernel,
-            $request,
-            HttpKernelInterface::MASTER_REQUEST,
-            $redirectResponse
-        );
-
-        $event->setControllerResult(array());
-        return $event;
-    }
-
-
-    /**
-     * @param bool $isModal
-     * @return array
+     * @return FilterResponseEvent
      */
     private function getFilterResponseEvent($isModal = false)
     {
-        list($redirectResponse, $kernel, $request) = $this->getEventConfiguration($isModal);
+        list($kernel, $request, $redirectResponse) = $this->getEventConfiguration($isModal);
+
         $event = new FilterResponseEvent($kernel, $request, HttpKernelInterface::MASTER_REQUEST, $redirectResponse);
+
         return $event;
     }
 
@@ -150,16 +135,16 @@ class ModalResponseListenerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @param $isModal
+     * @param bool $isModal
      * @return array
      */
     private function getEventConfiguration($isModal)
     {
         $redirectResponse = $this->getRedirectResponseMock();
-        $kernel = $this->getMock('Symfony\Component\HttpKernel\HttpKernelInterface');
+        $kernel = $this->createMock(HttpKernelInterface::class);
 
-        $request = new Request();
-        $request->query->set('isModal', $isModal);
-        return array($redirectResponse, $kernel, $request);
+        $request = new Request(['isModal' => (int)$isModal]);
+
+        return [$kernel, $request, $redirectResponse];
     }
 }

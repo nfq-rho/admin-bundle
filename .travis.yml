@@ -28,7 +28,7 @@ install:
   - if [[ $setup = 'lowest' ]]; then travis_retry composer update --prefer-dist --no-interaction --prefer-lowest --prefer-stable; fi
 
 script:
-  - vendor/bin/phpunit -c phpunit.dist.xml --verbose --coverage-text --coverage-clover=coverage.xml
+  - ./vendor/bin/phpunit -c phpunit.dist.xml --coverage-text --coverage-clover=coverage.xml
 
 after_success:
   - codecov

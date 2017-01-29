@@ -35,7 +35,7 @@ class LocaleListenerTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->kernel = $this->getMock('Symfony\Component\HttpKernel\HttpKernelInterface');
+        $this->kernel = $this->createMock(HttpKernelInterface::class);
         /**
          *
          */
