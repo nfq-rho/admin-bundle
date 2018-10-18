@@ -27,6 +27,10 @@ class DummyPaginatorAdapter extends AbstractPaginatorAdapter
         return true;
     }
 
+    public function initPagination()
+    {
+    }
+
     /**
      * {@inheritdoc}
      */

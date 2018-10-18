@@ -1,0 +1,13 @@
+<ol class="breadcrumb">
+    <li>
+        <a href="{{ path('home') }}">
+            <i class="fas fa-tachometer-alt"></i>
+            {{ 'Home'|trans({}, 'adminInterface') }}
+        </a>
+    </li>
+    {% if active %}
+        {% for item in active %}
+            <li><a href="{{ item.route is empty ? '#' : '/' in item.route ? item.route : path(item.route, item.routeArgs) }}">{{ item.label|trans({}, 'adminInterface') }}</a></li>
+        {% endfor %}
+    {% endif %}
+</ol>

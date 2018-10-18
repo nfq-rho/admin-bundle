@@ -1,0 +1,99 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+        bind:
+            $defaultLocale: '%kernel.default_locale%'
+
+    Nfq\AdminBundle\:
+        resource: '../../*'
+        exclude: '../../{DependencyInjection,Entity,Repository,Tests,Notices.php,NfqAdminBundle.php}'
+
+    Nfq\AdminBundle\Controller\:
+        resource: '../../Controller'
+        tags: ['controller.service_arguments']
+
+    Nfq\AdminBundle\Service\Notice:
+        calls:
+            - [setLogger, [ '@monolog.logger' ]]
+
+    #This listener is responsible for translatable locale
+    Nfq\AdminBundle\EventListener\Gedmo\TranslatableLocaleListener:
+        arguments: [ '@?gedmo.listener.translatable' ]
+        tags:
+            # translatable sets locale after router processing
+            - { name: kernel.event_listener, event: kernel.request, method: onLateKernelRequest, priority: -10 }
+
+    Nfq\AdminBundle\Paginator\Adapters\KnpPaginatorAdapter:
+        tags:
+            - { name: nfq_admin.paginator_adapter }
+
+#    nfq_admin.form_service:
+#        class: Nfq\AdminBundle\Service\FormManager
+#        arguments: [ '@form.factory' ]
+#
+#    nfq_admin.notice_service:
+#         class: Nfq\AdminBundle\Service\Notice
+#         arguments: [ '@session' ]
+#         calls:
+#            - [setLogger, [ '@monolog.logger' ]]
+#
+#    #This listener add generic notices
+#    nfq_admin.notic_listener:
+#        class: Nfq\AdminBundle\EventListener\NoticeListener
+#        arguments: [ '@nfq_admin.notice_service' ]
+#        tags:
+#            - { name: kernel.event_listener, event: generic.after_save, method: onMessage, priority: -10 }
+#            - { name: kernel.event_listener, event: generic.after_insert, method: onMessage, priority: -10 }
+#            - { name: kernel.event_listener, event: generic.after_delete, method: onMessage, priority: -10 }
+#
+#    nfq_admin.locale_listener:
+#        class: Nfq\AdminBundle\EventListener\LocaleListener
+#        arguments: [ '%kernel.default_locale%' ]
+#        tags:
+#            - { name: kernel.event_subscriber }
+#
+#    nfq_admin.modal_response_listener:
+#        class: Nfq\AdminBundle\EventListener\ModalResponseListener
+#        tags:
+#            - { name: kernel.event_subscriber }
+#
+#    nfq_admin.generic_actions_service:
+#        class: Nfq\AdminBundle\Service\Generic\Actions\GenericActions
+#        arguments: [ '@doctrine.orm.entity_manager', '@event_dispatcher' ]
+#
+    # Forms
+    Nfq\AdminBundle\Form\Extension\TinyMCEExtension:
+        tags:
+            - { name: form.type_extension, extended_type: Symfony\Component\Form\Extension\Core\Type\TextareaType, alias: textarea }
+
+    Nfq\AdminBundle\Service\FormManager:
+        public: true
+
+    # Validators
+    Nfq\AdminBundle\PlaceManager\Validator\Constraints\HasEmptySlotsValidator:
+        calls:
+            - [ setContainer, [ '@service_container' ]]
+        tags:
+            - { name: validator.constraint_validator, alias: nfq_admin_validator_has_empty_slots }
+#
+#    #Admin side menu
+#    nfq_admin.subscriber.side_menu:
+#        class: Nfq\AdminBundle\EventListener\MenuBuilderSubscriber
+#        tags:
+#            - { name: kernel.event_subscriber }
+#
+    Nfq\AdminBundle\Menu\AdminMenuListener:
+        abstract: true
+
+#    nfq_admin.twig.extension.test:
+#        class: Nfq\AdminBundle\Twig\TestExtension
+#        tags:
+#            - { name: twig.extension }
+#
+#    nfq_admin.twig.extension.array_utils:
+#        class: Nfq\AdminBundle\Twig\ArrayUtilsExtension
+#        tags:
+#            - { name: twig.extension }

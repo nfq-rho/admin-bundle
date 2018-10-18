@@ -22,17 +22,14 @@ abstract class PlaceManager implements PlaceManagerInterface
     /**
      * @var array
      */
-    protected $places;
+    protected $places = [];
 
     /**
      * {@inheritdoc}
      */
     abstract public function getItemsInPlace($placeId, $locale);
 
-    /**
-     * @return PlaceAwareRepositoryInterface
-     */
-    abstract protected function getPlaceAwareRepository();
+    abstract protected function getPlaceAwareRepository(): PlaceAwareRepositoryInterface;
 
     /**
      * @param mixed $item

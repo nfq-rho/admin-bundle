@@ -1,0 +1,46 @@
+admin:
+    generic:
+        title: NFQ cPanel
+
+        close: Close
+        actions: Actions
+        remove: Remove
+        paging:
+            showing: Showing
+            showing_to: to
+            showing_of: of
+            showing_entries: entries
+            next: Next
+            previous: Previous
+            first: First
+            last: Last
+            clear: Clear
+            type: Type
+            value: Value
+            group: Group
+            element: Element
+            from: From
+            to: To
+            per_page: Per page
+        reset_search_params: Reset search and sorting params
+        choose: Choose
+        yes: Yes
+        no: No
+        note: Note
+        welcome: Welcome!
+        places:
+            placeholder: Choose place
+
+    side_menu:
+        dashboard: Dashboard
+
+    header_menu:
+        logout: Logout
+        settings: Settings
+
+    security:
+        back_to_login: Back to login
+
+    footer:
+        copyright: '<strong>Copyright &copy; %year% <a href="#"></a>.</strong> All rights reserved.'
+

@@ -1,46 +1,21 @@
-{% extends 'NfqAdminBundle::layout.html.twig' %}
+{% extends '@NfqAdmin/layout.html.twig' %}
 
-{# these variables are kept here for BC #}
-{% set direction = 'ASC' %}
-{% if app.request.get('direction') == 'ASC' %}
-    {% set direction = 'DESC' %}
-{% endif %}
-{% set sorted = app.request.get('sort') %}
-{% set currSortDir = app.request.get('direction') %}
-{# these variables are kept here for BC #}
-
-{% block content %}
-    {% block pageHeader %}
-        <div class="row page-header page-title">
-            <div class="col-sm-6">
-                <h1>{% block pageTitle %}{% endblock %}</h1>
-            </div>
-            <div class="col-sm-6">
-                <div class="btn-group pull-right">
-                    {% block buttons %}{% endblock %}
-                </div>
-            </div>
+{% block page_content %}
+    <div class="box box-default">
+        <div class="box-header with-border">
+            {% block page_box_header %}{% endblock %}
         </div>
-    {% endblock %}
+        <div class="box-body">
+            <br />
+            {% block page_box_body %}{% endblock %}
 
-    {% block breadcrumbs %}{% endblock %}
+            {% block page_box_footer_actions %}{% endblock %}
 
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="panel panel-default">
-                <div class="panel-heading clearfix">
-                    {% block headPanel %}{% endblock %}
+            {% if pagination is defined %}
+                <div class="row">
+                    {% include '@NfqAdmin/Base/_blocks/_pagination.html.twig' %}
                 </div>
-                <div class="panel-body">
-                    {% block contentPanel %}{% endblock %}
-
-                    {% if pagination is defined %}
-                        <div class="row">
-                            {% include 'NfqAdminBundle:Base/_blocks:_pagination.html.twig' %}
-                        </div>
-                    {% endif %}
-                </div>
-            </div>
+            {% endif %}
         </div>
     </div>
 {% endblock %}

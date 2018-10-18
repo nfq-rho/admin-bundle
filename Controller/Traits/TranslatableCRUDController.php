@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * This file is part of the "NFQ Bundles" package.
@@ -39,10 +39,9 @@ trait TranslatableCRUDController
      * @Method("GET")
      * @Template()
      *
-     * @param Request $request
      * @return array
      */
-    public function newAction(Request $request)
+    public function newAction(Request $request): array
     {
         $this->loadLocales();
 
@@ -222,7 +221,7 @@ trait TranslatableCRUDController
      * @param string $locale
      * @return object|null
      */
-    abstract protected function getEditableEntityForLocale($id, $locale);
+    abstract protected function getEditableEntityForLocale($id, ?string $locale);
 
     /**
      * Returns ant editable entity for given locale.

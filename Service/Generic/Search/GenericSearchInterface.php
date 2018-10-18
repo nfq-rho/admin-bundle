@@ -12,7 +12,7 @@
 namespace Nfq\AdminBundle\Service\Generic\Search;
 
 use Doctrine\ORM\Query;
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -22,24 +22,16 @@ use Symfony\Component\HttpFoundation\Request;
  */
 interface GenericSearchInterface
 {
-    /**
-     * @param EntityManager $manager
-     */
-    public function setEntityManager(EntityManager $manager);
+    public function setEntityManager(EntityManagerInterface $em): void;
+
+    public function getEntityManager(): EntityManagerInterface;
 
     /**
-     * @return array
+     * @return string[]
      */
-    public function getFields();
+    public function getFields(): array;
 
-    /**
-     * @param Request $request
-     * @return Query
-     */
-    public function getResults(Request $request);
+    public function getResults(Request $request): Query;
 
-    /**
-     * @return EntityRepository
-     */
-    public function getRepository();
+    public function getRepository(): EntityRepository;
 }

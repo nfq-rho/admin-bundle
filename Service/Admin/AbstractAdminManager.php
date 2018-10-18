@@ -11,6 +11,7 @@
 
 namespace Nfq\AdminBundle\Service\Admin;
 
+use Doctrine\ORM\EntityRepository;
 use Nfq\AdminBundle\Event\GenericEvent;
 use Nfq\AdminBundle\Service\Generic\Search\GenericSearchInterface;
 use Nfq\AdminBundle\Service\Generic\Actions\GenericActionsInterface;
@@ -24,9 +25,9 @@ use Doctrine\Common\Persistence\ObjectRepository;
 abstract class AbstractAdminManager implements AdminManagerInterface
 {
     /**
-     * @var ObjectRepository
+     * @var EntityRepository
      */
-    protected $er;
+    protected $repository;
 
     /**
      * @var GenericSearchInterface
@@ -38,10 +39,15 @@ abstract class AbstractAdminManager implements AdminManagerInterface
      */
     protected $actions;
 
+    public function __construct(EntityRepository $repository)
+    {
+        $this->repository = $repository;
+    }
+
     /**
      * @inheritdoc
      */
-    public function setActions($actions)
+    public function setActions(GenericActionsInterface $actions): void
     {
         $this->actions = $actions;
     }
@@ -49,21 +55,15 @@ abstract class AbstractAdminManager implements AdminManagerInterface
     /**
      * @inheritdoc
      */
-    public function setSearch(GenericSearchInterface $search)
+    public function setSearch(GenericSearchInterface $search): void
     {
         $this->search = $search;
     }
 
-    /**
-     * @param $entity
-     * @param string $beforeEventName
-     * @param string $afterEventName
-     * @return mixed
-     */
     public function delete(
         $entity,
-        $beforeEventName = 'generic.before_delete',
-        $afterEventName = 'generic.after_delete'
+        string $beforeEventName = 'generic.before_delete',
+        string $afterEventName = 'generic.after_delete'
     ) {
         $beforeEvent = new GenericEvent($entity, $beforeEventName);
         $afterEvent = new GenericEvent($entity, $afterEventName, 'general.deleted_successfully');
@@ -73,16 +73,10 @@ abstract class AbstractAdminManager implements AdminManagerInterface
         return $entity;
     }
 
-    /**
-     * @param $entity
-     * @param string $beforeEventName
-     * @param string $afterEventName
-     * @return mixed
-     */
     public function insert(
         $entity,
-        $beforeEventName = 'generic.before_insert',
-        $afterEventName = 'generic.after_insert'
+        string $beforeEventName = 'generic.before_insert',
+        string $afterEventName = 'generic.after_insert'
     ) {
         $beforeEvent = new GenericEvent($entity, $beforeEventName);
         $afterEvent = new GenericEvent($entity, $afterEventName, 'general.saved_successfully');
@@ -92,16 +86,10 @@ abstract class AbstractAdminManager implements AdminManagerInterface
         return $entity;
     }
 
-    /**
-     * @param $entity
-     * @param string $beforeEventName
-     * @param string $afterEventName
-     * @return mixed
-     */
     public function save(
         $entity,
-        $beforeEventName = 'generic.before_save',
-        $afterEventName = 'generic.after_save'
+        string $beforeEventName = 'generic.before_save',
+        string $afterEventName = 'generic.after_save'
     ) {
         $beforeEvent = new GenericEvent($entity, $beforeEventName);
         $afterEvent = new GenericEvent($entity, $afterEventName, 'general.saved_successfully');

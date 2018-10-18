@@ -11,9 +11,11 @@
 
 namespace Nfq\AdminBundle;
 
-use Nfq\AdminBundle\DependencyInjection\Compiler\AdminManagersCompilerPass;
-use Nfq\AdminBundle\DependencyInjection\Compiler\AdminMenuCompilerPass;
-use Nfq\AdminBundle\DependencyInjection\Compiler\PaginatorCompilerPass;
+use Nfq\AdminBundle\DependencyInjection\Compiler\AdminManagerPass;
+use Nfq\AdminBundle\DependencyInjection\Compiler\AdminMenuPass;
+use Nfq\AdminBundle\DependencyInjection\Compiler\PaginatorPass;
+use Nfq\AdminBundle\DependencyInjection\Compiler\TwigPass;
+use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
@@ -23,15 +25,13 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
  */
 class NfqAdminBundle extends Bundle
 {
-    /**
-     * @param ContainerBuilder $container
-     */
     public function build(ContainerBuilder $container)
     {
         parent::build($container);
 
-        $container->addCompilerPass(new AdminManagersCompilerPass());
-        $container->addCompilerPass(new PaginatorCompilerPass());
-        $container->addCompilerPass(new AdminMenuCompilerPass());
+        $container->addCompilerPass(new AdminManagerPass());
+        $container->addCompilerPass(new AdminMenuPass());
+        $container->addCompilerPass(new PaginatorPass());
+        $container->addCompilerPass(new TwigPass());
     }
 }

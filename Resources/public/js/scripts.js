@@ -174,33 +174,10 @@ $(document).ready(function () {
         }, 10000);
     }
 
-    bindTooltips($(this));
-    xeditableBind($('.myeditable'));
+    // bindTooltips($(this));
+    bindXeditable($('.myeditable'));
+    bindDatepickers($(".datepicker"));
     preselectToggleButtons($("[data-toggle=buttons]"));
-
-    // Datepickers
-    $('.datepicker').datepicker({
-        format: 'yyyy-mm-dd',
-        weekStart: 1,
-        autoclose: true
-    });
-
-    $('.dt-received-from').datepicker().on('changeDate', function (e) {
-        $('.dt-received-to').datepicker('setStartDate', e.date);
-    });
-
-    $('.dt-checkin-from').datepicker().on('changeDate', function (e) {
-        $('.dt-checkin-to').datepicker('setStartDate', e.date);
-    });
-
-    $('.dt-checkout-from').datepicker().on('changeDate', function (e) {
-        $('.dt-checkout-to').datepicker('setStartDate', e.date);
-    });
-
-    $('.dt-added-date-from').datepicker().on('changeDate', function (e) {
-        $('.dt-added-date-to').datepicker('setStartDate', e.date);
-    });
-    // end of Datepickers
 
     $(document).on('change', '.tr-search-form input, .tr-search-form select', function () {
         $(this).closest('form').submit();
@@ -284,13 +261,13 @@ var modalHideCallback = function(divModal) {
 var modalShowCallback = function(divModal) {
     divModal.bindSelect2();
 
-    xeditableBind(divModal.find('.myeditable'));
-    datepickerBind(divModal.find('.datepicker'));
+    bindXeditable(divModal.find('.myeditable'));
+    bindDatepickers(divModal.find('.datepicker'));
 
     runHolder();
     bindCountable();
 
-    bindTooltips(divModal);
+    // bindTooltips(divModal);
     preselectToggleButtons($("[data-toggle=buttons]"));
 };
 
@@ -345,7 +322,11 @@ var runHolder = function() {
     }
 };
 
-var xeditableBind = function ($element) {
+var bindXeditable = function ($element) {
+    if ($element.length <= 0) {
+        return;
+    }
+
     $.fn.editable.defaults.mode = 'inline';
 
     $element.editable({
@@ -367,14 +348,14 @@ var getUrlParameter = function(sParam) {
     }
 };
 
-var datepickerBind = function ($element) {
+var bindDatepickers = function ($element) {
+    if ($element.length <= 0) {
+        return;
+    }
+
     $element.datepicker({
         format: 'yyyy-mm-dd',
         weekStart: 1,
         autoclose: true
-    });
-
-    $('.dt-start-date').datepicker().on('changeDate', function (e) {
-        $('.dt-end-date').datepicker('setStartDate', e.date);
     });
 };

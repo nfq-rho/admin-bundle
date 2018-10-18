@@ -11,6 +11,7 @@
 
 namespace Nfq\AdminBundle\Controller\Traits;
 
+use Nfq\AdminBundle\Service\FormManager;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -203,7 +204,7 @@ trait AbstractCrudController
         }
 
         if ($submittedForm->has('submit_close') && $submittedForm->get('submit_close')->isClicked()) {
-            return $this->redirectToIndex($request, null);
+            return $this->redirectToIndex($request);
         }
 
         return $this->redirectToIndex($request, $entity);
@@ -213,9 +214,9 @@ trait AbstractCrudController
      * Get form service
      * @return \Nfq\AdminBundle\Service\FormManager
      */
-    protected function getFormService()
+    protected function getFormService(): FormManager
     {
-        return $this->get('nfq_admin.form_service');
+        return $this->get(FormManager::class);
     }
 
     /**
@@ -227,22 +228,19 @@ trait AbstractCrudController
      */
     abstract protected function getEditDeleteForms($entity);
 
-    /**
-     * @param $id
-     * @return Form $form
-     */
-    abstract protected function getDeleteForm($id);
+    abstract protected function getDeleteForm($id): Form;
 
     /**
      * Delete entity
      * @param $entity
      */
-    abstract protected function deleteAfterDeleteAction($entity);
+    abstract protected function deleteAfterDeleteAction($entity): void;
+
     /**
      * Save entity after update
      * @param $entity
      */
-    abstract protected function saveAfterUpdateAction($entity);
+    abstract protected function saveAfterUpdateAction($entity): void;
 
     /**
      * Returns Entity

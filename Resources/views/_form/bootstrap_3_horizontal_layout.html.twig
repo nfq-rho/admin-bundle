@@ -1,4 +1,4 @@
-{% extends "NfqAdminBundle:_form:bootstrap_3_layout.html.twig" %}
+{% extends '@NfqAdmin/_form/bootstrap_3_layout.html.twig' %}
 
 {% block form_start -%}
     {% set attr = attr|merge({class: (attr.class|default('') ~ ' form-horizontal')|trim}) %}

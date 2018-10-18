@@ -21,5 +21,5 @@ interface PlaceAwareRepositoryInterface
      * @param string $placeId
      * @return int
      */
-    public function getUsedPlaceSlots($placeId);
+    public function getUsedPlaceSlots(string $placeId): int;
 }

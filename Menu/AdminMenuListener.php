@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * This file is part of the "NFQ Bundles" package.
@@ -21,79 +21,55 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
  */
 abstract class AdminMenuListener implements AdminMenuListenerInterface
 {
-    /**
-     * @var FactoryInterface
-     */
+    /** @var FactoryInterface */
     protected $factory;
 
-    /**
-     * @var AuthorizationCheckerInterface
-     */
+    /** @var AuthorizationCheckerInterface */
     protected $authorizationChecker;
 
-    /**
-     * @var array Granted roles
-     */
-    protected $grantedRoles = [];
+    /** @var string[]|null */
+    protected $grantedRoles;
 
-    /**
-     * AdminMenuListener constructor.
-     *
-     * @param AuthorizationCheckerInterface $authorizationChecker
-     */
     public function __construct(AuthorizationCheckerInterface $authorizationChecker)
     {
         $this->authorizationChecker = $authorizationChecker;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function onMenuConfigure(ConfigureMenuEvent $event)
+    public function onMenuConfigure(ConfigureMenuEvent $event): void
     {
         $grantedRoles = $this->getGrantedRoles();
 
-        if (empty($grantedRoles) || $this->authorizationChecker->isGranted($grantedRoles)) {
+        if (null === $grantedRoles
+            || (!empty($grantedRoles) && $this->authorizationChecker->isGranted($grantedRoles))) {
             $this->setFactory($event);
             $this->doMenuConfigure($event);
         }
     }
 
-    /**
-     * @param ConfigureMenuEvent $event
-     *
-     * @return mixed
-     */
-    abstract protected function doMenuConfigure(ConfigureMenuEvent $event);
+    abstract protected function doMenuConfigure(ConfigureMenuEvent $event): void;
 
-    /**
-     * @return FactoryInterface
-     */
-    protected function getFactory()
+    protected function getFactory(): FactoryInterface
     {
         return $this->factory;
     }
 
-    /**
-     * @param ConfigureMenuEvent $event
-     */
-    private function setFactory(ConfigureMenuEvent $event)
+    private function setFactory(ConfigureMenuEvent $event): void
     {
         $this->factory = $event->getFactory();
     }
 
     /**
-     * @return array
+     * @return string[]|null
      */
-    private function getGrantedRoles()
+    private function getGrantedRoles(): ?array
     {
         return $this->grantedRoles;
     }
 
     /**
-     * @param array $grantedRoles
+     * @param string[] $grantedRoles
      */
-    public function setGrantedRoles($grantedRoles)
+    public function setGrantedRoles(array $grantedRoles): void
     {
         $this->grantedRoles = $grantedRoles;
     }

@@ -26,6 +26,7 @@ class ConfigureMenuEvent extends Event
      * Side menu configuration event name.
      */
     const SIDE_MENU = 'nfq_admin.side_menu_configure';
+
     /**
      * Header menu configuration event name.
      */

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * This file is part of the "NFQ Bundles" package.
@@ -22,15 +22,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 abstract class TranslatableType extends AbstractType
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $locale;
 
-    /**
-     * @param FormBuilderInterface $builder
-     * @param array $options
-     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $this->locale = $options['locale'];
@@ -39,41 +33,23 @@ abstract class TranslatableType extends AbstractType
         $this->callBuildForm($builder, $options);
     }
 
-    /**
-     * @param FormBuilderInterface $builder
-     * @param array $options
-     * @return void
-     */
-    abstract protected function callBuildForm(FormBuilderInterface $builder, array $options);
+    abstract protected function callBuildForm(FormBuilderInterface $builder, array $options): void;
 
-    /**
-     * @param OptionsResolver $resolver
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $this->setDefaultOptions($resolver);
     }
 
-    /**
-     * @param OptionsResolver $resolver
-     */
-    public function setDefaultOptions(OptionsResolver $resolver)
+    public function setDefaultOptions(OptionsResolver $resolver): void
     {
         $resolver->setRequired(['locale']);
 
         $this->callSetDefaultOptions($resolver);
     }
 
-    /**
-     * @param OptionsResolver $resolver
-     * @return void
-     */
-    abstract protected function callSetDefaultOptions(OptionsResolver $resolver);
+    abstract protected function callSetDefaultOptions(OptionsResolver $resolver): void;
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
         return 'translatable';
     }

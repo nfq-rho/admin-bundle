@@ -4,11 +4,10 @@
     "keywords": ["NFQ", "admin"],
     "type": "symfony-bundle",
     "require": {
-        "php": ">=5.6",
-        "symfony/symfony": "~2.7|~3.0",
-        "symfony/assetic-bundle": "~2.6",
+        "php": ">=7.1",
+
         "symfony/monolog-bundle": "~2.4|~3.1",
-        "sensio/framework-extra-bundle": "~3.0",
+        "sensio/framework-extra-bundle": "^3.0|^5.1",
 
         "doctrine/orm": "~2.5",
         "doctrine/doctrine-bundle": "~1.5",
@@ -16,10 +15,13 @@
         "knplabs/knp-menu-bundle": "~2"
     },
     "require-dev": {
-        "phpunit/phpunit": "~5.0"
+        "phpunit/phpunit": "^7.0"
     },
     "autoload": {
-        "psr-4": { "Nfq\\AdminBundle\\": "" }
+        "psr-4": { "Nfq\\AdminBundle\\": "" },
+        "exclude-from-classmap": [
+            "/Tests/"
+        ]
     },
     "suggest": {
         "knplabs/knp-paginator-bundle" : "For pagination support",

@@ -21,29 +21,11 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  */
 interface GenericActionsInterface
 {
-    /**
-     * @return EventDispatcherInterface
-     */
-    public function getEventDispatcher();
+    public function getEventDispatcher(): EventDispatcherInterface;
 
-    /**
-     * @return EntityManagerInterface
-     */
-    public function getEntityManager();
+    public function getEntityManager(): EntityManagerInterface;
 
-    /**
-     * @param GenericEvent $before
-     * @param $entity
-     * @param GenericEvent $after
-     * @return mixed
-     */
-    public function save(GenericEvent $before, $entity, GenericEvent $after);
+    public function save(GenericEvent $before, $entity, GenericEvent $after): void;
 
-    /**
-     * @param GenericEvent $before
-     * @param $entity
-     * @param GenericEvent $after
-     * @return mixed
-     */
-    public function delete(GenericEvent $before, $entity, GenericEvent $after);
+    public function delete(GenericEvent $before, $entity, GenericEvent $after): void;
 }

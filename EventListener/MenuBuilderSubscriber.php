@@ -27,10 +27,7 @@ class MenuBuilderSubscriber implements EventSubscriberInterface
      */
     private $factory;
 
-    /**
-     * {@inheritdoc}
-     */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             ConfigureMenuEvent::HEADER_MENU => 'addHeaderMenuNode',
@@ -59,7 +56,7 @@ class MenuBuilderSubscriber implements EventSubscriberInterface
         $this->setFactory($event);
         $menu->setUri($event->getRequest()->getRequestUri());
 
-        //$menu->addChild($this->getDividerNode());
+        $menu->addChild($this->getDividerNode());
         $menu->addChild($this->getLogoutNode());
     }
 
@@ -85,7 +82,7 @@ class MenuBuilderSubscriber implements EventSubscriberInterface
             ->setExtras(
                 [
                     'orderNumber' => 9999,
-                    'label-icon' => ' fa fa-sign-out fa-fw',
+                    'label-icon' => 'fa fa-sign-out',
                     'translation_domain' => 'adminInterface',
                 ]
             )
@@ -99,11 +96,11 @@ class MenuBuilderSubscriber implements EventSubscriberInterface
     {
         return $this
             ->factory
-            ->createItem('admin.side_menu.dashboard', ['route' => 'admin_index'])
+            ->createItem('admin.side_menu.dashboard', ['route' => 'admin_dashboard'])
             ->setExtras(
                 [
                     'orderNumber' => 10,
-                    'label-icon' => 'fa fa-dashboard fa-fw',
+                    'label-icon' => 'fa fa-home',
                     'translation_domain' => 'adminInterface',
                 ]
             );

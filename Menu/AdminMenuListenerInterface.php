@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * This file is part of the "NFQ Bundles" package.
@@ -19,8 +19,5 @@ use Nfq\AdminBundle\Event\ConfigureMenuEvent;
  */
 interface AdminMenuListenerInterface
 {
-    /**
-     * @param ConfigureMenuEvent $event
-     */
-    public function onMenuConfigure(ConfigureMenuEvent $event);
+    public function onMenuConfigure(ConfigureMenuEvent $event): void;
 }

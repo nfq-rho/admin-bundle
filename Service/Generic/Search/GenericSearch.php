@@ -13,7 +13,7 @@ namespace Nfq\AdminBundle\Service\Generic\Search;
 
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -23,9 +23,9 @@ use Symfony\Component\HttpFoundation\Request;
 abstract class GenericSearch implements GenericSearchInterface
 {
     /**
-     * @var EntityManager $entityManager
+     * @var EntityManagerInterface
      */
-    protected $entityManager;
+    private $em;
 
     /**
      * @var array
@@ -50,26 +50,25 @@ abstract class GenericSearch implements GenericSearchInterface
         $this->fields = $fields;
     }
 
-    /**
-     * @param EntityManager $manager
-     */
-    public function setEntityManager(EntityManager $manager)
+    public function setEntityManager(EntityManagerInterface $em): void
     {
-        $this->entityManager = $manager;
+        $this->em = $em;
     }
 
-    /**
-     * @return array
-     */
-    public function getFields()
+    public function getEntityManager(): EntityManagerInterface
     {
-        return $this->fields;
+        return $this->em;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getResults(Request $request, $defSort = 'search.id', $defDirection = 'DESC')
+    public function getFields(): array
+    {
+        return $this->fields;
+    }
+
+    public function getResults(Request $request, $defSort = 'search.id', $defDirection = 'DESC'): Query
     {
         $this->prepareRequest($request, $defSort, $defDirection);
 
@@ -88,39 +87,25 @@ abstract class GenericSearch implements GenericSearchInterface
         return $query;
     }
 
-    /**
-     * @param Query $query
-     */
-    protected function setQueryHints(Query $query)
+    protected function setQueryHints(Query $query): void
     {
 
     }
 
     /**
      * Used for custom query extending.
-     *
-     * @param Request $request
-     * @param QueryBuilder $queryBuilder
      */
-    protected function extendQuery(Request $request, QueryBuilder $queryBuilder)
+    protected function extendQuery(Request $request, QueryBuilder $queryBuilder): void
     {
 
     }
 
-    /**
-     * @param QueryBuilder $currentQueryBuilder
-     * @return int|null
-     */
-    protected function getResultCount(QueryBuilder $currentQueryBuilder)
+    protected function getResultCount(QueryBuilder $currentQueryBuilder): ?int
     {
         return null;
     }
 
-    /**
-     * @param Request $request
-     * @param QueryBuilder $queryBuilder
-     */
-    protected function getWhere(Request $request, QueryBuilder $queryBuilder)
+    protected function getWhere(Request $request, QueryBuilder $queryBuilder): void
     {
         $token = $request->get('search', null);
         ($token === null && $token !== '') && $token = $request->get('q', null);
@@ -217,25 +202,17 @@ abstract class GenericSearch implements GenericSearchInterface
     private function getClassMetaData()
     {
         $entityClass = $this->getRepository()->getClassName();
-        $classMetaData = $this->entityManager->getClassMetadata($entityClass);
+        $classMetaData = $this->em->getClassMetadata($entityClass);
 
         return $classMetaData;
     }
 
-    /**
-     * @param mixed $token
-     * @return bool
-     */
-    private function hasValidDateSymbols($token)
+    private function hasValidDateSymbols(string $token): bool
     {
         return (bool)preg_match('~[0-9:\-\s]+~', $token);
     }
 
-    /**
-     * @param string $field
-     * @return array
-     */
-    private function resolveField($field)
+    private function resolveField(string $field): array
     {
         //Some alias is set, do nothing
         if (strpos($field, '.') !== false) {

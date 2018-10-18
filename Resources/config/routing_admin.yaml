@@ -1,0 +1,7 @@
+admin_dashboard:
+    path: /
+    defaults: { _controller: NfqAdminBundle:Dashboard:index }
+
+nfq_admin_locale_widget:
+    path: /adminwidget/locale
+    defaults: { _controller: NfqAdminBundle:Locale:index }

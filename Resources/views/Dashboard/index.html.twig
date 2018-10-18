@@ -1,8 +1,12 @@
+{% trans_default_domain 'adminInterface' %}
 {% set main_menu = 'dashboard' %}
-{% set sub_menu = 'index' %}
 
-{% extends 'NfqAdminBundle::layout.html.twig' %}
+{% extends '@NfqAdmin/base/index.html.twig' %}
 
-{% block content %}
-    {{ 'generic.welcome'|trans }}
+{% block page_title %}
+    {{ 'admin.generic.welcome'|trans }}
+{% endblock %}
+
+{% block page_box_body %}
+    {{ 'admin.generic.welcome'|trans }}
 {% endblock %}

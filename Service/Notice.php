@@ -14,8 +14,8 @@ namespace Nfq\AdminBundle\Service;
 use Monolog\Logger;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
-use Symfony\Component\HttpFoundation\Session\Session;
 use Nfq\AdminBundle\Notices;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 /**
  * Class Notice
@@ -29,11 +29,8 @@ class Notice implements LoggerAwareInterface
      * @var Session
      */
     protected $session;
-    
-    /**
-     * @param Session $session
-     */
-    public function __construct(Session $session)
+
+    public function __construct(SessionInterface $session)
     {
         $this->session = $session;
     }

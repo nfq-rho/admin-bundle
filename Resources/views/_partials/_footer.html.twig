@@ -1,0 +1,8 @@
+<footer class="main-footer">
+    <!-- To the right -->
+    <div class="pull-right hidden-xs">
+        Anything you want
+    </div>
+    <!-- Default to the left -->
+    {{ 'admin.footer.copyright'|trans({'%year%': date().format('Y')}, 'adminInterface')|raw }}
+</footer>

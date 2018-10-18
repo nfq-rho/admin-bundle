@@ -12,6 +12,7 @@
 namespace Nfq\AdminBundle\Controller\Traits;
 
 use Doctrine\ORM\Query;
+use Nfq\AdminBundle\Paginator\Paginator;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -23,10 +24,19 @@ use Symfony\Component\HttpFoundation\Request;
  */
 trait CrudIndexController
 {
-    /**
-     * @var bool
-     */
+    /** @var Paginator */
+    private $paginator;
+
+    /** @var bool */
     protected $distinct = true;
+
+    /**
+     * @required
+     */
+    public function setPaginator(Paginator $paginator): void
+    {
+        $this->paginator = $paginator;
+    }
 
     /**
      * Lists all entities.
@@ -40,7 +50,7 @@ trait CrudIndexController
             'distinct' => $this->distinct,
         ];
 
-        $pagination = $this->get('nfq_admin.paginator.default')->getPagination(
+        $pagination = $this->paginator->getPagination(
                 $request,
                 $this->getIndexActionResults($request),
                 $options
@@ -55,26 +65,15 @@ trait CrudIndexController
      * @param bool $distinct
      * @return $this
      */
-    public function setDistinct($distinct)
+    public function setDistinct($distinct): self
     {
         $this->distinct = $distinct;
         return $this;
     }
 
     /**
-     * Get's array of list
-     * @deprecated - implement getIndexActionResults which return Query instead of result array
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @return array
-     */
-    abstract protected function getIndexActionResultsArray(Request $request);
-
-    /**
      * @param Request $request
      * @return Query
      */
-    protected function getIndexActionResults(Request $request)
-    {
-        return $this->getIndexActionResultsArray($request);
-    }
+    abstract protected function getIndexActionResults(Request $request);
 }

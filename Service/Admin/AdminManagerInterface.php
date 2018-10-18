@@ -25,13 +25,13 @@ interface AdminManagerInterface
      * @param GenericActionsInterface $actions
      * @return void
      */
-    public function setActions($actions);
+    public function setActions(GenericActionsInterface $actions): void;
 
     /**
      * @param GenericSearchInterface $search
      * @return void
      */
-    public function setSearch(GenericSearchInterface $search);
+    public function setSearch(GenericSearchInterface $search): void;
 
     /**
      * @param Request $request

@@ -14,8 +14,8 @@ namespace Nfq\AdminBundle\Service;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Form;
-use Symfony\Component\Form\FormFactory;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormFactoryInterface;
 
 /**
  * Class FormManager
@@ -34,7 +34,7 @@ class FormManager
     const CRUD_DELETE = 'delete';
 
     /**
-     * @var FormFactory
+     * @var FormFactoryInterface
      */
     protected $factory;
 
@@ -47,18 +47,12 @@ class FormManager
         self::CRUD_DELETE => "POST",
     ];
 
-    /**
-     * @param FormFactory $factory
-     */
-    public function __construct(FormFactory $factory)
+    public function __construct(FormFactoryInterface $factory)
     {
         $this->factory = $factory;
     }
 
-    /**
-     * @return FormFactory
-     */
-    public function getFormFactory()
+    public function getFormFactory(): FormFactoryInterface
     {
         return $this->factory;
     }
@@ -118,13 +112,13 @@ class FormManager
      * Builds edit form for controllers
      *
      * @param string $uri
-     * @param object $formType
+     * @param string $formType
      * @param mixed $data
      * @param array $formOptions
      * @param int $submit
      * @return Form
      */
-    public function getEditForm($uri, $formType, $data, $formOptions = [], $submit = self::SUBMIT_STANDARD)
+    public function getEditForm(string $uri, string $formType, $data, $formOptions = [], $submit = self::SUBMIT_STANDARD)
     {
         $formBuilder = $this->getFormBuilder($uri, self::CRUD_UPDATE, $formType, $data, $formOptions, $submit);
 
@@ -144,7 +138,7 @@ class FormManager
      */
     public function editForm($uri, $formType, $data, $formOptions = [], $submit = false)
     {
-        return $this->getEditForm($uri, $formType, $data, $formOptions, (int)$submit);
+        return $this->getEditForm($uri, get_class($formType), $data, $formOptions, (int)$submit);
     }
 
     /**
@@ -171,15 +165,15 @@ class FormManager
      * Create createForm for controllers
      *
      * @param string $uri
-     * @param object $formType
+     * @param string $formType
      * @param mixed $data
      * @param array $formOptions
      * @param int $submit
      * @return Form
      */
     public function getCreateForm(
-        $uri,
-        $formType,
+        string $uri,
+        string $formType,
         $data = null,
         array $formOptions = [],
         $submit = self::SUBMIT_STANDARD
@@ -235,9 +229,9 @@ class FormManager
      * @return FormBuilderInterface
      */
     public function getFormBuilder(
-        $action,
-        $method,
-        $formType,
+        string $action,
+        string $method,
+        ?string $formType,
         $data = null,
         array $formOptions = [],
         $submit = self::SUBMIT_STANDARD

@@ -87,5 +87,5 @@ trait CrudNewCreateController
      * Save entity after insert
      * @param $entity
      */
-    abstract protected function insertAfterCreateAction($entity);
+    abstract protected function insertAfterCreateAction($entity): void;
 }
