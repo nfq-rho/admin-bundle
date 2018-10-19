@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * This file is part of the "NFQ Bundles" package.
@@ -12,7 +12,7 @@
 namespace Nfq\AdminBundle\Controller\Traits;
 
 use Nfq\AdminBundle\Service\FormManager;
-use Symfony\Component\Form\Form;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -28,50 +28,19 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 trait AbstractCrudController
 {
     /**
-     * Displays a form to edit an existing entity.
-     * @deprecated
-     * @Route("/{id}/edit")
-     * @Method("GET")
-     * @Template()
-     *
-     * @param int $id
-     * @return array
-     */
-    public function editAction($id)
-    {
-        $entity = $this->getEntity($id);
-
-        /** @var Form $editForm
-         *  @var Form $deleteForm */
-        list($editForm, $deleteForm) = $this->getEditDeleteForms($entity);
-
-        return [
-            'entity' => $entity,
-            'form' => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
-        ];
-    }
-
-    /**
      * Edits an existing entity.
      *
      * @Route("/{id}/edit")
      * @Method({"GET", "POST"})
      * @Template()
      *
-     * @param Request $request
-     * @param int $id
-     * @return array
+     * @return array|RedirectResponse
      */
     public function updateAction(Request $request, $id)
     {
         $entity = $this->getEntity($id);
 
-        /**
-         * @var Form $editForm
-         * @var Form $deleteForm
-         */
-        list($editForm, $deleteForm) = $this->getEditDeleteForms($entity);
+        [$editForm, $deleteForm] = $this->getEditDeleteForms($entity);
 
         if ($request->isMethod('POST')) {
             $editForm->handleRequest($request);
@@ -91,36 +60,13 @@ trait AbstractCrudController
     }
 
     /**
-     * @deprecated
-     * @Route("/{id}/delete")
-     * @Method("GET")
-     * @Template()
-     *
-     * @param int $id
-     * @return array
-     */
-    public function removeAction($id)
-    {
-        /* @var Form $form */
-        $form = $this->getDeleteForm($id);
-        $entity = $this->getEntity($id);
-
-        return [
-            'entity' => $entity,
-            'delete_form' => $form->createView(),
-        ];
-    }
-
-    /**
      * Deletes an entity.
      *
      * @Route("/{id}/delete")
      * @Method({"GET", "POST"})
      * @Template()
      *
-     * @param Request $request
-     * @param int $id
-     * @return array
+     * @return array|RedirectResponse
      */
     public function deleteAction(Request $request, $id)
     {
@@ -128,7 +74,6 @@ trait AbstractCrudController
         $entity = $this->getEntity($id);
 
         if ($request->isMethod('POST')) {
-            /* @var Form $form */
             $form->handleRequest($request);
 
             if ($form->isValid()) {
@@ -143,21 +88,18 @@ trait AbstractCrudController
         ];
     }
 
-    /**
-     * @param Request $request
-     * @param mixed $entity
-     * @return ParameterBag
-     */
-    protected function getRedirectToIndexParams(Request $request, $entity)
+    protected function getRedirectToIndexParams(Request $request, $entity): ParameterBag
     {
         $redirectParams = new ParameterBag();
 
         if ($httpReferrer = $request->server->get('HTTP_REFERER')) {
             $query = parse_url($httpReferrer, PHP_URL_QUERY);
-            parse_str($query, $referrerParams);
-            $referrerParams = array_filter($referrerParams);
 
-            $redirectParams->add($referrerParams);
+            if (!empty($query)) {
+                parse_str($query, $referrerParams);
+                $referrerParams = array_filter($referrerParams);
+                $redirectParams->add($referrerParams);
+            }
         }
 
         if (is_object($entity) && method_exists($entity, 'getId')) {
@@ -170,32 +112,22 @@ trait AbstractCrudController
     }
 
     /**
-     * @param Request $request
-     * @param null $entity
      * @throws \RuntimeException
-     * @return RedirectResponse
      */
-    protected function redirectToIndex(Request $request, $entity = null)
+    protected function redirectToIndex(Request $request, $entity = null): RedirectResponse
     {
         throw new \RuntimeException('Implement this method');
     }
 
     /**
-     * @param $entity
      * @throws \RuntimeException
-     * @return RedirectResponse
      */
-    protected function redirectToPreview($entity)
+    protected function redirectToPreview($entity): RedirectResponse
     {
         throw new \RuntimeException('Implement this method');
     }
 
-    /**
-     * @param Request $request
-     * @param Form $submittedForm
-     * @return RedirectResponse
-     */
-    protected function handleAfterSubmit(Request $request, Form $submittedForm)
+    protected function handleAfterSubmit(Request $request, FormInterface $submittedForm): RedirectResponse
     {
         $entity = $submittedForm->getData();
 
@@ -210,10 +142,6 @@ trait AbstractCrudController
         return $this->redirectToIndex($request, $entity);
     }
 
-    /**
-     * Get form service
-     * @return \Nfq\AdminBundle\Service\FormManager
-     */
     protected function getFormService(): FormManager
     {
         return $this->get(FormManager::class);
@@ -223,29 +151,17 @@ trait AbstractCrudController
      * Create and return edit and delete forms. If edit form was created before when submitting data,
      * $editForm will contain that form with all validation errors
      *
-     * @param mixed $entity
-     * @return mixed
+     * @return FormInterface[]
      */
-    abstract protected function getEditDeleteForms($entity);
+    abstract protected function getEditDeleteForms($entity): array;
 
-    abstract protected function getDeleteForm($id): Form;
+    abstract protected function getDeleteForm($id): FormInterface;
 
-    /**
-     * Delete entity
-     * @param $entity
-     */
     abstract protected function deleteAfterDeleteAction($entity): void;
 
-    /**
-     * Save entity after update
-     * @param $entity
-     */
     abstract protected function saveAfterUpdateAction($entity): void;
 
     /**
-     * Returns Entity
-     * @param $id
-     * @return mixed $entity
      * @throws NotFoundHttpException
      */
     abstract protected function getEntity($id);

@@ -1,3 +1,4 @@
+{% trans_default_domain 'adminInterface' %}
 {% import '@NfqAdmin/_macro/sorting.html.twig' as nfqSorting %}
 <div class="col-lg-12">
     {{ nfqSorting.getHiddenFields(nfq_admin_context.default_max_per_page) }}
@@ -8,7 +9,7 @@
             <i class="fas fa-search"></i>
         </button>
 
-        <a href="{{ resetUri }}" class="btn btn-default" title="{{ 'generic.reset_search_params'|trans }}">
+        <a href="{{ resetUri }}" class="btn btn-default" title="{{ 'admin.generic.reset_search_params'|trans }}">
             <i class="fas fa-times"></i>
         </a>
     </div>

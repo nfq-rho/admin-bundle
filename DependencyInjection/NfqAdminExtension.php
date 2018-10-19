@@ -33,7 +33,7 @@ class NfqAdminExtension extends Extension
         $configuration = new Configuration();
         $this->processConfiguration($configuration, $configs);
 
-        $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.yaml');
 
         $contextHelperDef = $container->getDefinition(ContextHelper::class);
@@ -41,6 +41,8 @@ class NfqAdminExtension extends Extension
         $this->configureMenu($contextHelperDef, $container);
         $this->configureSidebar($contextHelperDef, $container);
         $this->configurePaging($contextHelperDef, $container);
+
+        $contextHelperDef->addMethodCall('setOption', ['default_avatar', 'bundles/nfqadmin/images/default_avatar.png']);
     }
 
     private function configureMenu(Definition $definition, ContainerBuilder $container): void

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * This file is part of the "NFQ Bundles" package.
@@ -21,16 +21,13 @@ use Doctrine\ORM\QueryBuilder;
  */
 class ServiceEntityRepository extends BaseServiceEntityRepository
 {
-    /**
-     * @var bool
-     */
+    /** @var bool */
     private $useQueryCache = true;
 
     /**
-     * @param int|null $id
-     * @return QueryBuilder
+     * @param mixed $id
      */
-    public function getQueryBuilder($id = null)
+    public function getQueryBuilder($id = null): QueryBuilder
     {
         $alias = $this->getAlias();
 
@@ -44,11 +41,7 @@ class ServiceEntityRepository extends BaseServiceEntityRepository
         return $qb;
     }
 
-    /**
-     * @param array $criteria
-     * @return Query
-     */
-    public function getQueryByCriteria(array $criteria)
+    public function getQueryByCriteria(array $criteria): Query
     {
         $qb = $this->getQueryBuilder();
 
@@ -58,7 +51,6 @@ class ServiceEntityRepository extends BaseServiceEntityRepository
     }
 
     /**
-     * @param array $criteria
      * @return object|null
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
@@ -69,16 +61,11 @@ class ServiceEntityRepository extends BaseServiceEntityRepository
         return $query->getOneOrNullResult();
     }
 
-    /**
-     * @param array $criteria
-     * @param string $locale
-     * @param bool $fallback
-     * @return Query
-     */
-    public function getTranslatableQueryByCriteria(array $criteria, $locale, $fallback = true)
+    public function getTranslatableQueryByCriteria(array $criteria, ?string $locale, bool $fallback = true): Query
     {
         $qb = $this->getQueryBuilder();
         $this->addArrayCriteria($qb, $criteria);
+
         $query = $qb->getQuery();
 
         $this->setTranslatableHints($query, $locale, $fallback);
@@ -86,25 +73,35 @@ class ServiceEntityRepository extends BaseServiceEntityRepository
         return $query;
     }
 
-    /**
-     * @param bool $useCache
-     * @return EntityRepository
-     */
-    public function setUseQueryCache($useCache)
+    public function getTranslatableQueryByCriteriaSorted(
+        array $criteria,
+        string $locale,
+        bool $fallback = true,
+        string $sortBy = 'id',
+        string $sortOrder = 'ASC'
+    ): Query {
+        $qb = $this->getQueryBuilder();
+        $this->addArrayCriteria($qb, $criteria);
+        $qb->orderBy($alias . '.' . $sort, $order);
+
+        $query = $qb->getQuery();
+
+        $this->setTranslatableHints($query, $locale, $fallback);
+
+        return $query;
+    }
+
+    public function setUseQueryCache(bool $useCache): self
     {
         $this->useQueryCache = $useCache;
-
         return $this;
     }
 
     /**
-     * @param array $criteria
-     * @param string $locale
-     * @param bool $fallback
      * @return object|null
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    public function getOneTranslatableByCriteria(array $criteria, $locale, $fallback = true)
+    public function getOneTranslatableByCriteria(array $criteria, ?string $locale, bool $fallback = true)
     {
         $query = $this->getTranslatableQueryByCriteria($criteria, $locale, $fallback);
 
@@ -113,13 +110,7 @@ class ServiceEntityRepository extends BaseServiceEntityRepository
         return $query->getOneOrNullResult();
     }
 
-    /**
-     * @param Query $query
-     * @param string|null $locale
-     * @param bool $fallback
-     * @param bool $innerJoin
-     */
-    public function setTranslatableHints(Query $query, $locale, $fallback, $innerJoin = false)
+    public function setTranslatableHints(Query $query, ?string $locale, bool $fallback, bool $innerJoin = false): void
     {
         if (!class_exists('Gedmo\\Translatable\\TranslatableListener')) {
             return;
@@ -138,11 +129,7 @@ class ServiceEntityRepository extends BaseServiceEntityRepository
             ->setHint(\Gedmo\Translatable\TranslatableListener::HINT_FALLBACK, (int)$fallback);
     }
 
-    /**
-     * @param QueryBuilder $qb
-     * @param array $criteria
-     */
-    public function addArrayCriteria(QueryBuilder $qb, array $criteria)
+    public function addArrayCriteria(QueryBuilder $qb, array $criteria): void
     {
         $aliases = $qb->getAllAliases();
 
@@ -169,10 +156,7 @@ class ServiceEntityRepository extends BaseServiceEntityRepository
         }
     }
 
-    /**
-     * @return string
-     */
-    public function getAlias()
+    public function getAlias(): string
     {
         return 'o';
     }

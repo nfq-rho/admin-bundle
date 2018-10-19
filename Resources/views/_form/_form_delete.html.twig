@@ -1,9 +1,10 @@
-{% if delete_form is defined %}
-{{ form_start(delete_form) }}
-    <div class="row">
-        {% if delete_form.submit_delete is defined %}
-            {{ form_row(delete_form.submit_delete) }}
-        {% endif %}
-    </div>
-{{ form_end(delete_form) }}
+{% trans_default_domain 'adminInterface' %}
+{% if form is not empty %}
+{{ form_start(form) }}
+<div class="row">
+    {% if form.submit_delete is defined %}
+        {{ form_row(form.submit_delete) }}
+    {% endif %}
+</div>
+{{ form_end(form) }}
 {% endif %}

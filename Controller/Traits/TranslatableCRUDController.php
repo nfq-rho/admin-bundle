@@ -38,8 +38,6 @@ trait TranslatableCRUDController
      * @Route("/new")
      * @Method("GET")
      * @Template()
-     *
-     * @return array
      */
     public function newAction(Request $request): array
     {
@@ -47,8 +45,7 @@ trait TranslatableCRUDController
 
         $forms = [];
         foreach ($this->locales as $locale) {
-            /** @var Form $form */
-            list(, $form) = $this->getCreateFormAndEntity($locale);
+            [, $form] = $this->getCreateFormAndEntity($locale);
             $forms[$locale] = $form->createView();
         }
 
@@ -60,10 +57,9 @@ trait TranslatableCRUDController
     /**
      * Creates form and entity for given locale
      *
-     * @param string $locale
      * @return array<$entity, Form $form>
      */
-    abstract protected function getCreateFormAndEntity($locale);
+    abstract protected function getCreateFormAndEntity(string $locale): array;
 
     /**
      * Creates a new entity.
@@ -72,7 +68,6 @@ trait TranslatableCRUDController
      * @Method("POST")
      * @Template()
      *
-     * @param Request $request
      * @return array|RedirectResponse
      */
     public function createAction(Request $request)
@@ -81,8 +76,7 @@ trait TranslatableCRUDController
 
         $forms = [];
         foreach ($this->locales as $locale) {
-            /** @var Form $form */
-            list($entity, $form) = $this->getCreateFormAndEntity($locale);
+            [$entity, $form] = $this->getCreateFormAndEntity($locale);
 
             if ($request->isMethod('POST') && $request->request->get($form->getName())['locale'] == $locale) {
                 $form->handleRequest($request);
@@ -108,16 +102,14 @@ trait TranslatableCRUDController
      * @Method({"GET", "POST"})
      * @Template()
      *
-     * @param Request $request
-     * @param int $id
-     * @return array
+     * @return array|RedirectResponse
      */
     public function updateAction(Request $request, $id)
     {
         $this->loadLocales();
 
         //Correct locale for TranslatableListener is passed via event listener, so passing null here
-        $baseEntity = $this->getEditableEntityForLocale($id, null);
+        $baseEntity = $this->getEditableEntityForLocale($id);
 
         if (!$baseEntity) {
             throw new NotFoundHttpException('Entity was not found');
@@ -139,11 +131,7 @@ trait TranslatableCRUDController
             $editableEntity = $this->getEditableEntityForLocale($id, $locale);
             $editableEntity->setLocale($locale);
 
-            /**
-             * @var Form $editForm
-             * @var Form $deleteForm
-             */
-            list($editForm, $deleteForm) = $this->getEditDeleteForms(clone $editableEntity);
+            [$editForm, $deleteForm] = $this->getEditDeleteForms(clone $editableEntity);
 
             //Due to referenced base entity we have to recreate edit form for every locale, because entity of submitted
             //form changes while looping other locales thus final result of the locale entity is incorrect. But then
@@ -167,16 +155,11 @@ trait TranslatableCRUDController
     }
 
     /**
-     * @param Request $request
-     * @param $entity
      * @return Form[]|RedirectResponse
      */
     private function doUpdate(Request $request, $entity)
     {
-        /**
-         * @var Form $editForm
-         */
-        list($editForm,) = $this->getEditDeleteForms($entity);
+        [$editForm,] = $this->getEditDeleteForms($entity);
         $editForm->handleRequest($request);
 
         if ($editForm->isValid()) {
@@ -188,10 +171,7 @@ trait TranslatableCRUDController
         return $editForm;
     }
 
-    /**
-     * @param bool $defaultFirst
-     */
-    protected function loadLocales($defaultFirst = false)
+    protected function loadLocales(bool $defaultFirst = false): void
     {
         $defaultLocale = $this->container->getParameter('locale');
         $locales = ($this->container->hasParameter('locales'))
@@ -210,23 +190,19 @@ trait TranslatableCRUDController
 
     /**
      * Save entity after insert
-     * @param $entity
      */
-    abstract protected function insertAfterCreateAction($entity);
+    abstract protected function insertAfterCreateAction($entity): void;
 
     /**
      * Returns ant editable entity for given locale.
      *
-     * @param int $id
-     * @param string $locale
      * @return object|null
      */
-    abstract protected function getEditableEntityForLocale($id, ?string $locale);
+    abstract protected function getEditableEntityForLocale($id, string $locale = null);
 
     /**
      * Returns ant editable entity for given locale.
      *
-     * @param int $id
      * @return object|null
      */
     protected function getEntity($id)

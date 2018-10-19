@@ -11,6 +11,7 @@
 
 namespace Nfq\AdminBundle\Service\Admin;
 
+use Doctrine\ORM\Query;
 use Nfq\AdminBundle\Service\Generic\Actions\GenericActionsInterface;
 use Nfq\AdminBundle\Service\Generic\Search\GenericSearchInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,23 +22,9 @@ use Symfony\Component\HttpFoundation\Request;
  */
 interface AdminManagerInterface
 {
-    /**
-     * @param GenericActionsInterface $actions
-     * @return void
-     */
     public function setActions(GenericActionsInterface $actions): void;
 
-    /**
-     * @param GenericSearchInterface $search
-     * @return void
-     */
     public function setSearch(GenericSearchInterface $search): void;
 
-    /**
-     * @param Request $request
-     * @return mixed
-     */
-    public function getResults(Request $request);
-
-
+    public function getResults(Request $request): Query;
 }

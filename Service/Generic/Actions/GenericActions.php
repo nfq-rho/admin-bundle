@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * This file is part of the "NFQ Bundles" package.
@@ -21,14 +21,10 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  */
 class GenericActions implements GenericActionsInterface
 {
-    /**
-     * @var EntityManagerInterface
-     */
+    /** @var EntityManagerInterface */
     protected $em;
 
-    /**
-     * @var EventDispatcherInterface
-     */
+    /** @var EventDispatcherInterface */
     protected $ed;
 
     public function __construct(EntityManagerInterface $em, EventDispatcherInterface $ed)
@@ -47,9 +43,6 @@ class GenericActions implements GenericActionsInterface
         return $this->em;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function save(GenericEvent $before, $entity, GenericEvent $after): void
     {
         $this->ed->dispatch($before->getEventName(), $before);
@@ -60,9 +53,6 @@ class GenericActions implements GenericActionsInterface
         $this->ed->dispatch($after->getEventName(), $after);
     }
 
-    /**
-     * @inheritdoc
-     */
     public function delete(GenericEvent $before, $entity, GenericEvent $after): void
     {
         $this->ed->dispatch($before->getEventName(), $before);

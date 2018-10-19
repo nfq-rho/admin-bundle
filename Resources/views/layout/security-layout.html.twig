@@ -17,7 +17,7 @@
 {% block login_box %}
     <div class="login-box">
         <div class="login-logo">
-            {% block logo_login %}<b>Admin</b>EMT{% endblock %}
+            {% block logo_login %}{{ 'admin.header.title'|trans|raw }}{% endblock %}
         </div>
         <div class="login-box-body">
             <p class="login-box-msg">

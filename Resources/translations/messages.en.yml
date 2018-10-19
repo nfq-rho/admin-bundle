@@ -1,24 +1,2 @@
-ADMIN.DEFAULT_DELETE: Delete
-ADMIN.DEFAULT_SUBMIT: Save
-ADMIN.DEFAULT_SUBMIT_CLOSE: Save & Close
-ADMIN.DEFAULT_SUBMIT_PREVIEW: Save & Preview
-
-admin.menu.dashboard: Dashboard
-
-GENERAL_LABEL_ACTIVE: Active
-GENERAL_LABEL_TITLE: Title
-GENERAL_LABEL_ICON: Icon
-GENERAL_LABEL_CODE: Code
-
-#en_EN: English (English)
-en_US: English (United States)
-
-general.saved_successfully: Your data was saved successfully!
-general.updated_successfully: Your data was updated successfully!
-general.deleted_successfully: Your data was removed successfully!
-
-#Not Available
-na.short: N/A
-na.long: Not Available
 
 

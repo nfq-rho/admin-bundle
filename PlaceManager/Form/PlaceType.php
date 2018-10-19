@@ -11,7 +11,7 @@
 
 namespace Nfq\AdminBundle\PlaceManager\Form;
 
-use Symfony\Component\Form\AbstractType;
+use Nfq\AdminBundle\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -23,39 +23,24 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class PlaceType extends AbstractType
 {
-    /**
-     * @param FormBuilderInterface $builder
-     * @param array $options
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function callBuildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('place_name', TextType::class, [
+            ->add('placeTitleOverwrite', TextType::class, [
                 'required' => false,
             ])
             ->add('places', ChoiceType::class, [
                 'multiple' => true,
                 'required' => false,
-                'placeholder' => 'generic.placeholder.places',
+                'placeholder' => 'admin.generic.placeholder.places',
                 'choices' => array_flip($options['places']),
             ]);
     }
 
-    /**
-     * @param OptionsResolver $resolver
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function callConfigureOptions(OptionsResolver $resolver): void
     {
         $resolver
             ->setRequired(['places'])
             ->setAllowedTypes('places', 'array');
-    }
-
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return 'place';
     }
 }

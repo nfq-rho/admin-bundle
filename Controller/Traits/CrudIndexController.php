@@ -44,7 +44,7 @@ trait CrudIndexController
      * @Route("/")
      * @Template()
      */
-    public function indexAction(Request $request)
+    public function indexAction(Request $request): array
     {
         $options = [
             'distinct' => $this->distinct,
@@ -61,19 +61,14 @@ trait CrudIndexController
         ];
     }
 
-    /**
-     * @param bool $distinct
-     * @return $this
-     */
-    public function setDistinct($distinct): self
+    public function setDistinct(bool $distinct): self
     {
         $this->distinct = $distinct;
         return $this;
     }
 
     /**
-     * @param Request $request
-     * @return Query
+     * @return Query|array|iterable
      */
     abstract protected function getIndexActionResults(Request $request);
 }

@@ -11,7 +11,6 @@
 
 namespace Nfq\AdminBundle\Form;
 
-use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -25,32 +24,18 @@ abstract class TranslatableType extends AbstractType
     /** @var string */
     protected $locale;
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $this->locale = $options['locale'];
         $builder->add('locale', HiddenType::class);
 
-        $this->callBuildForm($builder, $options);
+        parent::buildForm($builder, $options);
     }
-
-    abstract protected function callBuildForm(FormBuilderInterface $builder, array $options): void;
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $this->setDefaultOptions($resolver);
-    }
-
-    public function setDefaultOptions(OptionsResolver $resolver): void
-    {
         $resolver->setRequired(['locale']);
 
-        $this->callSetDefaultOptions($resolver);
-    }
-
-    abstract protected function callSetDefaultOptions(OptionsResolver $resolver): void;
-
-    public function getName(): string
-    {
-        return 'translatable';
+        parent::configureOptions($resolver);
     }
 }

@@ -1,7 +1,28 @@
 admin:
-    generic:
-        title: NFQ cPanel
+    title: AdminNFQ
 
+    header:
+        title: '<b>Admin</b>NFQ'
+        title_short: '<b>N</b>FQ'
+
+    home_title: Welcome!
+    home_subtitle: Welcome to NFQ Admin panel
+
+    button:
+        delete: Delete
+        submit: Save
+        submit_close: Save & Close
+        submit_preview: Save & Preview
+
+    generic:
+        message:
+            saved_successfully: Your data was saved successfully!
+            updated_successfully: Your data was updated successfully!
+            deleted_successfully: Your data was removed successfully!
+
+        toggle_nav: Toggle navigation
+        search: Search
+        online: Online
         close: Close
         actions: Actions
         remove: Remove
@@ -36,6 +57,7 @@ admin:
 
     header_menu:
         logout: Logout
+        profile: Profile
         settings: Settings
 
     security:
@@ -43,4 +65,4 @@ admin:
 
     footer:
         copyright: '<strong>Copyright &copy; %year% <a href="#"></a>.</strong> All rights reserved.'
-
+        right_side: Let\'s come on

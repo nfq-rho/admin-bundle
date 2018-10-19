@@ -1,3 +1,4 @@
+{% trans_default_domain 'adminInterface' %}
 {% extends '@NfqAdmin/layout.html.twig' %}
 
 {% block page_content %}
@@ -13,7 +14,13 @@
 
             {% if pagination is defined %}
                 <div class="row">
-                    {% include '@NfqAdmin/Base/_blocks/_pagination.html.twig' %}
+                    {% include '@NfqAdmin/Base/_blocks/_pagination.html.twig' with {
+                        pagination: pagination.getPagination(),
+                        showingFrom: pagination.getShowingFrom(),
+                        showingTo: pagination.getShowingTo(),
+                        totalItemCount: pagination.getTotalItemCount,
+                        itemCountPerPage: pagination.getItemNumberPerPage
+                    } only %}
                 </div>
             {% endif %}
         </div>

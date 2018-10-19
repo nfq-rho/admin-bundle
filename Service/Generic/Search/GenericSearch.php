@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * This file is part of the "NFQ Bundles" package.
@@ -11,6 +11,7 @@
 
 namespace Nfq\AdminBundle\Service\Generic\Search;
 
+use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\EntityManagerInterface;
@@ -22,30 +23,22 @@ use Symfony\Component\HttpFoundation\Request;
  */
 abstract class GenericSearch implements GenericSearchInterface
 {
-    /**
-     * @var EntityManagerInterface
-     */
+    /** @var EntityManagerInterface */
     private $em;
 
-    /**
-     * @var array
-     */
-    protected $fields;
+    /** @var array */
+    protected $fields = [];
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $alias = 'search';
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $locale;
 
     /**
-     * @param array $fields
+     * @param string[] $fields
      */
-    public function __construct($fields)
+    public function __construct(array $fields)
     {
         $this->fields = $fields;
     }
@@ -61,14 +54,14 @@ abstract class GenericSearch implements GenericSearchInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @return string[]
      */
     public function getFields(): array
     {
         return $this->fields;
     }
 
-    public function getResults(Request $request, $defSort = 'search.id', $defDirection = 'DESC'): Query
+    public function getResults(Request $request, string $defSort = 'search.id', string $defDirection = 'DESC'): Query
     {
         $this->prepareRequest($request, $defSort, $defDirection);
 
@@ -158,11 +151,7 @@ abstract class GenericSearch implements GenericSearchInterface
         $queryBuilder->andWhere($where);
     }
 
-    /**
-     * @param Request $request
-     * @return QueryBuilder
-     */
-    private function buildQuery(Request $request)
+    private function buildQuery(Request $request): QueryBuilder
     {
         $queryBuilder = $this->getRepository()->createQueryBuilder($this->alias);
 
@@ -173,38 +162,28 @@ abstract class GenericSearch implements GenericSearchInterface
         return $queryBuilder;
     }
 
-    /**
-     * @param Request $request
-     * @param string $defSort
-     * @param string $defDirection
-     */
-    private function prepareRequest(Request $request, $defSort, $defDirection)
+    private function prepareRequest(Request $request, string $defSort, string $defDirection): void
     {
         $this->locale = $request->getLocale();
 
-        $sort = $request->query->get('sort', $defSort);
-        $direction = strtoupper($request->query->get('direction', $defDirection));
+        $sort = $request->query->get(self::SORT_KEY, $defSort);
+        $direction = strtoupper($request->query->get(self::DIRECTION_KEY, $defDirection));
 
         $request->query->add([
-            'sort' => $sort,
-            'direction' => $direction,
+            self::SORT_KEY => $sort,
+            self::DIRECTION_KEY => $direction,
         ]);
 
-
+        //@TODO: review if this is still needed
         //This fix was added  due to the way KNPs paginator checks for sorting parameters
-        $_GET['sort'] = $sort;
-        $_GET['direction'] = $direction;
+        $_GET[self::SORT_KEY] = $sort;
+        $_GET[self::DIRECTION_KEY] = $direction;
     }
 
-    /**
-     * @return \Doctrine\ORM\Mapping\ClassMetadata
-     */
-    private function getClassMetaData()
+    private function getClassMetaData(): ClassMetadata
     {
         $entityClass = $this->getRepository()->getClassName();
-        $classMetaData = $this->em->getClassMetadata($entityClass);
-
-        return $classMetaData;
+        return $this->em->getClassMetadata($entityClass);
     }
 
     private function hasValidDateSymbols(string $token): bool

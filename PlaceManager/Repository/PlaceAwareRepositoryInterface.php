@@ -17,9 +17,5 @@ namespace Nfq\AdminBundle\PlaceManager\Repository;
  */
 interface PlaceAwareRepositoryInterface
 {
-    /**
-     * @param string $placeId
-     * @return int
-     */
     public function getUsedPlaceSlots(string $placeId): int;
 }

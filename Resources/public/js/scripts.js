@@ -175,6 +175,8 @@ $(document).ready(function () {
     }
 
     // bindTooltips($(this));
+    runHolder();
+    bindCountable();
     bindXeditable($('.myeditable'));
     bindDatepickers($(".datepicker"));
     preselectToggleButtons($("[data-toggle=buttons]"));

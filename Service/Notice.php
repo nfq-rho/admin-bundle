@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * This file is part of the "NFQ Bundles" package.
@@ -11,9 +11,6 @@
 
 namespace Nfq\AdminBundle\Service;
 
-use Monolog\Logger;
-use Psr\Log\LoggerAwareInterface;
-use Psr\Log\LoggerAwareTrait;
 use Nfq\AdminBundle\Notices;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
@@ -21,13 +18,14 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
  * Class Notice
  * @package Nfq\AdminBundle\Service
  */
-class Notice implements LoggerAwareInterface
+class Notice
 {
-    use LoggerAwareTrait;
+    public const NOTICE_SUCCESS = 'success';
+    public const NOTICE_INFO = 'info';
+    public const NOTICE_WARNING = 'warning';
+    public const NOTICE_DANGER = 'danger';
 
-    /**
-     * @var Session
-     */
+    /** @var SessionInterface */
     protected $session;
 
     public function __construct(SessionInterface $session)
@@ -35,50 +33,28 @@ class Notice implements LoggerAwareInterface
         $this->session = $session;
     }
 
-    /**
-     * @param string $message
-     * @param string $flag
-     */
-    public function add($message = "", $flag = Notices::NOTICE_INFO)
+    public function add(string $message, string $flag = self::NOTICE_INFO): void
     {
-        try {
-            $this->session->getFlashBag()->add($flag, $message);
-        } catch (\RuntimeException $ex) {
-            //Might fail due to headers_sent or session failed to start
-            //So just do not add the message to the flash bag and log the exception instead
-            $this->logger->warning($ex->getMessage());
-        }
+        $this->session->getFlashBag()->add($flag, $message);
     }
 
-    /**
-     * @param $message
-     */
-    public function addInfo($message)
+    public function addInfo(string $message): void
     {
-        $this->add($message, Notices::NOTICE_INFO);
+        $this->add($message, self::NOTICE_INFO);
     }
 
-    /**
-     * @param $message
-     */
-    public function addWarning($message)
+    public function addWarning(string $message): void
     {
-        $this->add($message, Notices::NOTICE_WARNING);
+        $this->add($message, self::NOTICE_WARNING);
     }
 
-    /**
-     * @param $message
-     */
-    public function addDanger($message)
+    public function addDanger(string $message): void
     {
-        $this->add($message, Notices::NOTICE_DANGER);
+        $this->add($message, self::NOTICE_DANGER);
     }
 
-    /**
-     * @param $message
-     */
-    public function addSuccess($message)
+    public function addSuccess(string $message): void
     {
-        $this->add($message, Notices::NOTICE_SUCCESS);
+        $this->add($message, self::NOTICE_SUCCESS);
     }
 }

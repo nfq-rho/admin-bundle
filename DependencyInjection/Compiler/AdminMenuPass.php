@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * This file is part of the "NFQ Bundles" package.
@@ -22,14 +22,11 @@ use Symfony\Component\DependencyInjection\Exception\ParameterNotFoundException;
  */
 class AdminMenuPass implements CompilerPassInterface
 {
-    /**
-     * @param ContainerBuilder $container
-     */
     public function process(ContainerBuilder $container)
     {
         try {
             $config = $container->getParameter('nfq_admin.menu_security');
-        } catch(ParameterNotFoundException $e) {
+        } catch (ParameterNotFoundException $e) {
             return;
         }
 
@@ -40,25 +37,30 @@ class AdminMenuPass implements CompilerPassInterface
         }
     }
 
-    /**
-     * @param ContainerBuilder $container
-     * @param string           $id
-     * @param array            $config
-     */
-    private function addGrantedRoles($container, $id, $config)
+    private function addGrantedRoles(ContainerBuilder $container, string $id, array $config): void
     {
-        $bundleNamespace = explode('.', $id)[0];
-        if ($this->isBundleConfigDefined($bundleNamespace, $config)) {
-            $definition = $container->findDefinition(sprintf('%s.admin_configure_menu_listener', $bundleNamespace));
-            if ($definition) {
-                $definition->addMethodCall('setGrantedRoles', [$config[$bundleNamespace]]);
-            }
+        $bundle = $this->buildBundleNameFromNamespace($id);
+
+        if ($this->isBundleConfigDefined($bundle, $config)) {
+            $definition = $container->findDefinition($id);
+            $definition->addMethodCall('setGrantedRoles', [$config[$bundle]]);
         }
+    }
+
+    private function buildBundleNameFromNamespace(string $id): string
+    {
+        if (false === \strpos($id, '\\')) {
+            throw new \InvalidArgumentException('Can not resolve bundle name from %s . When defining your listener, specify FQCN instead');
+        }
+
+        [$vendorPart, $bundlePart] = explode('\\', $id);
+
+        return $vendorPart . $bundlePart;
     }
 
     private function isAdminMenuEvent(array $service): bool
     {
-        return (in_array($service[0]['event'], [ConfigureMenuEvent::HEADER_MENU, ConfigureMenuEvent::SIDE_MENU]));
+        return \in_array($service[0]['event'], [ConfigureMenuEvent::HEADER_MENU, ConfigureMenuEvent::SIDE_MENU]);
     }
 
     private function getKernelEventListeners(ContainerBuilder $container): array
@@ -66,14 +68,8 @@ class AdminMenuPass implements CompilerPassInterface
         return $container->findTaggedServiceIds('kernel.event_listener');
     }
 
-    /**
-     * @param $bundleNamespace
-     * @param $config
-     *
-     * @return bool
-     */
-    private function isBundleConfigDefined(string $bundleNamespace, $config)
+    private function isBundleConfigDefined(string $bundleNamespace, array $config): bool
     {
-        return array_key_exists($bundleNamespace, $config);
+        return \array_key_exists($bundleNamespace, $config);
     }
 }

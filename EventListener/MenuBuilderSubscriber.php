@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * This file is part of the "NFQ Bundles" package.
@@ -22,9 +22,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  */
 class MenuBuilderSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var FactoryInterface
-     */
+    /** @var FactoryInterface */
     private $factory;
 
     public static function getSubscribedEvents(): array
@@ -35,10 +33,7 @@ class MenuBuilderSubscriber implements EventSubscriberInterface
         ];
     }
 
-    /**
-     * @param ConfigureMenuEvent $event
-     */
-    public function addSideMenuNode(ConfigureMenuEvent $event)
+    public function addSideMenuNode(ConfigureMenuEvent $event): void
     {
         $menu = $event->getMenu();
         $this->setFactory($event);
@@ -47,10 +42,7 @@ class MenuBuilderSubscriber implements EventSubscriberInterface
         $menu->addChild($this->getDashboardNode());
     }
 
-    /**
-     * @param ConfigureMenuEvent $event
-     */
-    public function addHeaderMenuNode(ConfigureMenuEvent $event)
+    public function addHeaderMenuNode(ConfigureMenuEvent $event): void
     {
         $menu = $event->getMenu();
         $this->setFactory($event);
@@ -60,10 +52,7 @@ class MenuBuilderSubscriber implements EventSubscriberInterface
         $menu->addChild($this->getLogoutNode());
     }
 
-    /**
-     * @return ItemInterface
-     */
-    private function getDividerNode()
+    private function getDividerNode(): ItemInterface
     {
         return $this
             ->factory
@@ -71,10 +60,7 @@ class MenuBuilderSubscriber implements EventSubscriberInterface
             ->setAttribute('class', 'divider');
     }
 
-    /**
-     * @return ItemInterface
-     */
-    private function getLogoutNode()
+    private function getLogoutNode(): ItemInterface
     {
         return $this
             ->factory
@@ -89,10 +75,7 @@ class MenuBuilderSubscriber implements EventSubscriberInterface
             ->setLinkAttribute('class', 'logout-link');
     }
 
-    /**
-     * @return ItemInterface
-     */
-    private function getDashboardNode()
+    private function getDashboardNode(): ItemInterface
     {
         return $this
             ->factory
@@ -102,14 +85,14 @@ class MenuBuilderSubscriber implements EventSubscriberInterface
                     'orderNumber' => 10,
                     'label-icon' => 'fa fa-home',
                     'translation_domain' => 'adminInterface',
+                    'routes' => [
+                        'admin_dashboard'
+                    ]
                 ]
             );
     }
 
-    /**
-     * @param ConfigureMenuEvent $event
-     */
-    private function setFactory(ConfigureMenuEvent $event)
+    private function setFactory(ConfigureMenuEvent $event): void
     {
         $this->factory = $event->getFactory();
     }

@@ -2,7 +2,7 @@
     {% if image %}
         <img src="{{ asset(image) }}" class="{{ class|default('img-circle') }}" alt="{{ alt }}" />
     {% else %}
-        <img src="{{ asset(admin_lte_context.default_avatar) }}" class="{{ class|default('img-circle') }}" alt="{{ alt }}" />
+        <img src="{{ asset(nfq_admin_context.default_avatar) }}" class="{{ class|default('img-circle') }}" alt="{{ alt }}" />
     {% endif %}
 {% endmacro %}
 

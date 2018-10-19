@@ -11,6 +11,7 @@
 
 namespace Nfq\AdminBundle\Event;
 
+use Nfq\AdminBundle\Service\Notice;
 use Symfony\Component\EventDispatcher\Event;
 use Nfq\AdminBundle\Notices;
 
@@ -86,11 +87,7 @@ class GenericEvent extends Event
         return $this->oldEntity;
     }
 
-    /**
-     * @param null $message
-     * @param string $type
-     */
-    public function addMessage($message = null, $type = Notices::NOTICE_SUCCESS)
+    public function addMessage(string $message, string $type = Notice::NOTICE_SUCCESS): void
     {
         $this->message[$type][] = $message;
     }

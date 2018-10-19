@@ -32,15 +32,15 @@ trait CrudNewCreateController
      * @Method("GET")
      * @Template()
      */
-    public function newAction()
+    public function newAction(): array
     {
         /** @var \Symfony\Component\Form\Form $form */
         list($entity, $form) = $this->getCreateFormAndEntity();
 
-        return array(
+        return [
             'entity' => $entity,
             'form' => $form->createView(),
-        );
+        ];
     }
 
     /**
@@ -50,7 +50,7 @@ trait CrudNewCreateController
      * @Method("POST")
      * @Template()
      */
-    public function createAction(Request $request)
+    public function createAction(Request $request): array
     {
         /** @var Form $form */
         list($entity, $form) = $this->getCreateFormAndEntity();
@@ -70,18 +70,14 @@ trait CrudNewCreateController
 
     /**
      * Generate url and redirect to it. Request and entity is passed for convenience
-     *
-     * @param Request|null $request
-     * @param mixed|null $entity
-     * @return mixed
      */
-    abstract protected function redirectToIndex(Request $request, $entity = null);
+    abstract protected function redirectToIndex(Request $request, $entity = null): RedirectResponse;
 
     /**
      * Creates form and entity
      * @return array ( $entity , Form $createForm )
      */
-    abstract protected function getCreateFormAndEntity();
+    abstract protected function getCreateFormAndEntity(): array;
 
     /**
      * Save entity after insert

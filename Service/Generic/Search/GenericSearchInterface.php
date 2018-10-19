@@ -22,6 +22,9 @@ use Symfony\Component\HttpFoundation\Request;
  */
 interface GenericSearchInterface
 {
+    public const SORT_KEY = 'sort';
+    public const DIRECTION_KEY = 'direction';
+
     public function setEntityManager(EntityManagerInterface $em): void;
 
     public function getEntityManager(): EntityManagerInterface;

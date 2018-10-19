@@ -1,8 +1,9 @@
+{% trans_default_domain 'adminInterface' %}
 <footer class="main-footer">
     <!-- To the right -->
     <div class="pull-right hidden-xs">
-        Anything you want
+        {{ 'admin.footer.right_side'|trans }}
     </div>
     <!-- Default to the left -->
-    {{ 'admin.footer.copyright'|trans({'%year%': date().format('Y')}, 'adminInterface')|raw }}
+    {{ 'admin.footer.copyright'|trans({'%year%': date().format('Y')})|raw }}
 </footer>

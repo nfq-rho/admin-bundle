@@ -17,63 +17,38 @@ namespace Nfq\AdminBundle\PlaceManager;
  */
 interface PlaceManagerInterface
 {
-    /**
-     * @param string $placeId
-     * @param string $locale
-     * @return array
-     */
-    public function getItemsInPlace($placeId, $locale);
+    public function getItemsInPlace(string $placeId, string $locale, string $sortOrder = 'ASC'): array;
 
     /**
      * Get array of places for choice input type
      *
-     * @return array
+     * @return string[]
      */
-    public function getPlaceChoices();
+    public function getPlaceChoices(): array;
 
     /**
-     * @return array
+     * @return string[]
      */
-    public function getPlaces();
+    public function getPlaces(): array;
 
     /**
-     * @param array $places
-     * @return void
+     * @param string[] $places
      */
-    public function setPlaces(array $places);
+    public function setPlaces(array $places): void;
 
     /**
      * Checks if given place exists.
-     *
-     * @param string $placeId
-     * @return bool
      */
-    public function placeExists($placeId);
+    public function placeExists(string $placeId): bool;
 
     /**
      * Get place.
-     *
-     * @param string $placeId
-     * @param bool $check
-     * @return array
      */
-    public function getPlace($placeId, $check = true);
+    public function getPlace(string $placeId): array;
 
-    /**
-     * @param string $placeId
-     * @return int
-     */
-    public function getPlaceLimit($placeId);
+    public function getPlaceLimit(string $placeId): int;
 
-    /**
-     * @param string $placeId
-     * @return int
-     */
-    public function getUsedPlaceSlots($placeId);
+    public function getUsedPlaceSlots(string $placeId): int;
 
-    /**
-     * @param string $place
-     * @return int
-     */
-    public function hasEmptySlots($place);
+    public function hasEmptySlots(string $place): bool;
 }

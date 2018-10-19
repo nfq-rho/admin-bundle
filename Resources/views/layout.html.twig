@@ -16,57 +16,27 @@
 <body data-locale="{{ currentLocale }}" {% block body_start %}{% endblock %}
       class="sidebar-mini {{ nfq_admin_context.skin|default("skin-black") }}">
 <div class="wrapper">
-    {#<nav class="navbar navbar-default navbar-fixed-top" role="navigation" style="margin-bottom: 0">#}
-    {#<div class="navbar-header">#}
-    {#<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".sidebar-collapse">#}
-    {#<span class="sr-only">Toggle navigation</span>#}
-    {#<span class="icon-bar"></span>#}
-    {#<span class="icon-bar"></span>#}
-    {#<span class="icon-bar"></span>#}
-    {#</button>#}
-    {#{% block logo %}#}
-    {#<a class="navbar-brand" href="{{ url('admin_dashboard') }}">{{ 'admin.general.title'|trans }}</a>#}
-    {#{% endblock logo %}#}
-    {#</div>#}
-
-    {#<ul class="nav navbar-top-links navbar-right">#}
-    {#{% include '@NfqAdmin/navigation_top.html.twig' %}#}
-    {#</ul>#}
-
-    {#<div class="navbar-default navbar-static-side" role="navigation">#}
-    {#{% include '@NfqAdmin/navigation.html.twig' %}#}
-    {#</div>#}
-    {#</nav>#}
-
-    {#<!-- /.navbar-static-side -->#}
-    {#<div id="page-wrapper">#}
-    {#{% include '@NfqAdmin/notices.html.twig' %}#}
-    {#{% block submenu %}{% endblock %}#}
-    {#{% block content %}{% endblock %}#}
-    {#</div>#}
-    {#</div>#}
-
     <header class="main-header">
-        <a href="{% block logo_path %}{% endblock %}" class="logo">
-            <span class="logo-mini">
-                {% block logo_mini %}<b>E</b>MT{% endblock %}
-            </span>
+        <a href="{{ url('admin_dashboard') }}" class="logo">
+                <span class="logo-mini">
+                    {% block logo_mini %}{{ 'admin.header.title_short'|trans|raw }}{% endblock %}
+                </span>
             <span class="logo-lg">
-               {% block logo_large %} <b>Admin</b>EMT {% endblock %}
-            </span>
+                   {% block logo_large %}{{ 'admin.header.title'|trans|raw }}{% endblock %}
+                </span>
         </a>
 
         <nav class="navbar navbar-static-top" role="navigation">
             {% block navbar_toggle %}
                 <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
-                    <span class="sr-only">{{ 'Toggle navigation'|trans() }}</span>
+                    <span class="sr-only">{{ 'admin.generic.toggle_nav'|trans }}</span>
                 </a>
             {% endblock %}
             <div class="navbar-custom-menu">
                 <ul class="nav navbar-nav">
                     {% block navbar_start %}{% endblock %}
                     {% block navbar_user %}
-                        {% include '@NfqAdmin/navbar/user.html.twig' with {user: {}} only %}
+                        {% include '@NfqAdmin/Navbar/user.html.twig' with {user: app.user, showLogoutLink: true, showProfileLink: true} only %}
                     {% endblock %}
                     {% block navbar_end %}{% endblock %}
                 </ul>
@@ -78,12 +48,12 @@
         <section class="sidebar">
             {% block sidebar_user %}
                 {% if app.user is not null and is_granted('IS_AUTHENTICATED_FULLY') %}
-
+                    {% include '@NfqAdmin/Sidebar/user-panel.html.twig' with {user: app.user} only %}
                 {% endif %}
             {% endblock %}
 
             {% block sidebar_search %}
-
+                {% include '@NfqAdmin/Sidebar/search-form.html.twig' only %}
             {% endblock %}
 
             {% block sidebar_nav %}
@@ -99,11 +69,11 @@
     <div class="content-wrapper">
         <section class="content-header">
             <h1>
-                {% block page_title %}{{ 'Admin EMT'|trans }}{% endblock %}
-                <small>{% block page_subtitle %}{{ 'A short subtitle for your page'|trans }}{% endblock %}</small>
+                {% block page_title %}{{ 'admin.home_title'|trans }}{% endblock %}
+                <small>{% block page_subtitle %}{{ 'admin.home_subtitle'|trans }}{% endblock %}</small>
 
                 <div class="btn-group pull-right">
-                    {% block buttons %}{% endblock %}
+                    {% block page_header_buttons %}{% endblock %}
                 </div>
             </h1>
 

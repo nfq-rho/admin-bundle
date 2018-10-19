@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * This file is part of the "NFQ Bundles" package.
@@ -12,11 +12,11 @@
 namespace Nfq\AdminBundle\Service\Admin;
 
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Query;
 use Nfq\AdminBundle\Event\GenericEvent;
-use Nfq\AdminBundle\Service\Generic\Search\GenericSearchInterface;
 use Nfq\AdminBundle\Service\Generic\Actions\GenericActionsInterface;
+use Nfq\AdminBundle\Service\Generic\Search\GenericSearchInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Doctrine\Common\Persistence\ObjectRepository;
 
 /**
  * Class AbstractAdminManager
@@ -24,19 +24,13 @@ use Doctrine\Common\Persistence\ObjectRepository;
  */
 abstract class AbstractAdminManager implements AdminManagerInterface
 {
-    /**
-     * @var EntityRepository
-     */
+    /** @var EntityRepository */
     protected $repository;
 
-    /**
-     * @var GenericSearchInterface
-     */
+    /** @var GenericSearchInterface */
     protected $search;
 
-    /**
-     * @var GenericActionsInterface
-     */
+    /** @var GenericActionsInterface */
     protected $actions;
 
     public function __construct(EntityRepository $repository)
@@ -44,17 +38,11 @@ abstract class AbstractAdminManager implements AdminManagerInterface
         $this->repository = $repository;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function setActions(GenericActionsInterface $actions): void
     {
         $this->actions = $actions;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function setSearch(GenericSearchInterface $search): void
     {
         $this->search = $search;
@@ -66,7 +54,7 @@ abstract class AbstractAdminManager implements AdminManagerInterface
         string $afterEventName = 'generic.after_delete'
     ) {
         $beforeEvent = new GenericEvent($entity, $beforeEventName);
-        $afterEvent = new GenericEvent($entity, $afterEventName, 'general.deleted_successfully');
+        $afterEvent = new GenericEvent($entity, $afterEventName, 'admin.generic.message.deleted_successfully');
 
         $this->actions->delete($beforeEvent, $entity, $afterEvent);
 
@@ -79,7 +67,7 @@ abstract class AbstractAdminManager implements AdminManagerInterface
         string $afterEventName = 'generic.after_insert'
     ) {
         $beforeEvent = new GenericEvent($entity, $beforeEventName);
-        $afterEvent = new GenericEvent($entity, $afterEventName, 'general.saved_successfully');
+        $afterEvent = new GenericEvent($entity, $afterEventName, 'admin.generic.message.saved_successfully');
 
         $this->actions->save($beforeEvent, $entity, $afterEvent);
 
@@ -92,24 +80,15 @@ abstract class AbstractAdminManager implements AdminManagerInterface
         string $afterEventName = 'generic.after_save'
     ) {
         $beforeEvent = new GenericEvent($entity, $beforeEventName);
-        $afterEvent = new GenericEvent($entity, $afterEventName, 'general.saved_successfully');
+        $afterEvent = new GenericEvent($entity, $afterEventName, 'admin.generic.message.saved_successfully');
 
         $this->actions->save($beforeEvent, $entity, $afterEvent);
 
         return $entity;
     }
 
-    /**
-     * @param Request $request
-     * @return mixed
-     */
-    public function getResults(Request $request)
+    public function getResults(Request $request): Query
     {
-        $request->request->add([
-            'sort' => null !== ($sort = $request->get('sort')) ? $sort : false,
-            'by' => null !== ($sort = $request->get('direction')) ? $sort : false,
-        ]);
-
         return $this->search->getResults($request);
     }
 }

@@ -45,11 +45,7 @@ class HasEmptySlotsValidator extends ConstraintValidator implements ContainerAwa
         }
     }
 
-    /**
-     * @param $manager
-     * @return PlaceManagerInterface
-     */
-    private function getPlaceManager($manager)
+    private function getPlaceManager(string $manager): PlaceManagerInterface
     {
         if (!$this->container->has($manager)) {
             throw new \InvalidArgumentException(sprintf('Given place manager `%s` does not exist', $manager));

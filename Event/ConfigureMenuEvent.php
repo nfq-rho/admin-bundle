@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * This file is part of the "NFQ Bundles" package.
@@ -25,60 +25,40 @@ class ConfigureMenuEvent extends Event
     /**
      * Side menu configuration event name.
      */
-    const SIDE_MENU = 'nfq_admin.side_menu_configure';
+    public const SIDE_MENU = 'nfq_admin.side_menu_configure';
 
     /**
      * Header menu configuration event name.
      */
-    const HEADER_MENU = 'nfq_admin.header_menu_configure';
+    public const HEADER_MENU = 'nfq_admin.header_menu_configure';
 
-    /**
-     * @var FactoryInterface
-     */
+    /** @var FactoryInterface */
     private $factory;
 
-    /**
-     * @var ItemInterface
-     */
+    /** @var ItemInterface */
     private $menu;
 
-    /**
-     * @var Request
-     */
+    /** @var Request|null */
     private $request;
 
-    /**
-     * @param FactoryInterface $factory
-     * @param ItemInterface    $menu
-     * @param Request          $request
-     */
-    public function __construct(FactoryInterface $factory, ItemInterface $menu, Request $request)
+    public function __construct(FactoryInterface $factory, ItemInterface $menu, ?Request $request)
     {
         $this->factory = $factory;
         $this->menu = $menu;
         $this->request = $request;
     }
 
-    /**
-     * @return FactoryInterface
-     */
-    public function getFactory()
+    public function getFactory(): FactoryInterface
     {
         return $this->factory;
     }
 
-    /**
-     * @return ItemInterface
-     */
-    public function getMenu()
+    public function getMenu(): ItemInterface
     {
         return $this->menu;
     }
 
-    /**
-     * @return Request
-     */
-    public function getRequest()
+    public function getRequest(): ?Request
     {
         return $this->request;
     }
