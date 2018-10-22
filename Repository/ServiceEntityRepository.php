@@ -24,6 +24,12 @@ class ServiceEntityRepository extends BaseServiceEntityRepository
     /** @var bool */
     private $useQueryCache = true;
 
+    public function createEntity()
+    {
+        $class = $this->getClassName();
+        return new $class();
+    }
+
     /**
      * @param mixed $id
      */
@@ -146,7 +152,7 @@ class ServiceEntityRepository extends BaseServiceEntityRepository
             $paramKey = ':param_' . $alias . $key;
             if (is_object($value) || is_array($value)) {
                 $qb->andWhere($qb->expr()->in($alias . '.' . $key, $paramKey));
-            } elseif (strpos($value, '%') === 0 || substr($value, -1) === '%') {
+            } elseif (is_string($value) && (strpos($value, '%') === 0 || substr($value, -1) === '%')) {
                 $qb->andWhere($qb->expr()->like($alias . '.' . $key, $paramKey));
             } else {
                 $qb->andWhere($qb->expr()->eq($alias . '.' . $key, $paramKey));
