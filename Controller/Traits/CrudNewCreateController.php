@@ -34,8 +34,7 @@ trait CrudNewCreateController
      */
     public function newAction(): array
     {
-        /** @var \Symfony\Component\Form\Form $form */
-        list($entity, $form) = $this->getCreateFormAndEntity();
+        [$entity, $form] = $this->getCreateFormAndEntity();
 
         return [
             'entity' => $entity,
@@ -52,8 +51,7 @@ trait CrudNewCreateController
      */
     public function createAction(Request $request): array
     {
-        /** @var Form $form */
-        list($entity, $form) = $this->getCreateFormAndEntity();
+        [$entity, $form] = $this->getCreateFormAndEntity();
 
         $form->handleRequest($request);
 

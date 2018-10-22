@@ -40,6 +40,10 @@ trait AbstractCrudController
     {
         $entity = $this->getEntity($id);
 
+        if (!$entity) {
+            throw $this->createNotFoundException('Entity not found.');
+        }
+
         [$editForm, $deleteForm] = $this->getEditDeleteForms($entity);
 
         if ($request->isMethod('POST')) {
@@ -70,8 +74,13 @@ trait AbstractCrudController
      */
     public function deleteAction(Request $request, $id)
     {
-        $form = $this->getDeleteForm($id);
         $entity = $this->getEntity($id);
+
+        if (!$entity) {
+            throw $this->createNotFoundException('Entity not found.');
+        }
+
+        $form = $this->getDeleteForm($id);
 
         if ($request->isMethod('POST')) {
             $form->handleRequest($request);
@@ -161,8 +170,5 @@ trait AbstractCrudController
 
     abstract protected function saveAfterUpdateAction($entity): void;
 
-    /**
-     * @throws NotFoundHttpException
-     */
-    abstract protected function getEntity($id);
+    abstract protected function getEntity($id): ?object;
 }

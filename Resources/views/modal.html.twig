@@ -1,6 +1,13 @@
 {% trans_default_domain 'adminInterface' %}
 {% set currentLocale = app.request.attributes.get('_locale') %}
 
+{% set hasFooterActions = false %}
+{% if block('page_box_footer_actions') is defined %}
+    {% set _footerActionBlock = block('page_box_footer_actions') %}
+    {% if _footerActionBlock is not empty %}
+        {% set hasFooterActions = true %}
+    {% endif %}
+{% endif %}
 <div class="modal-dialog" style="width: {{ width|default('857px') }};" aria-labelledby="modalTitle">
     <div class="modal-content" role="document">
         <div class="modal-header">
@@ -10,11 +17,11 @@
         <div class="modal-body">
             {% block page_box_body %}{% endblock %}
         </div>
-        {% if block('page_box_footer_actions') is defined %}
-        <div class="modal-footer">
-            {% block page_box_footer_actions %}{% endblock %}
-            {#<button type="button" class="btn btn-default" data-dismiss="modal">{{ 'admin.generic.close'|trans }}</button>#}
-        </div>
+        {% if hasFooterActions %}
+            <div class="modal-footer">
+                {{ _footerActionBlock|raw }}
+                {#<button type="button" class="btn btn-default" data-dismiss="modal">{{ 'admin.generic.close'|trans }}</button>#}
+            </div>
         {% endif %}
     </div>
 </div>

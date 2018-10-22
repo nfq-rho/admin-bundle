@@ -14,7 +14,6 @@ namespace Nfq\AdminBundle\Controller\Traits;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -27,9 +26,7 @@ trait TranslatableCRUDController
 {
     use AbstractCrudController;
 
-    /**
-     * @var array
-     */
+    /** @var string[] */
     protected $locales;
 
     /**
@@ -112,7 +109,7 @@ trait TranslatableCRUDController
         $baseEntity = $this->getEditableEntityForLocale($id);
 
         if (!$baseEntity) {
-            throw new NotFoundHttpException('Entity was not found');
+            $this->createNotFoundException('Entity was not found');
         }
 
         $submitLocale = null;
@@ -205,7 +202,7 @@ trait TranslatableCRUDController
      *
      * @return object|null
      */
-    protected function getEntity($id)
+    protected function getEntity($id): ?object
     {
         $locale = $this->container->get('request_stack')->getCurrentRequest()->getLocale();
 

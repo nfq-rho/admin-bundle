@@ -136,9 +136,9 @@ class ServiceEntityRepository extends BaseServiceEntityRepository
         foreach ($criteria as $key => $value) {
             $alias = $aliases[0];
             if (strpos($key, '.') !== false) {
-                list($alias, $key) = explode('.', $key);
+                [$alias, $key] = explode('.', $key);
 
-                if (!in_array($alias, $aliases)) {
+                if (!\in_array($alias, $aliases)) {
                     throw new \InvalidArgumentException("Invalid alias detected `{$alias}");
                 }
             }

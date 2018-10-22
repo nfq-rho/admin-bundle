@@ -115,7 +115,7 @@ abstract class GenericSearch implements GenericSearchInterface
         foreach ($fields as $idx => $_field) {
             $expr = null;
 
-            list($field, $aliasedField) = $this->resolveField($_field);
+            [$field, $aliasedField] = $this->resolveField($_field);
             $fieldType = $classMetaData->getTypeOfField($field);
 
             switch ($fieldType) {

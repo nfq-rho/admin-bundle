@@ -43,6 +43,11 @@ class FormManager
         self::CRUD_DELETE => 'POST',
     ];
 
+    /** @var string[]  */
+    private $defaultFormOptions = [
+        'translation_domain' => 'adminInterface',
+    ];
+
     public function __construct(FormFactoryInterface $factory)
     {
         $this->factory = $factory;
@@ -138,7 +143,12 @@ class FormManager
 
         $formType = is_null($formType) ? FormType::class : $formType;
 
-        $formBuilder = $this->getFormFactory()->createBuilder($formType, $data, $formOptions);
+        $formOptions = array_merge($this->defaultFormOptions, $formOptions);
+
+        $formBuilder = $this
+            ->getFormFactory()
+            ->createBuilder($formType, $data, $formOptions);
+
         $formBuilder->setAction($action)->setMethod($this->methods[$method]);
 
         isset($submitOptions[self::SUBMIT_STANDARD]) && $formBuilder->add('submit', SubmitType::class,

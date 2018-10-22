@@ -32,7 +32,7 @@ class LocaleController extends Controller
 
         $locale = $request->getLocale();
 
-        if (!in_array($locale, $locales)) {
+        if (!\in_array($locale, $locales)) {
             $locale = $this->container->getParameter('locale');
         }
         return ['locales' => $locales, 'selectedLocale' => $locale];
