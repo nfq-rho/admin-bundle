@@ -14,7 +14,7 @@
 
             {% if pagination is defined %}
                 <div class="row">
-                    {% include '@NfqAdmin/Base/_blocks/_pagination.html.twig' with {
+                    {% include '@NfqAdmin/base/_blocks/_pagination.html.twig' with {
                         pagination: pagination.getPagination(),
                         showingFrom: pagination.getShowingFrom(),
                         showingTo: pagination.getShowingTo(),
