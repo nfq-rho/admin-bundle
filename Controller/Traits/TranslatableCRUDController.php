@@ -109,7 +109,7 @@ trait TranslatableCRUDController
         $baseEntity = $this->getEditableEntityForLocale($id);
 
         if (!$baseEntity) {
-            $this->createNotFoundException('Entity was not found');
+            throw $this->createNotFoundException('Entity was not found');
         }
 
         $submitLocale = null;

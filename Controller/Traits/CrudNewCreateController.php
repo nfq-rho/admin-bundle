@@ -49,7 +49,7 @@ trait CrudNewCreateController
      * @Method("POST")
      * @Template()
      */
-    public function createAction(Request $request): array
+    public function createAction(Request $request)
     {
         [$entity, $form] = $this->getCreateFormAndEntity();
 
@@ -73,7 +73,7 @@ trait CrudNewCreateController
 
     /**
      * Creates form and entity
-     * @return array ( $entity , Form $createForm )
+     * @return array<$entity, FormInterface $createForm>
      */
     abstract protected function getCreateFormAndEntity(): array;
 

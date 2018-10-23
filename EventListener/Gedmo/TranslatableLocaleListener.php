@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * This file is part of the "NFQ Bundles" package.
@@ -21,28 +21,18 @@ use Symfony\Component\HttpKernel\Event\GetResponseEvent;
  */
 class TranslatableLocaleListener
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     private $formLocaleField = 'locale';
 
-    /**
-     * @var TranslatableListener
-     */
+    /** @var TranslatableListener */
     private $translatable;
 
-    /**
-     * @param $translatable
-     */
-    public function __construct($translatable)
+    public function __construct(TranslatableListener $translatable)
     {
         $this->translatable = $translatable;
     }
 
-    /**
-     * @param GetResponseEvent $event
-     */
-    public function onLateKernelRequest(GetResponseEvent $event)
+    public function onLateKernelRequest(GetResponseEvent $event): void
     {
         if (empty($this->translatable)) {
             return;
@@ -58,11 +48,7 @@ class TranslatableLocaleListener
         $this->translatable->setTranslatableLocale($translatableLocale);
     }
 
-    /**
-     * @param Request $request
-     * @return string|null
-     */
-    private function getTranslatableLocaleFromSubmittedForm(Request $request)
+    private function getTranslatableLocaleFromSubmittedForm(Request $request): ?string
     {
         $translatableLocale = null;
 

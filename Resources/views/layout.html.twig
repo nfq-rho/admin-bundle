@@ -36,7 +36,7 @@
                 <ul class="nav navbar-nav">
                     {% block navbar_start %}{% endblock %}
                     {% block navbar_user %}
-                        {% include '@NfqAdmin/Navbar/user.html.twig' with {user: app.user, showLogoutLink: true, showProfileLink: true} only %}
+                        {% include '@NfqAdmin/navbar/user.html.twig' with {user: app.user, showLogoutLink: true, showProfileLink: true} only %}
                     {% endblock %}
                     {% block navbar_end %}{% endblock %}
                 </ul>
@@ -48,19 +48,19 @@
         <section class="sidebar">
             {% block sidebar_user %}
                 {% if app.user is not null and is_granted('IS_AUTHENTICATED_FULLY') %}
-                    {% include '@NfqAdmin/Sidebar/user-panel.html.twig' with {user: app.user} only %}
+                    {% include '@NfqAdmin/sidebar/user-panel.html.twig' with {user: app.user} only %}
                 {% endif %}
             {% endblock %}
 
             {% block sidebar_search %}
-                {% include '@NfqAdmin/Sidebar/search-form.html.twig' only %}
+                {% include '@NfqAdmin/sidebar/search-form.html.twig' only %}
             {% endblock %}
 
             {% block sidebar_nav %}
                 {% if nfq_admin_context.knp_menu.enable %}
-                    {% include '@NfqAdmin/Sidebar/knp-navigation.html.twig' only %}
+                    {% include '@NfqAdmin/sidebar/knp-navigation.html.twig' only %}
                 {% else %}
-                    {% include '@NfqAdmin/Sidebar/navigation.html.twig' with {menu: menu} only %}
+                    {% include '@NfqAdmin/sidebar/navigation.html.twig' with {menu: menu} only %}
                 {% endif %}
             {% endblock %}
         </section>
@@ -79,9 +79,9 @@
 
             {% block breadcrumb %}
                 {% if nfq_admin_context.knp_menu.enable %}
-                    {% include '@NfqAdmin/Breadcrumb/knp-breadcrumb.html.twig' only %}
+                    {% include '@NfqAdmin/breadcrumb/knp-breadcrumb.html.twig' only %}
                 {% else %}
-                    {% include '@NfqAdmin/Breadcrumb/breadcrumb.html.twig' %}
+                    {% include '@NfqAdmin/breadcrumb/breadcrumb.html.twig' %}
                 {% endif %}
             {% endblock %}
         </section>

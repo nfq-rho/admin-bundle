@@ -1,10 +1,13 @@
 {% trans_default_domain 'adminInterface' %}
+
 {% if form is not empty %}
-{{ form_start(form) }}
-<div class="row">
-    {% if form.submit_delete is defined %}
-        {{ form_row(form.submit_delete) }}
-    {% endif %}
-</div>
-{{ form_end(form) }}
+    {% form_theme form '@NfqAdmin/form.html.twig' %}
+
+    {{ form_start(form) }}
+    <div class="row">
+        {% if form.submit_delete is defined %}
+            {{ form_row(form.submit_delete) }}
+        {% endif %}
+    </div>
+    {{ form_end(form) }}
 {% endif %}

@@ -22,21 +22,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 abstract class AbstractType extends BaseAbstractType
 {
-    abstract protected function callBuildForm(FormBuilderInterface $builder, array $options): void;
-
-    abstract protected function callConfigureOptions(OptionsResolver $resolver): void;
-
-    public function buildForm(FormBuilderInterface $builder, array $options)
-    {
-        $this->callBuildForm($builder, $options);
-    }
-
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
             'translation_domain' => 'adminInterface',
         ]);
-
-        $this->callConfigureOptions($resolver);
     }
 }

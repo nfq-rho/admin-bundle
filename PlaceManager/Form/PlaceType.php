@@ -23,8 +23,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class PlaceType extends AbstractType
 {
-    public function callBuildForm(FormBuilderInterface $builder, array $options): void
+    public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        parent::buildForm($builder, $options);
+
         $builder
             ->add('placeTitleOverwrite', TextType::class, [
                 'required' => false,
@@ -37,8 +39,10 @@ class PlaceType extends AbstractType
             ]);
     }
 
-    public function callConfigureOptions(OptionsResolver $resolver): void
+    public function configureOptions(OptionsResolver $resolver)
     {
+        parent::configureOptions($resolver);
+
         $resolver
             ->setRequired(['places'])
             ->setAllowedTypes('places', 'array');

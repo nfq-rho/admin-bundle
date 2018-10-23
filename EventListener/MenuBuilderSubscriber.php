@@ -47,9 +47,6 @@ class MenuBuilderSubscriber implements EventSubscriberInterface
         $menu = $event->getMenu();
         $this->setFactory($event);
         $menu->setUri($event->getRequest()->getRequestUri());
-
-        $menu->addChild($this->getDividerNode());
-        $menu->addChild($this->getLogoutNode());
     }
 
     private function getDividerNode(): ItemInterface
@@ -60,30 +57,17 @@ class MenuBuilderSubscriber implements EventSubscriberInterface
             ->setAttribute('class', 'divider');
     }
 
-    private function getLogoutNode(): ItemInterface
-    {
-        return $this
-            ->factory
-            ->createItem('admin.header_menu.logout', ['route' => 'admin_logout'])
-            ->setExtras(
-                [
-                    'orderNumber' => 9999,
-                    'label-icon' => 'fa fa-sign-out',
-                    'translation_domain' => 'adminInterface',
-                ]
-            )
-            ->setLinkAttribute('class', 'logout-link');
-    }
-
     private function getDashboardNode(): ItemInterface
     {
         return $this
             ->factory
             ->createItem('admin.side_menu.dashboard', ['route' => 'admin_dashboard'])
+            ->setLabelAttributes([
+                'icon' => 'fas fa-home',
+            ])
             ->setExtras(
                 [
                     'orderNumber' => 10,
-                    'label-icon' => 'fa fa-home',
                     'translation_domain' => 'adminInterface',
                     'routes' => [
                         'admin_dashboard'

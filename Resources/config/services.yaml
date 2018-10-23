@@ -16,7 +16,6 @@ services:
         tags: ['controller.service_arguments']
 
     Nfq\AdminBundle\EventListener\Gedmo\TranslatableLocaleListener:
-        arguments: [ '@?gedmo.listener.translatable' ]
         tags:
             # translatable sets locale after router processing
             - { name: kernel.event_listener, event: kernel.request, method: onLateKernelRequest, priority: -10 }

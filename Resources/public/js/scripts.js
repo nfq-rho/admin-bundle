@@ -5,6 +5,8 @@ $(document).ready(function () {
         }
     });
 
+    $.fn.select2.defaults.set( "theme", "bootstrap" );
+
     $.fn.bindSelect2 = function () {
         $('.ajax-select2').each(function () {
             var _this = $(this);
@@ -18,37 +20,44 @@ $(document).ready(function () {
                     dataType: 'json',
                     type: "PUT",
                     quietMillis: 250,
-                    data: function (term) {
-                        return {
-                            q: term
+                    data: function (params) {
+                        let query = {
+                            q: params.term
                         };
-                    },
-                    results: function (response) {
-                        return {
-                            results: response
-                        };
-                    }
-                },
-                initSelection: function (item, callback) {
-                    var id = item.val();
-                    var text = item.data('option');
 
-                    if (typeof text === 'undefined') {
-                        if (id && _this.data('href')) {
-                            $.getJSON(
-                                _this.data('href'),
-                                {'q': id, '_init': true},
-                                function (response) {
-                                    var data = response[0];
-                                    callback(data);
-                                }
-                            );
-                        }
-                    } else {
-                        var data = {id: id, text: text};
-                        callback(data);
+                        return query;
+                    },
+                    processResults: function (data) {
+                        return {
+                          results: data,
+                        };
                     }
+                    // results: function (response) {
+                    //     return {
+                    //         results: response
+                    //     };
+                    // }
                 }
+                // initSelection: function (item, callback) {
+                //     var id = item.val();
+                //     var text = item.data('option');
+                //
+                //     if (typeof text === 'undefined') {
+                //         if (id && _this.data('href')) {
+                //             $.getJSON(
+                //                 _this.data('href'),
+                //                 {'q': id, '_init': true},
+                //                 function (response) {
+                //                     var data = response[0];
+                //                     callback(data);
+                //                 }
+                //             );
+                //         }
+                //     } else {
+                //         var data = {id: id, text: text};
+                //         callback(data);
+                //     }
+                // }
             });
         });
 
@@ -355,7 +364,10 @@ var bindDatepickers = function ($element) {
         return;
     }
 
-    $element.datepicker({
+    $element.daterangepicker({
+        singleDatePicker: true,
+        minYear: 2000,
+        maxYear: parseInt(moment().format('YYYY'),10),
         format: 'yyyy-mm-dd',
         weekStart: 1,
         autoclose: true

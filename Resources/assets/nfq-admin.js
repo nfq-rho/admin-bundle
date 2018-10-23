@@ -2,10 +2,9 @@
 const $ = require('jquery');
 global.$ = global.jQuery = $;
 
-require('jquery-ui');
 require('bootstrap-sass');
 require('jquery-slimscroll');
-require('select2');
+require('select2/dist/js/select2.full');
 
 require('@fortawesome/fontawesome-free/js/all.min');
 
