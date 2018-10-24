@@ -2,6 +2,8 @@
 const $ = require('jquery');
 global.$ = global.jQuery = $;
 
+global.Holder = require('holderjs');
+
 require('bootstrap-sass');
 require('jquery-slimscroll');
 require('select2/dist/js/select2.full');

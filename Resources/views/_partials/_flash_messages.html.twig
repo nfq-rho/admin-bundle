@@ -3,7 +3,7 @@
 {% if app.session and app.session.started and app.session.flashbag.peekAll|length > 0 %}
     <div class="row">
         <div class="col-sm-12">
-            {{ macro.session_flash(nfq_admin_close_alert|default(true), false, '', 'flashmessages') }}
+            {{ macro.session_flash(nfq_admin_close_alert|default(true), false, '') }}
         </div>
     </div>
 {% endif %}
