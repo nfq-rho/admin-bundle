@@ -6,6 +6,7 @@ services:
 
         bind:
             $defaultLocale: '%kernel.default_locale%'
+            $bundles: '%kernel.bundles%'
 
     Nfq\AdminBundle\:
         resource: '../../*'
