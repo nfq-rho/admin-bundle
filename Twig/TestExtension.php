@@ -31,19 +31,14 @@ class TestExtension extends \Twig_Extension
         ];
     }
 
-    public function isActiveLocale(&$context, string $locale): bool
+    public function isActiveLocale(array &$context, string $locale): bool
     {
-        return (isset($context['submitLocale']) && $context['submitLocale'] == $locale)
-            || (!isset($context['submitLocale']) && $context['currentLocale'] == $locale);
+        return (isset($context['submitLocale']) && $context['submitLocale'] === $locale)
+            || (!isset($context['submitLocale']) && $context['currentLocale'] === $locale);
     }
 
     public function isBoolean($value): bool
     {
         return is_bool($value);
-    }
-
-    public function getName(): string
-    {
-        return 'simple_tests';
     }
 }

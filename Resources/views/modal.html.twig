@@ -1,5 +1,5 @@
 {% trans_default_domain 'adminInterface' %}
-{% set currentLocale = app.request.attributes.get('_locale') %}
+{% set currentLocale = app.request.attributes.get('_locale', app.request.locale) %}
 
 {% set hasFooterActions = false %}
 {% if block('page_box_footer_actions') is defined %}
