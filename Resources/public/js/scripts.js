@@ -1,11 +1,11 @@
 $(document).ready(function () {
-    $(document).on('focusin', function(e) {
+    $(document).on('focusin', function (e) {
         if ($(e.target).closest(".mce-window").length) {
             e.stopImmediatePropagation();
         }
     });
 
-    $.fn.select2.defaults.set( "theme", "bootstrap" );
+    $.fn.select2.defaults.set("theme", "bootstrap");
 
     $.fn.bindSelect2 = function () {
         $('.ajax-select2').each(function () {
@@ -29,7 +29,7 @@ $(document).ready(function () {
                     },
                     processResults: function (data) {
                         return {
-                          results: data,
+                            results: data,
                         };
                     }
                     // results: function (response) {
@@ -200,8 +200,7 @@ $(document).ready(function () {
     });
 
     // Validates that the input string is a valid date formatted as "yyyy-mm-dd"
-    $.fn.isValidDate = function(dateString)
-    {
+    $.fn.isValidDate = function (dateString) {
         // First check for the pattern
         if (!/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
             return false;
@@ -218,10 +217,10 @@ $(document).ready(function () {
             return false;
         }
 
-        var monthLength = [ 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 ];
+        var monthLength = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
         // Adjust for leap years
-        if(year % 400 == 0 || (year % 100 != 0 && year % 4 == 0)) {
+        if (year % 400 == 0 || (year % 100 != 0 && year % 4 == 0)) {
             monthLength[1] = 29;
         }
 
@@ -230,15 +229,15 @@ $(document).ready(function () {
     };
 });
 
-var bs_alert = function(message, type) {
+var bs_alert = function (message, type) {
     var type = 'alert-' + type;
 
     $('#status-messages').html('<div class="alert ' + type + ' alert-dismissable">' +
         '<a class="close" data-dismiss="alert">×</a><span>' + message + '</span>' +
-    '</div>');
+        '</div>');
 };
 
-var bindCountable = function() {
+var bindCountable = function () {
     $.each($(document).find('.countable'), function (idx, el) {
         var $element = $(el),
             params = {
@@ -250,18 +249,18 @@ var bindCountable = function() {
     });
 };
 
-var reopenForEditing = function() {
+var reopenForEditing = function () {
     var reopenId = getUrlParameter('reopen_id');
     if (reopenId !== undefined) {
         $('.reopenable').find('tr[data-id="' + reopenId + '"] > td:eq(1)').trigger('click');
     }
 };
 
-var modalFailureCallback = function(divModal, response) {
+var modalFailureCallback = function (divModal, response) {
     $(divModal).remove();
 };
 
-var modalHideCallback = function(divModal) {
+var modalHideCallback = function (divModal) {
     if (typeof tinymce !== 'undefined') {
         tinymce.remove();
     }
@@ -269,7 +268,7 @@ var modalHideCallback = function(divModal) {
     $(divModal).remove();
 };
 
-var modalShowCallback = function(divModal) {
+var modalShowCallback = function (divModal) {
     divModal.bindSelect2();
 
     bindXeditable(divModal.find('.myeditable'));
@@ -282,15 +281,15 @@ var modalShowCallback = function(divModal) {
     preselectToggleButtons($("[data-toggle=buttons]"));
 };
 
-var bindTooltips = function($element) {
+var bindTooltips = function ($element) {
     $element.tooltip({
-        selector:  "[data-toggle~=tooltip]",
+        selector: "[data-toggle~=tooltip]",
         container: "body"
     });
 };
 
-var preselectToggleButtons = function($element) {
-    $element.find('input').each(function() {
+var preselectToggleButtons = function ($element) {
+    $element.find('input').each(function () {
         var _this = $(this);
 
         if (_this.is(':checked')) {
@@ -327,8 +326,8 @@ var postForm = function ($form, callback) {
 
 };
 
-var runHolder = function() {
-    if (typeof Holder !== 'undefined' ) {
+var runHolder = function () {
+    if (typeof Holder !== 'undefined') {
         Holder.run();
     }
 };
@@ -348,7 +347,7 @@ var bindXeditable = function ($element) {
     });
 };
 
-var getUrlParameter = function(sParam) {
+var getUrlParameter = function (sParam) {
     var sPageURL = window.location.search.substring(1);
     var sURLVariables = sPageURL.split('&');
     for (var i = 0; i < sURLVariables.length; i++) {
@@ -366,9 +365,11 @@ var bindDatepickers = function ($element) {
 
     $element.daterangepicker({
         singleDatePicker: true,
-        minYear: 2000,
-        maxYear: parseInt(moment().format('YYYY'),10),
-        format: 'yyyy-mm-dd',
+        minYear: 2018,
+        maxYear: parseInt(moment().format('YYYY'), 10),
+        locale: {
+            format: 'DD.MM.YYYY',
+        },
         weekStart: 1,
         autoclose: true
     });
