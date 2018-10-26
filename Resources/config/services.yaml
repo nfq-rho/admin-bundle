@@ -38,9 +38,6 @@ services:
         tags:
             - { name: validator.constraint_validator, alias: nfq_admin_validator_has_empty_slots }
 
-    Nfq\AdminBundle\Service\FormManager:
-        public: true
-
     nfq_admin.notice_listener:
         class: Nfq\AdminBundle\EventListener\NoticeListener
         arguments: [ '@Nfq\AdminBundle\Service\Notice' ]

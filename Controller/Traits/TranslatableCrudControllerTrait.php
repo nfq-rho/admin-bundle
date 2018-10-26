@@ -19,19 +19,17 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
- * Class TranslatableCRUDController
+ * Trait TranslatableCrudControllerTrait
  * @package Nfq\AdminBundle\Controller\Traits
  */
-trait TranslatableCRUDController
+trait TranslatableCrudControllerTrait
 {
-    use AbstractCrudController;
+    use CrudControllerTrait;
 
     /** @var string[] */
     protected $locales;
 
     /**
-     * Displays a form to create a new  entity.
-     *
      * @Route("/new")
      * @Method("GET")
      * @Template()
@@ -52,15 +50,6 @@ trait TranslatableCRUDController
     }
 
     /**
-     * Creates form and entity for given locale
-     *
-     * @return array<$entity, Form $form>
-     */
-    abstract protected function getCreateFormAndEntity(string $locale): array;
-
-    /**
-     * Creates a new entity.
-     *
      * @Route("/new")
      * @Method("POST")
      * @Template()
@@ -75,12 +64,13 @@ trait TranslatableCRUDController
         foreach ($this->locales as $locale) {
             [$entity, $form] = $this->getCreateFormAndEntity($locale);
 
-            if ($request->isMethod('POST') && $request->request->get($form->getName())['locale'] == $locale) {
+            if ($request->isMethod('POST') && $request->request->get($form->getName())['locale'] === $locale) {
                 $form->handleRequest($request);
 
                 if ($form->isValid()) {
                     $this->insertAfterCreateAction($entity);
-                    return $this->redirectToIndex($request, $entity);
+
+                    return $this->handleAfterSubmit($request, $form);
                 }
             }
 
@@ -92,9 +82,9 @@ trait TranslatableCRUDController
         ];
     }
 
+    abstract protected function getEntityForLocale($id, string $locale = null): ?object;
+
     /**
-     * Edits an existing entity.
-     *
      * @Route("/{id}/update")
      * @Method({"GET", "POST"})
      * @Template()
@@ -185,27 +175,9 @@ trait TranslatableCRUDController
         $this->locales = $locales;
     }
 
-    /**
-     * Save entity after insert
-     */
-    abstract protected function insertAfterCreateAction($entity): void;
-
-    /**
-     * Returns ant editable entity for given locale.
-     *
-     * @return object|null
-     */
-    abstract protected function getEditableEntityForLocale($id, string $locale = null);
-
-    /**
-     * Returns ant editable entity for given locale.
-     *
-     * @return object|null
-     */
     protected function getEntity($id): ?object
     {
         $locale = $this->container->get('request_stack')->getCurrentRequest()->getLocale();
-
-        return $this->getEditableEntityForLocale($id, $locale);
+        return $this->getEntityForLocale($id, $locale);
     }
 }

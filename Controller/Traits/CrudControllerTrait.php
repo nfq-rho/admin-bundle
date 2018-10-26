@@ -25,8 +25,77 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  * Class AbstractCrudController
  * @package Nfq\AdminBundle\Controller\Traits
  */
-trait AbstractCrudController
+trait CrudControllerTrait
 {
+    /** @var FormManager */
+    private $formManager;
+
+    /**
+     * @required
+     */
+    public function setFormManager(FormManager $formManager): void
+    {
+        $this->formManager = $formManager;
+    }
+
+    protected function getFormManager(): FormManager
+    {
+        return $this->formManager;
+    }
+
+    abstract protected function getEntity($id): ?object;
+
+    /**
+     * @return array<$entity, FormInterface $createForm>
+     */
+    abstract protected function getCreateFormAndEntity(): array;
+
+    abstract protected function insertAfterCreateAction(object $entity): void;
+
+    /**
+     * @Route("/new")
+     * @Method("GET")
+     * @Template()
+     */
+    public function newAction(): array
+    {
+        [$entity, $form] = $this->getCreateFormAndEntity();
+
+        return [
+            'entity' => $entity,
+            'form' => $form->createView(),
+        ];
+    }
+
+    /**
+     * @Route("/new")
+     * @Method("POST")
+     * @Template()
+     */
+    public function createAction(Request $request)
+    {
+        [$entity, $form] = $this->getCreateFormAndEntity();
+
+        $form->handleRequest($request);
+
+        if ($form->isValid()) {
+            $this->insertAfterCreateAction($entity);
+            return $this->redirectToIndex($request, $entity);
+        }
+
+        return [
+            'entity' => $entity,
+            'form' => $form->createView(),
+        ];
+    }
+
+    /**
+     * @return array<$entity, FormInterface $createForm>
+     */
+    abstract protected function getEditDeleteForms(object $entity): array;
+
+    abstract protected function saveAfterUpdateAction(object $entity): void;
+
     /**
      * Edits an existing entity.
      *
@@ -63,9 +132,9 @@ trait AbstractCrudController
         ];
     }
 
+    abstract protected function deleteAfterDeleteAction(object $entity): void;
+
     /**
-     * Deletes an entity.
-     *
      * @Route("/{id}/delete")
      * @Method({"GET", "POST"})
      * @Template()
@@ -87,6 +156,7 @@ trait AbstractCrudController
 
             if ($form->isValid()) {
                 $this->deleteAfterDeleteAction($entity);
+
                 return $this->redirectToIndex($request);
             }
         }
@@ -97,7 +167,7 @@ trait AbstractCrudController
         ];
     }
 
-    protected function getRedirectToIndexParams(Request $request, $entity): ParameterBag
+    protected function getRedirectToIndexParams(Request $request, ?object $entity): ParameterBag
     {
         $redirectParams = new ParameterBag();
 
@@ -120,22 +190,6 @@ trait AbstractCrudController
         return $redirectParams;
     }
 
-    /**
-     * @throws \RuntimeException
-     */
-    protected function redirectToIndex(Request $request, $entity = null): RedirectResponse
-    {
-        throw new \RuntimeException('Implement this method');
-    }
-
-    /**
-     * @throws \RuntimeException
-     */
-    protected function redirectToPreview($entity): RedirectResponse
-    {
-        throw new \RuntimeException('Implement this method');
-    }
-
     protected function handleAfterSubmit(Request $request, FormInterface $submittedForm): RedirectResponse
     {
         $entity = $submittedForm->getData();
@@ -151,24 +205,19 @@ trait AbstractCrudController
         return $this->redirectToIndex($request, $entity);
     }
 
-    protected function getFormService(): FormManager
+    /**
+     * @throws \RuntimeException
+     */
+    protected function redirectToIndex(Request $request, ?object $entity = null): RedirectResponse
     {
-        return $this->get(FormManager::class);
+        throw new \RuntimeException('Implement this method');
     }
 
     /**
-     * Create and return edit and delete forms. If edit form was created before when submitting data,
-     * $editForm will contain that form with all validation errors
-     *
-     * @return FormInterface[]
+     * @throws \RuntimeException
      */
-    abstract protected function getEditDeleteForms($entity): array;
-
-    abstract protected function getDeleteForm($id): FormInterface;
-
-    abstract protected function deleteAfterDeleteAction($entity): void;
-
-    abstract protected function saveAfterUpdateAction($entity): void;
-
-    abstract protected function getEntity($id): ?object;
+    protected function redirectToPreview(object $entity): RedirectResponse
+    {
+        throw new \RuntimeException('Implement this method');
+    }
 }

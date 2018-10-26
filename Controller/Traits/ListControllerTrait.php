@@ -19,10 +19,10 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Class CrudIndexController
+ * Trait ListControllerTrait
  * @package Nfq\AdminBundle\Controller\Traits
  */
-trait CrudIndexController
+trait ListControllerTrait
 {
     /** @var Paginator */
     private $paginator;
@@ -39,8 +39,6 @@ trait CrudIndexController
     }
 
     /**
-     * Lists all entities.
-     *
      * @Route("/")
      * @Template()
      */
@@ -61,10 +59,9 @@ trait CrudIndexController
         ];
     }
 
-    public function setDistinct(bool $distinct): self
+    public function setDistinct(bool $distinct): void
     {
         $this->distinct = $distinct;
-        return $this;
     }
 
     /**
