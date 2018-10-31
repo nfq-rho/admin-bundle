@@ -12,7 +12,6 @@
 namespace Nfq\AdminBundle\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository as BaseServiceEntityRepository;
-use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -21,9 +20,6 @@ use Doctrine\ORM\QueryBuilder;
  */
 class ServiceEntityRepository extends BaseServiceEntityRepository
 {
-    /** @var bool */
-    private $useQueryCache = true;
-
     public function createEntity()
     {
         $class = $this->getClassName();
@@ -47,94 +43,6 @@ class ServiceEntityRepository extends BaseServiceEntityRepository
         return $qb;
     }
 
-    public function getQueryByCriteria(array $criteria): Query
-    {
-        $qb = $this->getQueryBuilder();
-
-        $this->addArrayCriteria($qb, $criteria);
-
-        return $qb->getQuery();
-    }
-
-    /**
-     * @return object|null
-     * @throws \Doctrine\ORM\NonUniqueResultException
-     */
-    public function getOneByCriteria(array $criteria)
-    {
-        $query = $this->getQueryByCriteria($criteria);
-
-        return $query->getOneOrNullResult();
-    }
-
-    public function getTranslatableQueryByCriteria(array $criteria, ?string $locale, bool $fallback = true): Query
-    {
-        $qb = $this->getQueryBuilder();
-        $this->addArrayCriteria($qb, $criteria);
-
-        $query = $qb->getQuery();
-
-        $this->setTranslatableHints($query, $locale, $fallback);
-
-        return $query;
-    }
-
-    public function getTranslatableQueryByCriteriaSorted(
-        array $criteria,
-        string $locale,
-        bool $fallback = true,
-        string $sortBy = 'id',
-        string $sortOrder = 'ASC'
-    ): Query {
-        $qb = $this->getQueryBuilder();
-        $this->addArrayCriteria($qb, $criteria);
-        $qb->orderBy($alias . '.' . $sort, $order);
-
-        $query = $qb->getQuery();
-
-        $this->setTranslatableHints($query, $locale, $fallback);
-
-        return $query;
-    }
-
-    public function setUseQueryCache(bool $useCache): self
-    {
-        $this->useQueryCache = $useCache;
-        return $this;
-    }
-
-    /**
-     * @return object|null
-     * @throws \Doctrine\ORM\NonUniqueResultException
-     */
-    public function getOneTranslatableByCriteria(array $criteria, ?string $locale, bool $fallback = true)
-    {
-        $query = $this->getTranslatableQueryByCriteria($criteria, $locale, $fallback);
-
-        $query->useQueryCache($this->useQueryCache);
-
-        return $query->getOneOrNullResult();
-    }
-
-    public function setTranslatableHints(Query $query, ?string $locale, bool $fallback, bool $innerJoin = false): void
-    {
-        if (!class_exists('Gedmo\\Translatable\\TranslatableListener')) {
-            return;
-        }
-
-        if (!empty($locale)) {
-            $query->setHint(\Gedmo\Translatable\TranslatableListener::HINT_TRANSLATABLE_LOCALE, $locale);
-        }
-
-        if ($innerJoin) {
-            $query->setHint(\Gedmo\Translatable\TranslatableListener::HINT_INNER_JOIN, $innerJoin);
-        }
-
-        $query
-            ->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, 'Gedmo\\Translatable\\Query\\TreeWalker\\TranslationWalker')
-            ->setHint(\Gedmo\Translatable\TranslatableListener::HINT_FALLBACK, (int)$fallback);
-    }
-
     public function addArrayCriteria(QueryBuilder $qb, array $criteria): void
     {
         $aliases = $qb->getAllAliases();
@@ -150,9 +58,9 @@ class ServiceEntityRepository extends BaseServiceEntityRepository
             }
 
             $paramKey = ':param_' . $alias . $key;
-            if (is_object($value) || is_array($value)) {
+            if (\is_object($value) || \is_array($value)) {
                 $qb->andWhere($qb->expr()->in($alias . '.' . $key, $paramKey));
-            } elseif (is_string($value) && (strpos($value, '%') === 0 || substr($value, -1) === '%')) {
+            } elseif (\is_string($value) && (strpos($value, '%') === 0 || substr($value, -1) === '%')) {
                 $qb->andWhere($qb->expr()->like($alias . '.' . $key, $paramKey));
             } else {
                 $qb->andWhere($qb->expr()->eq($alias . '.' . $key, $paramKey));

@@ -167,29 +167,6 @@ trait CrudControllerTrait
         ];
     }
 
-    protected function getRedirectToIndexParams(Request $request, ?object $entity): ParameterBag
-    {
-        $redirectParams = new ParameterBag();
-
-        if ($httpReferrer = $request->server->get('HTTP_REFERER')) {
-            $query = parse_url($httpReferrer, PHP_URL_QUERY);
-
-            if (!empty($query)) {
-                parse_str($query, $referrerParams);
-                $referrerParams = array_filter($referrerParams);
-                $redirectParams->add($referrerParams);
-            }
-        }
-
-        if (is_object($entity) && method_exists($entity, 'getId')) {
-            $redirectParams->set('reopen_id', $entity->getId());
-        } else {
-            $redirectParams->remove('reopen_id');
-        }
-
-        return $redirectParams;
-    }
-
     protected function handleAfterSubmit(Request $request, FormInterface $submittedForm): RedirectResponse
     {
         $entity = $submittedForm->getData();
@@ -208,7 +185,7 @@ trait CrudControllerTrait
     /**
      * @throws \RuntimeException
      */
-    protected function redirectToIndex(Request $request, ?object $entity = null): RedirectResponse
+    protected function redirectToPreview(object $entity): RedirectResponse
     {
         throw new \RuntimeException('Implement this method');
     }
@@ -216,8 +193,33 @@ trait CrudControllerTrait
     /**
      * @throws \RuntimeException
      */
-    protected function redirectToPreview(object $entity): RedirectResponse
+    protected function redirectToIndex(Request $request, ?object $entity = null): RedirectResponse
     {
         throw new \RuntimeException('Implement this method');
+    }
+
+    protected function getRedirectToIndexParams(Request $request, ?object $entity): ParameterBag
+    {
+        $redirectParams = new ParameterBag();
+
+        if ($httpReferrer = $request->server->get('HTTP_REFERER')) {
+            $query = parse_url($httpReferrer, PHP_URL_QUERY);
+
+            if (!empty($query)) {
+                parse_str($query, $referrerParams);
+                $referrerParams = array_filter($referrerParams);
+                $redirectParams->add($referrerParams);
+            }
+        }
+
+        if (\is_object($entity)) {
+            method_exists($entity, 'getId') && $redirectParams->set('reopen_id', $entity->getId());
+            method_exists($entity, 'getLocale') && $redirectParams->set('reopen_locale', $entity->getLocale());
+        } else {
+            $redirectParams->remove('reopen_id');
+            $redirectParams->remove('reopen_locale');
+        }
+
+        return $redirectParams;
     }
 }

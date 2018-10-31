@@ -19,60 +19,28 @@ interface PaginatorAdapterInterface
 {
     /**
      * Checks if given class is supported by this adapter.
-     *
-     * @param string $class
-     *
-     * @return bool
      */
-    public static function supports($class);
+    public static function supports(string $class): bool;
 
-    /**
-     * @param int $currentPage
-     *
-     * @return PaginatorAdapterInterface
-     */
-    public function setCurrentPage($currentPage);
+    public function setCurrentPage(int $currentPage): PaginatorAdapterInterface;
 
-    /**
-     * @param int $maxPerPage
-     *
-     * @return PaginatorAdapterInterface
-     */
-    public function setMaxPerPage($maxPerPage);
+    public function setMaxPerPage(int $maxPerPage): PaginatorAdapterInterface;
 
-    /**
-     * @return int
-     */
-    public function getMaxPerPage();
+    public function getMaxPerPage(): int;
 
-    /**
-     * @return int
-     */
-    public function getShowingFrom();
+    public function getShowingFrom(): int;
 
-    /**
-     * @return int
-     */
-    public function getShowingTo();
+    public function getShowingTo(): int;
 
     /**
      * @param mixed $target
-     *
-     * @return PaginatorAdapterInterface
      */
-    public function setTarget($target);
+    public function setTarget($target): PaginatorAdapterInterface;
 
     /**
-     * @param array $options
-     *
-     * @return PaginatorAdapterInterface
+     * @param string[] $options
      */
-    public function setOptions(array $options);
+    public function setOptions(array $options): PaginatorAdapterInterface;
 
-    /**
-     * @param object $paginator
-     *
-     * @return PaginatorAdapterInterface
-     */
-    public function setPaginator($paginator);
+    public function setPaginator(object $paginator): PaginatorAdapterInterface;
 }

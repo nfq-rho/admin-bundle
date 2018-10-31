@@ -39,6 +39,6 @@ class TestExtension extends \Twig_Extension
 
     public function isBoolean($value): bool
     {
-        return is_bool($value);
+        return \is_bool($value);
     }
 }

@@ -24,19 +24,13 @@ abstract class AbstractPaginatorAdapter implements PaginatorAdapterInterface
      */
     protected $target;
 
-    /**
-     * @var int
-     */
+    /** @var int */
     protected $currentPage;
 
-    /**
-     * @var int
-     */
+    /** @var int */
     protected $maxPerPage;
 
-    /**
-     * @var array
-     */
+    /** @var string[] */
     protected $options;
 
     protected $paginator;
@@ -49,8 +43,8 @@ abstract class AbstractPaginatorAdapter implements PaginatorAdapterInterface
     public function __call($method, $args)
     {
         $methodAvailable = [$this->getPagination(), $method];
-        if (is_callable($methodAvailable)) {
-            return call_user_func_array($methodAvailable, $args);
+        if (\is_callable($methodAvailable)) {
+            return \call_user_func_array($methodAvailable, $args);
         }
     }
 
@@ -59,8 +53,8 @@ abstract class AbstractPaginatorAdapter implements PaginatorAdapterInterface
      */
     public function getPagination()
     {
-        if (is_null($this->pagination)) {
-            $this->pagination = $this->initPagination();
+        if (null === $this->pagination) {
+            $this->initPagination();
             $this->configurePagination();
         }
 
@@ -69,93 +63,64 @@ abstract class AbstractPaginatorAdapter implements PaginatorAdapterInterface
 
     /**
      * This method should contain pagination initialization code. And should return new pagination instance
-     *
-     * @return
      */
-    abstract protected function initPagination();
+    abstract protected function initPagination(): void;
 
     /**
      * This method should have any code that is needed to customize pagination instance
-     *
-     * @return void
      */
-    protected function configurePagination()
+    protected function configurePagination(): void
     {
 
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function setCurrentPage($currentPage)
+    public function setCurrentPage(int $currentPage): PaginatorAdapterInterface
     {
         $this->currentPage = $currentPage;
-
         return $this;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function setMaxPerPage($maxPerPage)
+    public function setMaxPerPage(int $maxPerPage): PaginatorAdapterInterface
     {
         $this->maxPerPage = $maxPerPage;
 
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getMaxPerPage()
+    public function getMaxPerPage(): int
     {
         return $this->maxPerPage;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function setPaginator($paginator)
+    public function setPaginator(object $paginator): PaginatorAdapterInterface
     {
         $this->paginator = $paginator;
 
         return $this;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function setTarget($target)
+    public function setTarget($target): PaginatorAdapterInterface
     {
         $this->target = $target;
 
         return $this;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function setOptions(array $options)
+    public function setOptions(array $options): PaginatorAdapterInterface
     {
         $this->options = $options;
 
         return $this;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getShowingFrom()
+    public function getShowingFrom(): int
     {
         return $this->getTotalItemCount() > 0
             ? ($this->currentPage - 1) * $this->maxPerPage + 1
             : 0;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getShowingTo()
+    public function getShowingTo(): int
     {
         $showingTo = $this->currentPage * $this->maxPerPage;
 

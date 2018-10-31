@@ -9,7 +9,7 @@ $(document).ready(function () {
 
     $.fn.bindSelect2 = function () {
         $('.ajax-select2').each(function () {
-            var _this = $(this);
+            let _this = $(this);
 
             _this.select2({
                 minimumInputLength: 2,
@@ -39,8 +39,8 @@ $(document).ready(function () {
                     // }
                 }
                 // initSelection: function (item, callback) {
-                //     var id = item.val();
-                //     var text = item.data('option');
+                //     let id = item.val();
+                //     let text = item.data('option');
                 //
                 //     if (typeof text === 'undefined') {
                 //         if (id && _this.data('href')) {
@@ -48,13 +48,13 @@ $(document).ready(function () {
                 //                 _this.data('href'),
                 //                 {'q': id, '_init': true},
                 //                 function (response) {
-                //                     var data = response[0];
+                //                     let data = response[0];
                 //                     callback(data);
                 //                 }
                 //             );
                 //         }
                 //     } else {
-                //         var data = {id: id, text: text};
+                //         let data = {id: id, text: text};
                 //         callback(data);
                 //     }
                 // }
@@ -70,7 +70,7 @@ $(document).ready(function () {
     // Focuses on first input textbox after it loads the window.
     $('[data-toggle~=modal]').click(function (e) {
         e.preventDefault();
-        var _this = $(this),
+        let _this = $(this),
             spinner = $('.spinner'),
             backdrop = (typeof _this.data('backdrop') === "undefined") ? 'static' : _this.data('backdrop'),
             url = (typeof _this.attr('href') === "undefined")
@@ -95,7 +95,7 @@ $(document).ready(function () {
             spinner.removeClass('hide');
             $.get(url, function (response) {
                 spinner.addClass('hide');
-                var _divModal = $('<div class="modal fade"></div>'),
+                let _divModal = $('<div class="modal fade"></div>'),
                     divModal = $(_divModal);
 
                 if (response.status == 'success') {
@@ -124,7 +124,7 @@ $(document).ready(function () {
     reopenForEditing();
 
     $(document).on('submit', '.modal_form', function () {
-        var _this = $(this),
+        let _this = $(this),
             formId = _this.attr('id'),
             formNumberParts = formId.split('_'),
             formNumber = formNumberParts[formNumberParts.length - 1],
@@ -141,7 +141,7 @@ $(document).ready(function () {
         _this.attr('action', url);
 
         $('#modal_frame_' + formNumber).on('load', function () {
-            var _this = $(this),
+            let _this = $(this),
                 response = _this.contents().find('body');
 
             if (response.length > 0) {
@@ -151,10 +151,10 @@ $(document).ready(function () {
                     if (response.status == 'redirect') {
                         window.location = response.content;
                     } else {
-                        var content = $(response.content).find('.content');
+                        let content = $(response.content).find('.content');
 
                         if (content.length > 0) {
-                            var _modal = $('.modal');
+                            let _modal = $('.modal');
                             _modal.find('.content').replaceWith('<div class="content">' + content.html() + '</div>');
 
                             modalShowCallback(_modal);
@@ -168,7 +168,7 @@ $(document).ready(function () {
         return true;
     });
 
-    var hasPopovers = false;
+    let hasPopovers = false;
     $("[data-popup=popover]").each(function () {
         $(this).popover('show').click(function () {
             $(this).popover('disable').popover('hide');
@@ -207,17 +207,17 @@ $(document).ready(function () {
         }
 
         // Parse the date parts to integers
-        var parts = dateString.split("-");
-        var year = parseInt(parts[0], 10);
-        var month = parseInt(parts[1], 10);
-        var day = parseInt(parts[2], 10);
+        let parts = dateString.split("-");
+        let year = parseInt(parts[0], 10);
+        let month = parseInt(parts[1], 10);
+        let day = parseInt(parts[2], 10);
 
         // Check the ranges of month and year
         if (year < 1000 || year > 3000 || month == 0 || month > 12) {
             return false;
         }
 
-        var monthLength = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+        let monthLength = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
         // Adjust for leap years
         if (year % 400 == 0 || (year % 100 != 0 && year % 4 == 0)) {
@@ -229,17 +229,17 @@ $(document).ready(function () {
     };
 });
 
-var bs_alert = function (message, type) {
-    var type = 'alert-' + type;
+let bs_alert = function (message, type) {
+    let type = 'alert-' + type;
 
     $('#status-messages').html('<div class="alert ' + type + ' alert-dismissable">' +
         '<a class="close" data-dismiss="alert">×</a><span>' + message + '</span>' +
         '</div>');
 };
 
-var bindCountable = function () {
+let bindCountable = function () {
     $.each($(document).find('.countable'), function (idx, el) {
-        var $element = $(el),
+        let $element = $(el),
             params = {
                 counter: $element.data('counterContainer') ? $element.data('counterContainer') : '#counter',
                 maxCount: $element.attr('maxlength') ? $element.attr('maxlength') : 100,
@@ -249,18 +249,18 @@ var bindCountable = function () {
     });
 };
 
-var reopenForEditing = function () {
-    var reopenId = getUrlParameter('reopen_id');
+let reopenForEditing = function () {
+    let reopenId = getUrlParameter('reopen_id');
     if (reopenId !== undefined) {
         $('.reopenable').find('tr[data-id="' + reopenId + '"] > td:eq(1)').trigger('click');
     }
 };
 
-var modalFailureCallback = function (divModal, response) {
+let modalFailureCallback = function (divModal, response) {
     $(divModal).remove();
 };
 
-var modalHideCallback = function (divModal) {
+let modalHideCallback = function (divModal) {
     if (typeof tinymce !== 'undefined') {
         tinymce.remove();
     }
@@ -268,7 +268,7 @@ var modalHideCallback = function (divModal) {
     $(divModal).remove();
 };
 
-var modalShowCallback = function (divModal) {
+let modalShowCallback = function (divModal) {
     divModal.bindSelect2();
 
     bindXeditable(divModal.find('.myeditable'));
@@ -281,16 +281,16 @@ var modalShowCallback = function (divModal) {
     preselectToggleButtons($("[data-toggle=buttons]"));
 };
 
-var bindTooltips = function ($element) {
+let bindTooltips = function ($element) {
     $element.tooltip({
         selector: "[data-toggle~=tooltip]",
         container: "body"
     });
 };
 
-var preselectToggleButtons = function ($element) {
+let preselectToggleButtons = function ($element) {
     $element.find('input').each(function () {
-        var _this = $(this);
+        let _this = $(this);
 
         if (_this.is(':checked')) {
             _this.parent().addClass('active');
@@ -298,7 +298,7 @@ var preselectToggleButtons = function ($element) {
     })
 };
 
-var postFormEmpty = function ($form, callback) {
+let postFormEmpty = function ($form, callback) {
     $.ajax({
         type: $form.attr('method'),
         url: $form.attr('action'),
@@ -309,8 +309,8 @@ var postFormEmpty = function ($form, callback) {
 
 };
 
-var postForm = function ($form, callback) {
-    var values = {};
+let postForm = function ($form, callback) {
+    let values = {};
     $.each($form.serializeArray(), function (i, field) {
         values[field.name] = field.value;
     });
@@ -326,13 +326,13 @@ var postForm = function ($form, callback) {
 
 };
 
-var runHolder = function () {
+let runHolder = function () {
     if (typeof Holder !== 'undefined') {
         Holder.run();
     }
 };
 
-var bindXeditable = function ($element) {
+let bindXeditable = function ($element) {
     if ($element.length <= 0) {
         return;
     }
@@ -347,18 +347,18 @@ var bindXeditable = function ($element) {
     });
 };
 
-var getUrlParameter = function (sParam) {
-    var sPageURL = window.location.search.substring(1);
-    var sURLVariables = sPageURL.split('&');
-    for (var i = 0; i < sURLVariables.length; i++) {
-        var sParameterName = sURLVariables[i].split('=');
+let getUrlParameter = function (sParam) {
+    let sPageURL = window.location.search.substring(1);
+    let sURLVariables = sPageURL.split('&');
+    for (let i = 0; i < sURLVariables.length; i++) {
+        let sParameterName = sURLVariables[i].split('=');
         if (sParameterName[0] == sParam) {
             return sParameterName[1];
         }
     }
 };
 
-var bindDatepickers = function ($element) {
+let bindDatepickers = function ($element) {
     if ($element.length <= 0) {
         return;
     }

@@ -17,33 +17,19 @@ use Knp\Component\Pager\Pagination\PaginationInterface;
 /**
  * Class KnpPaginatorAdapter
  * @package Nfq\AdminBundle\Paginator\Adapters
+ * @property Paginator $paginator
+ * @property PaginationInterface $pagination
  */
 class KnpPaginatorAdapter extends AbstractPaginatorAdapter
 {
-    /**
-     * @var Paginator
-     */
-    protected $paginator;
-
-    /**
-     * @var PaginationInterface
-     */
-    protected $pagination;
-
-    /**
-     * {@inheritdoc}
-     */
-    public static function supports($className)
+    public static function supports(string $className): bool
     {
-        return $className === 'Knp\\Component\\Pager\\Paginator';
+        return $className === Paginator::class;
     }
 
-    /**
-     * @return PaginationInterface
-     */
-    protected function initPagination()
+    protected function initPagination(): void
     {
-        return $this->paginator->paginate(
+        $this->pagination = $this->paginator->paginate(
             $this->target,
             $this->currentPage,
             $this->maxPerPage,
@@ -51,9 +37,10 @@ class KnpPaginatorAdapter extends AbstractPaginatorAdapter
         );
     }
 
-    protected function configurePagination()
+    protected function configurePagination(): void
     {
-        //Remove `reopen_id` from pagination parameters
+        //Remove `reopen_id` and `reopen_locale` from pagination parameters
         $this->pagination->setParam('reopen_id', null);
+        $this->pagination->setParam('reopen_locale', null);
     }
 }

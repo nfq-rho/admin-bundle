@@ -96,7 +96,7 @@ trait TranslatableCrudControllerTrait
         $this->loadLocales();
 
         //Correct locale for TranslatableListener is passed via event listener, so passing null here
-        $baseEntity = $this->getEditableEntityForLocale($id);
+        $baseEntity = $this->getEntityForLocale($id);
 
         if (!$baseEntity) {
             throw $this->createNotFoundException('Entity was not found');
@@ -115,7 +115,7 @@ trait TranslatableCrudControllerTrait
 
         $forms = [];
         foreach ($this->locales as $locale) {
-            $editableEntity = $this->getEditableEntityForLocale($id, $locale);
+            $editableEntity = $this->getEntityForLocale($id, $locale);
             $editableEntity->setLocale($locale);
 
             [$editForm, $deleteForm] = $this->getEditDeleteForms(clone $editableEntity);
@@ -123,7 +123,7 @@ trait TranslatableCrudControllerTrait
             //Due to referenced base entity we have to recreate edit form for every locale, because entity of submitted
             //form changes while looping other locales thus final result of the locale entity is incorrect. But then
             //we loose form errors, so here we have to re-validate the form of submitted locale
-            if ($submitLocale && $submitLocale == $locale) {
+            if ($submitLocale === $locale) {
                 $editForm->handleRequest($request);
                 $editForm->isValid();
             }

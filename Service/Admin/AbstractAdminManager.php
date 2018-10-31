@@ -11,7 +11,8 @@
 
 namespace Nfq\AdminBundle\Service\Admin;
 
-use Doctrine\ORM\EntityRepository;
+use Doctrine\Common\Persistence\ObjectRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query;
 use Nfq\AdminBundle\Event\GenericEvent;
 use Nfq\AdminBundle\Service\Generic\Actions\GenericActionsInterface;
@@ -24,8 +25,8 @@ use Symfony\Component\HttpFoundation\Request;
  */
 abstract class AbstractAdminManager implements AdminManagerInterface
 {
-    /** @var EntityRepository */
-    protected $repository;
+    /** @var EntityManagerInterface */
+    protected $entityManager;
 
     /** @var GenericSearchInterface */
     protected $search;
@@ -33,9 +34,9 @@ abstract class AbstractAdminManager implements AdminManagerInterface
     /** @var GenericActionsInterface */
     protected $actions;
 
-    public function __construct(EntityRepository $repository)
+    public function __construct(EntityManagerInterface $entityManager)
     {
-        $this->repository = $repository;
+        $this->entityManager = $entityManager;
     }
 
     public function setActions(GenericActionsInterface $actions): void
@@ -90,5 +91,10 @@ abstract class AbstractAdminManager implements AdminManagerInterface
     public function getResults(Request $request): Query
     {
         return $this->search->getResults($request);
+    }
+
+    protected function getRepository(string $class): ObjectRepository
+    {
+        return $this->entityManager->getRepository($class);
     }
 }

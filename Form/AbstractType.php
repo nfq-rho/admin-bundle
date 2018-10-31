@@ -22,10 +22,16 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 abstract class AbstractType extends BaseAbstractType
 {
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'translation_domain' => 'adminInterface',
         ]);
+    }
+
+    protected function isNew(FormBuilderInterface $builder): bool
+    {
+        $entity = $builder->getData();
+        return method_exists($entity, 'getId') && null === $entity->getId();
     }
 }
