@@ -33,20 +33,20 @@ interface AdminManagerInterface
     public function getEntities(Request $request): Query;
 
     public function delete(
-        object $entity,
+        $entity,
         string $beforeEventName = 'generic.before_delete',
         string $afterEventName = 'generic.after_delete'
-    ): object;
+    ): void;
 
     public function insert(
-        object $entity,
+        $entity,
         string $beforeEventName = 'generic.before_insert',
         string $afterEventName = 'generic.after_insert'
-    ): object;
+    );
 
     public function save(
-        object $entity,
+        $entity,
         string $beforeEventName = 'generic.before_save',
         string $afterEventName = 'generic.after_save'
-    ): object;
+    );
 }

@@ -49,23 +49,21 @@ abstract class AbstractAdminManager implements AdminManagerInterface
     }
 
     public function delete(
-        object $entity,
+        $entity,
         string $beforeEventName = 'generic.before_delete',
         string $afterEventName = 'generic.after_delete'
-    ): object {
+    ): void {
         $beforeEvent = new GenericEvent($entity, $beforeEventName);
         $afterEvent = new GenericEvent($entity, $afterEventName, 'admin.generic.message.deleted_successfully');
 
         $this->actions->delete($beforeEvent, $entity, $afterEvent);
-
-        return $entity;
     }
 
     public function insert(
-        object $entity,
+        $entity,
         string $beforeEventName = 'generic.before_insert',
         string $afterEventName = 'generic.after_insert'
-    ): object {
+    ) {
         $beforeEvent = new GenericEvent($entity, $beforeEventName);
         $afterEvent = new GenericEvent($entity, $afterEventName, 'admin.generic.message.saved_successfully');
 
@@ -75,10 +73,10 @@ abstract class AbstractAdminManager implements AdminManagerInterface
     }
 
     public function save(
-        object $entity,
+        $entity,
         string $beforeEventName = 'generic.before_save',
         string $afterEventName = 'generic.after_save'
-    ): object {
+    ) {
         $beforeEvent = new GenericEvent($entity, $beforeEventName);
         $afterEvent = new GenericEvent($entity, $afterEventName, 'admin.generic.message.saved_successfully');
 

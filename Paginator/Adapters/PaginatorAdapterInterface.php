@@ -42,5 +42,5 @@ interface PaginatorAdapterInterface
      */
     public function setOptions(array $options): PaginatorAdapterInterface;
 
-    public function setPaginator(object $paginator): PaginatorAdapterInterface;
+    public function setPaginator($paginator): PaginatorAdapterInterface;
 }

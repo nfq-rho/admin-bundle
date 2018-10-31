@@ -92,7 +92,7 @@ abstract class AbstractPaginatorAdapter implements PaginatorAdapterInterface
         return $this->maxPerPage;
     }
 
-    public function setPaginator(object $paginator): PaginatorAdapterInterface
+    public function setPaginator($paginator): PaginatorAdapterInterface
     {
         $this->paginator = $paginator;
 

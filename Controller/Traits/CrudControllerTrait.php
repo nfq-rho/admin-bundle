@@ -40,14 +40,14 @@ trait CrudControllerTrait
         return $this->formManager;
     }
 
-    abstract protected function getEntity($id): ?object;
+    abstract protected function getEntity($id);
 
     /**
      * @return array<$entity, FormInterface $createForm>
      */
     abstract protected function getCreateFormAndEntity(): array;
 
-    abstract protected function insertAfterCreateAction(object $entity): void;
+    abstract protected function insertAfterCreateAction($entity): void;
 
     /**
      * @Template()
@@ -86,9 +86,9 @@ trait CrudControllerTrait
     /**
      * @return FormInterface[]
      */
-    abstract protected function getEditDeleteForms(object $entity): array;
+    abstract protected function getEditDeleteForms($entity): array;
 
-    abstract protected function saveAfterUpdateAction(object $entity): void;
+    abstract protected function saveAfterUpdateAction($entity): void;
 
     /**
      * @Template()
@@ -124,7 +124,7 @@ trait CrudControllerTrait
 
     abstract protected function getDeleteForm($id): FormInterface;
 
-    abstract protected function deleteAfterDeleteAction(object $entity): void;
+    abstract protected function deleteAfterDeleteAction($entity): void;
 
     /**
      * @Template()
@@ -175,7 +175,7 @@ trait CrudControllerTrait
     /**
      * @throws \RuntimeException
      */
-    protected function redirectToPreview(object $entity): RedirectResponse
+    protected function redirectToPreview($entity): RedirectResponse
     {
         throw new \RuntimeException('Implement this method');
     }
@@ -183,12 +183,12 @@ trait CrudControllerTrait
     /**
      * @throws \RuntimeException
      */
-    protected function redirectToIndex(Request $request, ?object $entity = null): RedirectResponse
+    protected function redirectToIndex(Request $request, $entity = null): RedirectResponse
     {
         throw new \RuntimeException('Implement this method');
     }
 
-    protected function getRedirectToIndexParams(Request $request, ?object $entity): ParameterBag
+    protected function getRedirectToIndexParams(Request $request, $entity): ParameterBag
     {
         $redirectParams = new ParameterBag();
 

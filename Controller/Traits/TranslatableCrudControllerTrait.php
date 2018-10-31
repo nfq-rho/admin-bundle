@@ -80,7 +80,7 @@ trait TranslatableCrudControllerTrait
         ];
     }
 
-    abstract protected function getEntityForLocale($id, string $locale = null): ?object;
+    abstract protected function getEntityForLocale($id, string $locale = null);
 
     /**
      * @Template()
@@ -171,7 +171,7 @@ trait TranslatableCrudControllerTrait
         $this->locales = $locales;
     }
 
-    protected function getEntity($id): ?object
+    protected function getEntity($id)
     {
         $locale = $this->container->get('request_stack')->getCurrentRequest()->getLocale();
         return $this->getEntityForLocale($id, $locale);
