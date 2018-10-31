@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * This file is part of the "NFQ Bundles" package.
@@ -13,8 +13,6 @@ namespace Nfq\AdminBundle\Controller\Traits;
 
 use Doctrine\ORM\Query;
 use Nfq\AdminBundle\Paginator\Paginator;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -39,7 +37,6 @@ trait ListControllerTrait
     }
 
     /**
-     * @Route("/")
      * @Template()
      */
     public function indexAction(Request $request): array

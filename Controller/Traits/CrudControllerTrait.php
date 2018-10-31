@@ -12,14 +12,11 @@
 namespace Nfq\AdminBundle\Controller\Traits;
 
 use Nfq\AdminBundle\Service\FormManager;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Class AbstractCrudController
@@ -53,8 +50,6 @@ trait CrudControllerTrait
     abstract protected function insertAfterCreateAction(object $entity): void;
 
     /**
-     * @Route("/new")
-     * @Method("GET")
      * @Template()
      */
     public function newAction(): array
@@ -68,12 +63,11 @@ trait CrudControllerTrait
     }
 
     /**
-     * @Route("/new")
-     * @Method("POST")
      * @Template()
      */
     public function createAction(Request $request)
     {
+        /** @var FormInterface $form */
         [$entity, $form] = $this->getCreateFormAndEntity();
 
         $form->handleRequest($request);
@@ -97,10 +91,6 @@ trait CrudControllerTrait
     abstract protected function saveAfterUpdateAction(object $entity): void;
 
     /**
-     * Edits an existing entity.
-     *
-     * @Route("/{id}/edit")
-     * @Method({"GET", "POST"})
      * @Template()
      *
      * @return array|RedirectResponse
@@ -132,11 +122,11 @@ trait CrudControllerTrait
         ];
     }
 
+    abstract protected function getDeleteForm($id): FormInterface;
+
     abstract protected function deleteAfterDeleteAction(object $entity): void;
 
     /**
-     * @Route("/{id}/delete")
-     * @Method({"GET", "POST"})
      * @Template()
      *
      * @return array|RedirectResponse

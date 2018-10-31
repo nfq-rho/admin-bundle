@@ -11,13 +11,11 @@
 
 namespace Nfq\AdminBundle\Controller\Traits;
 
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Trait TranslatableCrudControllerTrait
@@ -32,8 +30,6 @@ trait TranslatableCrudControllerTrait
     protected $locales;
 
     /**
-     * @Route("/new")
-     * @Method("GET")
      * @Template()
      */
     public function newAction(): array
@@ -53,8 +49,6 @@ trait TranslatableCrudControllerTrait
     }
 
     /**
-     * @Route("/new")
-     * @Method("POST")
      * @Template()
      *
      * @return array|RedirectResponse
@@ -89,8 +83,6 @@ trait TranslatableCrudControllerTrait
     abstract protected function getEntityForLocale($id, string $locale = null): ?object;
 
     /**
-     * @Route("/{id}/update")
-     * @Method({"GET", "POST"})
      * @Template()
      *
      * @return array|RedirectResponse
