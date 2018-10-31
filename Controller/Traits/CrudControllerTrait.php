@@ -90,7 +90,7 @@ trait CrudControllerTrait
     }
 
     /**
-     * @return array<$entity, FormInterface $createForm>
+     * @return FormInterface[]
      */
     abstract protected function getEditDeleteForms(object $entity): array;
 

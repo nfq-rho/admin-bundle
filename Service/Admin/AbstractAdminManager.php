@@ -11,7 +11,6 @@
 
 namespace Nfq\AdminBundle\Service\Admin;
 
-use Doctrine\Common\Persistence\ObjectRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query;
 use Nfq\AdminBundle\Event\GenericEvent;
@@ -50,10 +49,10 @@ abstract class AbstractAdminManager implements AdminManagerInterface
     }
 
     public function delete(
-        $entity,
+        object $entity,
         string $beforeEventName = 'generic.before_delete',
         string $afterEventName = 'generic.after_delete'
-    ) {
+    ): object {
         $beforeEvent = new GenericEvent($entity, $beforeEventName);
         $afterEvent = new GenericEvent($entity, $afterEventName, 'admin.generic.message.deleted_successfully');
 
@@ -63,10 +62,10 @@ abstract class AbstractAdminManager implements AdminManagerInterface
     }
 
     public function insert(
-        $entity,
+        object $entity,
         string $beforeEventName = 'generic.before_insert',
         string $afterEventName = 'generic.after_insert'
-    ) {
+    ): object {
         $beforeEvent = new GenericEvent($entity, $beforeEventName);
         $afterEvent = new GenericEvent($entity, $afterEventName, 'admin.generic.message.saved_successfully');
 
@@ -76,10 +75,10 @@ abstract class AbstractAdminManager implements AdminManagerInterface
     }
 
     public function save(
-        $entity,
+        object $entity,
         string $beforeEventName = 'generic.before_save',
         string $afterEventName = 'generic.after_save'
-    ) {
+    ): object {
         $beforeEvent = new GenericEvent($entity, $beforeEventName);
         $afterEvent = new GenericEvent($entity, $afterEventName, 'admin.generic.message.saved_successfully');
 
@@ -88,13 +87,8 @@ abstract class AbstractAdminManager implements AdminManagerInterface
         return $entity;
     }
 
-    public function getResults(Request $request): Query
+    public function getEntities(Request $request): Query
     {
         return $this->search->getResults($request);
-    }
-
-    protected function getRepository(string $class): ObjectRepository
-    {
-        return $this->entityManager->getRepository($class);
     }
 }

@@ -14,13 +14,15 @@ namespace Nfq\AdminBundle\Controller\Traits;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Trait TranslatableCrudControllerTrait
  * @package Nfq\AdminBundle\Controller\Traits
+ * @property ContainerInterface $container
  */
 trait TranslatableCrudControllerTrait
 {
@@ -34,12 +36,13 @@ trait TranslatableCrudControllerTrait
      * @Method("GET")
      * @Template()
      */
-    public function newAction(Request $request): array
+    public function newAction(): array
     {
         $this->loadLocales();
 
         $forms = [];
         foreach ($this->locales as $locale) {
+            /** @var FormInterface $form  */
             [, $form] = $this->getCreateFormAndEntity($locale);
             $forms[$locale] = $form->createView();
         }
@@ -62,6 +65,7 @@ trait TranslatableCrudControllerTrait
 
         $forms = [];
         foreach ($this->locales as $locale) {
+            /** @var FormInterface $form  */
             [$entity, $form] = $this->getCreateFormAndEntity($locale);
 
             if ($request->isMethod('POST') && $request->request->get($form->getName())['locale'] === $locale) {
@@ -142,7 +146,7 @@ trait TranslatableCrudControllerTrait
     }
 
     /**
-     * @return Form[]|RedirectResponse
+     * @return FormInterface|RedirectResponse
      */
     private function doUpdate(Request $request, $entity)
     {
@@ -161,13 +165,13 @@ trait TranslatableCrudControllerTrait
     protected function loadLocales(bool $defaultFirst = false): void
     {
         $defaultLocale = $this->container->getParameter('locale');
-        $locales = ($this->container->hasParameter('locales'))
+        $locales = $this->container->hasParameter('locales')
             ? $this->container->getParameter('locales')
             : [$defaultLocale];
 
         if ($defaultFirst) {
             //unset default locale and set it as first element in locales array
-            $defaultIdx = array_search($defaultLocale, $locales);
+            $defaultIdx = array_search($defaultLocale, $locales, true);
             unset($defaultIdx);
             array_unshift($locales, $defaultLocale);
         }
