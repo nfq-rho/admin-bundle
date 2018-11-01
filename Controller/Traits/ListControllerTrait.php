@@ -15,6 +15,7 @@ use Doctrine\ORM\Query;
 use Nfq\AdminBundle\Paginator\Paginator;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Trait ListControllerTrait
@@ -38,8 +39,9 @@ trait ListControllerTrait
 
     /**
      * @Template()
+     * @return array|Response
      */
-    public function indexAction(Request $request): array
+    public function indexAction(Request $request)
     {
         $options = [
             'distinct' => $this->distinct,
@@ -56,7 +58,7 @@ trait ListControllerTrait
         ];
     }
 
-    public function setDistinct(bool $distinct): void
+    protected function setDistinct(bool $distinct): void
     {
         $this->distinct = $distinct;
     }
