@@ -122,7 +122,7 @@ trait CrudControllerTrait
         ];
     }
 
-    abstract protected function getDeleteForm($id): FormInterface;
+    abstract protected function getDeleteForm($entity): FormInterface;
 
     abstract protected function deleteAfterDeleteAction($entity): void;
 
@@ -139,7 +139,7 @@ trait CrudControllerTrait
             throw $this->createNotFoundException('Entity not found.');
         }
 
-        $form = $this->getDeleteForm($id);
+        $form = $this->getDeleteForm($entity);
 
         if ($request->isMethod('POST')) {
             $form->handleRequest($request);
