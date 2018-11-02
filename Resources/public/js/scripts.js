@@ -230,9 +230,9 @@ $(document).ready(function () {
 });
 
 let bs_alert = function (message, type) {
-    let type = 'alert-' + type;
+    let className = 'alert-' + type;
 
-    $('#status-messages').html('<div class="alert ' + type + ' alert-dismissable">' +
+    $('#status-messages').html('<div class="alert ' + className + ' alert-dismissable">' +
         '<a class="close" data-dismiss="alert">×</a><span>' + message + '</span>' +
         '</div>');
 };
