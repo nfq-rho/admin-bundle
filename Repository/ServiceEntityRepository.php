@@ -52,12 +52,12 @@ class ServiceEntityRepository extends BaseServiceEntityRepository
             if (strpos($key, '.') !== false) {
                 [$alias, $key] = explode('.', $key);
 
-                if (!\in_array($alias, $aliases)) {
+                if (!\in_array($alias, $aliases, true)) {
                     throw new \InvalidArgumentException("Invalid alias detected `{$alias}");
                 }
             }
 
-            $paramKey = ':param_' . $alias . $key;
+            $paramKey = ':param_' . $alias . '_' . $key;
             if (\is_object($value) || \is_array($value)) {
                 $qb->andWhere($qb->expr()->in($alias . '.' . $key, $paramKey));
             } elseif (\is_string($value) && (strpos($value, '%') === 0 || substr($value, -1) === '%')) {
