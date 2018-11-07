@@ -34,7 +34,7 @@ trait TranslatableRepositoryTrait
 
     public function getTranslatableQueryByCriteriaSorted(
         array $criteria,
-        string $locale,
+        ?string $locale,
         bool $fallback = true,
         string $sortBy = 'id',
         string $sortOrder = 'ASC'
