@@ -27,20 +27,17 @@ abstract class GenericSearch implements GenericSearchInterface
     private $em;
 
     /** @var array */
-    protected $fields = [];
+    protected $searchFields = ['id',];
 
     /** @var string */
     protected $alias = 'search';
 
-    /** @var string */
-    protected $locale;
-
     /**
-     * @param string[] $fields
+     * @param string[] $searchFields
      */
-    public function __construct(array $fields)
+    public function __construct(array $searchFields = [])
     {
-        $this->fields = $fields;
+        $this->searchFields = $searchFields;
     }
 
     public function setEntityManager(EntityManagerInterface $em): void
@@ -56,16 +53,14 @@ abstract class GenericSearch implements GenericSearchInterface
     /**
      * @return string[]
      */
-    public function getFields(): array
+    public function getSearchFields(): array
     {
-        return $this->fields;
+        return $this->searchFields;
     }
 
-    public function getResults(Request $request, string $defSort = 'search.id', string $defDirection = 'DESC'): Query
+    public function getResults(Request $request): Query
     {
-        $this->prepareRequest($request, $defSort, $defDirection);
-
-        $queryBuilder = $this->buildQuery($request);
+        $queryBuilder = $this->createQueryBuilder($request);
 
         $query = $queryBuilder->getQuery();
 
@@ -75,14 +70,25 @@ abstract class GenericSearch implements GenericSearchInterface
                 ->setHint('knp_paginator.fetch_join_collection', false);
         }
 
-        $this->setQueryHints($query);
+        $this->setQueryHints($request, $query);
 
         return $query;
     }
 
-    protected function setQueryHints(Query $query): void
+    protected function getResultCount(QueryBuilder $queryBuilder): ?int
     {
+        return null;
+    }
 
+    protected function createQueryBuilder(Request $request): QueryBuilder
+    {
+        $queryBuilder = $this->getRepository()->createQueryBuilder($this->alias);
+
+        $this->extendQuery($request, $queryBuilder);
+
+        $this->getWhere($request, $queryBuilder);
+
+        return $queryBuilder;
     }
 
     /**
@@ -90,27 +96,27 @@ abstract class GenericSearch implements GenericSearchInterface
      */
     protected function extendQuery(Request $request, QueryBuilder $queryBuilder): void
     {
-
     }
 
-    protected function getResultCount(QueryBuilder $currentQueryBuilder): ?int
+    protected function setQueryHints(Request $request, Query $query): void
     {
-        return null;
     }
 
-    protected function getWhere(Request $request, QueryBuilder $queryBuilder): void
+    /**
+     * Builds main part of the search query. Use extendQuery() if you want to add additional conditions
+     */
+    private function getWhere(Request $request, QueryBuilder $queryBuilder): void
     {
-        $token = $request->get('search', null);
-        ($token === null && $token !== '') && $token = $request->get('q', null);
+        $token = $request->get('search', $request->get('q', null));
 
-        if ($token === null || $token === '') {
+        if (empty($token)) {
             return;
         }
 
         $where = $queryBuilder->expr()->orX();
         $classMetaData = $this->getClassMetaData();
 
-        $fields = $request->get('_sByFld', $this->getFields());
+        $fields = $request->get('_sByFld', $this->getSearchFields());
 
         foreach ($fields as $idx => $_field) {
             $expr = null;
@@ -135,13 +141,17 @@ abstract class GenericSearch implements GenericSearchInterface
                 case 'time':
                 case 'year':
                     if ($this->hasValidDateSymbols($token)) {
-                        $expr = $queryBuilder->expr()->like($aliasedField,
-                            $queryBuilder->expr()->literal('%' . $token . '%'));
+                        $expr = $queryBuilder->expr()->like(
+                            $aliasedField,
+                            $queryBuilder->expr()->literal('%' . $token . '%')
+                        );
                     }
                     break;
                 default:
-                    $expr = $queryBuilder->expr()->like($aliasedField,
-                        $queryBuilder->expr()->literal('%' . $token . '%'));
+                    $expr = $queryBuilder->expr()->like(
+                        $aliasedField,
+                        $queryBuilder->expr()->literal('%' . $token . '%')
+                    );
                     break;
             }
 
@@ -149,35 +159,6 @@ abstract class GenericSearch implements GenericSearchInterface
         }
 
         $queryBuilder->andWhere($where);
-    }
-
-    private function buildQuery(Request $request): QueryBuilder
-    {
-        $queryBuilder = $this->getRepository()->createQueryBuilder($this->alias);
-
-        $this->getWhere($request, $queryBuilder);
-
-        $this->extendQuery($request, $queryBuilder);
-
-        return $queryBuilder;
-    }
-
-    private function prepareRequest(Request $request, string $defSort, string $defDirection): void
-    {
-        $this->locale = $request->getLocale();
-
-        $sort = $request->query->get(self::SORT_KEY, $defSort);
-        $direction = strtoupper($request->query->get(self::DIRECTION_KEY, $defDirection));
-
-        $request->query->add([
-            self::SORT_KEY => $sort,
-            self::DIRECTION_KEY => $direction,
-        ]);
-
-        //@TODO: review if this is still needed
-        //This fix was added  due to the way KNPs paginator checks for sorting parameters
-        $_GET[self::SORT_KEY] = $sort;
-        $_GET[self::DIRECTION_KEY] = $direction;
     }
 
     private function getClassMetaData(): ClassMetadata

@@ -71,7 +71,6 @@ abstract class AbstractPaginatorAdapter implements PaginatorAdapterInterface
      */
     protected function configurePagination(): void
     {
-
     }
 
     public function setCurrentPage(int $currentPage): PaginatorAdapterInterface
@@ -124,7 +123,7 @@ abstract class AbstractPaginatorAdapter implements PaginatorAdapterInterface
     {
         $showingTo = $this->currentPage * $this->maxPerPage;
 
-        if($showingTo > $this->getTotalItemCount()) {
+        if ($showingTo > $this->getTotalItemCount()) {
             $showingTo = $this->getTotalItemCount();
         }
 

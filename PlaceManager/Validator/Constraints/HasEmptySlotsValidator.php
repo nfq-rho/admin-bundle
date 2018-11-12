@@ -36,7 +36,7 @@ class HasEmptySlotsValidator extends ConstraintValidator implements ContainerAwa
 
         $placeManager = $this->getPlaceManager($constraint->manager);
 
-        foreach($value as $slotId) {
+        foreach ($value as $slotId) {
             if (false === $placeManager->hasEmptySlots($slotId)) {
                 $this->context->buildViolation($constraint->message)
                     ->setParameter('%limit%', $placeManager->getPlace($slotId)['limit'])

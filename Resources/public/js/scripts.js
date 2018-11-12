@@ -244,7 +244,7 @@ let bindCountable = function () {
                 counter: $element.data('counterContainer') ? $element.data('counterContainer') : '#counter',
                 maxCount: $element.attr('maxlength') ? $element.attr('maxlength') : 100,
                 strictMax: true
-            };
+        };
         $element.simplyCountable(params);
     });
 };
@@ -364,6 +364,7 @@ let bindDatepickers = function ($element) {
     }
 
     $element.daterangepicker({
+        autoUpdateInput: false,
         singleDatePicker: true,
         minYear: 2018,
         maxYear: parseInt(moment().format('YYYY'), 10),
@@ -371,6 +372,9 @@ let bindDatepickers = function ($element) {
             format: 'DD.MM.YYYY',
         },
         weekStart: 1,
-        autoclose: true
+        autoclose: true,
+    }).on('apply.daterangepicker', function (ev, picker) {
+        debugger;
+        $(this).val(picker.startDate.format('DD.MM.YYYY'));
     });
 };

@@ -12,11 +12,8 @@
 namespace Nfq\AdminBundle\Service\Admin;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Query;
 use Nfq\AdminBundle\Event\GenericEvent;
 use Nfq\AdminBundle\Service\Generic\Actions\GenericActionsInterface;
-use Nfq\AdminBundle\Service\Generic\Search\GenericSearchInterface;
-use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class AbstractAdminManager
@@ -26,9 +23,6 @@ abstract class AbstractAdminManager implements AdminManagerInterface
 {
     /** @var EntityManagerInterface */
     protected $entityManager;
-
-    /** @var GenericSearchInterface */
-    protected $search;
 
     /** @var GenericActionsInterface */
     protected $actions;
@@ -41,11 +35,6 @@ abstract class AbstractAdminManager implements AdminManagerInterface
     public function setActions(GenericActionsInterface $actions): void
     {
         $this->actions = $actions;
-    }
-
-    public function setSearch(GenericSearchInterface $search): void
-    {
-        $this->search = $search;
     }
 
     public function delete(
@@ -83,10 +72,5 @@ abstract class AbstractAdminManager implements AdminManagerInterface
         $this->actions->save($beforeEvent, $entity, $afterEvent);
 
         return $entity;
-    }
-
-    public function getEntities(Request $request): Query
-    {
-        return $this->search->getResults($request);
     }
 }

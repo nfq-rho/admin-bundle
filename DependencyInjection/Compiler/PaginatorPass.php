@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * This file is part of the "NFQ Bundles" package.
@@ -26,7 +26,7 @@ class PaginatorPass implements CompilerPassInterface
     private const SERVICE_NAME_KNP_PAGINATOR = 'knp_paginator';
     private const SERVICE_NAME_PAGERFANTA_PAGINATOR = 'pagerfanta_paginator';
 
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         $default = false;
 
@@ -39,7 +39,6 @@ class PaginatorPass implements CompilerPassInterface
             $definition->setLazy(true);
 
             $container->setDefinition($id, $definition);
-
         } else {
             /**
              * @TODO: use id from bundle config

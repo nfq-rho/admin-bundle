@@ -5,7 +5,6 @@ services:
         public: false
 
         bind:
-            $defaultLocale: '%kernel.default_locale%'
             $bundles: '%kernel.bundles%'
 
     Nfq\AdminBundle\:
@@ -37,6 +36,8 @@ services:
             - [ setContainer, [ '@service_container' ]]
         tags:
             - { name: validator.constraint_validator, alias: nfq_admin_validator_has_empty_slots }
+
+    Nfq\AdminBundle\Service\Generic\Actions\GenericActionsInterface: '@Nfq\AdminBundle\Service\Generic\Actions\GenericActions'
 
     nfq_admin.notice_listener:
         class: Nfq\AdminBundle\EventListener\NoticeListener

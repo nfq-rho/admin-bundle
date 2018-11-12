@@ -151,14 +151,26 @@ class FormManager
 
         $formBuilder->setAction($action)->setMethod($this->methods[$method]);
 
-        isset($submitOptions[self::SUBMIT_STANDARD]) && $formBuilder->add('submit', SubmitType::class,
-            $submitOptions[self::SUBMIT_STANDARD]);
-        isset($submitOptions[self::SUBMIT_CLOSE]) && $formBuilder->add('submit_close', SubmitType::class,
-            $submitOptions[self::SUBMIT_CLOSE]);
-        isset($submitOptions[self::SUBMIT_PREVIEW]) && $formBuilder->add('submit_preview', SubmitType::class,
-            $submitOptions[self::SUBMIT_PREVIEW]);
-        isset($submitOptions[self::SUBMIT_DELETE]) && $formBuilder->add('submit_delete', SubmitType::class,
-            $submitOptions[self::SUBMIT_DELETE]);
+        isset($submitOptions[self::SUBMIT_STANDARD]) && $formBuilder->add(
+            'submit',
+            SubmitType::class,
+            $submitOptions[self::SUBMIT_STANDARD]
+        );
+        isset($submitOptions[self::SUBMIT_CLOSE]) && $formBuilder->add(
+            'submit_close',
+            SubmitType::class,
+            $submitOptions[self::SUBMIT_CLOSE]
+        );
+        isset($submitOptions[self::SUBMIT_PREVIEW]) && $formBuilder->add(
+            'submit_preview',
+            SubmitType::class,
+            $submitOptions[self::SUBMIT_PREVIEW]
+        );
+        isset($submitOptions[self::SUBMIT_DELETE]) && $formBuilder->add(
+            'submit_delete',
+            SubmitType::class,
+            $submitOptions[self::SUBMIT_DELETE]
+        );
 
         return $formBuilder;
     }

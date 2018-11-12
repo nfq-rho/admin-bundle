@@ -11,7 +11,6 @@
 
 namespace Nfq\AdminBundle\DependencyInjection\Compiler;
 
-
 use Nfq\AdminBundle\Helper\ContextHelper;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -23,7 +22,7 @@ use Symfony\Component\DependencyInjection\Reference;
  */
 class TwigPass implements CompilerPassInterface
 {
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         $bundles = $container->getParameter('kernel.bundles');
         if (!isset($bundles['TwigBundle'])) {
@@ -35,7 +34,8 @@ class TwigPass implements CompilerPassInterface
             $twigFormResources = [];
         }
 
-        \array_push($twigFormResources, '@NfqAdmin/layout/form-theme.html.twig');
+        $twigFormResources[] = '@NfqAdmin/layout/form-theme.html.twig';
+
         $container->setParameter('twig.form.resources', $twigFormResources);
 
         $twigDef = $container->getDefinition('twig');

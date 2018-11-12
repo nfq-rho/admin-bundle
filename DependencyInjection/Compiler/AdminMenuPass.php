@@ -22,15 +22,16 @@ use Symfony\Component\DependencyInjection\Exception\ParameterNotFoundException;
  */
 class AdminMenuPass implements CompilerPassInterface
 {
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
-        try {
-            $config = $container->getParameter('nfq_admin.menu_security');
-        } catch (ParameterNotFoundException $e) {
+        if (!$container->hasParameter('nfq_admin.menu_security')) {
             return;
         }
 
-        foreach ($this->getKernelEventListeners($container) as $id => $service) {
+        $config = $container->getParameter('nfq_admin.menu_security');
+
+        $kernelListeners = $container->findTaggedServiceIds('kernel.event_listener');
+        foreach ($kernelListeners as $id => $service) {
             if ($this->isAdminMenuEvent($service)) {
                 $this->addGrantedRoles($container, $id, $config);
             }
@@ -50,7 +51,12 @@ class AdminMenuPass implements CompilerPassInterface
     private function buildBundleNameFromNamespace(string $id): string
     {
         if (false === \strpos($id, '\\')) {
-            throw new \InvalidArgumentException('Can not resolve bundle name from %s . When defining your listener, specify FQCN instead');
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'Can not resolve bundle name from %s . When defining your listener, specify FQCN instead',
+                    $id
+                )
+            );
         }
 
         [$vendorPart, $bundlePart] = explode('\\', $id);
@@ -60,12 +66,14 @@ class AdminMenuPass implements CompilerPassInterface
 
     private function isAdminMenuEvent(array $service): bool
     {
-        return \in_array($service[0]['event'], [ConfigureMenuEvent::HEADER_MENU, ConfigureMenuEvent::SIDE_MENU]);
-    }
-
-    private function getKernelEventListeners(ContainerBuilder $container): array
-    {
-        return $container->findTaggedServiceIds('kernel.event_listener');
+        return \in_array(
+            $service[0]['event'],
+            [
+                ConfigureMenuEvent::HEADER_MENU,
+                ConfigureMenuEvent::SIDE_MENU
+            ],
+            true
+        );
     }
 
     private function isBundleConfigDefined(string $bundleNamespace, array $config): bool

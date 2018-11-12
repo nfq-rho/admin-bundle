@@ -12,23 +12,23 @@
 namespace Nfq\AdminBundle\DependencyInjection;
 
 use Nfq\AdminBundle\Helper\ContextHelper;
+use Nfq\AdminBundle\Service\Admin\AdminManagerInterface;
+use Nfq\AdminBundle\Service\Generic\Actions\GenericActionsInterface;
+use Nfq\AdminBundle\Service\Generic\Search\GenericSearchInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader;
 
 /**
- * This is the class that loads and manages your bundle configuration
- *
- * To learn more see {@link http://symfony.com/doc/current/cookbook/bundles/extension.html}
+ * Class NfqAdminExtension
+ * @package Nfq\AdminBundle\DependencyInjection
  */
 class NfqAdminExtension extends Extension
 {
-    /**
-     * {@inheritDoc}
-     */
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $configuration = new Configuration();
         $this->processConfiguration($configuration, $configs);
@@ -43,6 +43,9 @@ class NfqAdminExtension extends Extension
         $this->configurePaging($contextHelperDef, $container);
 
         $contextHelperDef->addMethodCall('setOption', ['default_avatar', 'bundles/nfqadmin/images/default_avatar.png']);
+
+        $this->configureSearchServices($container);
+        $this->configureManagerServices($container);
     }
 
     private function configureMenu(Definition $definition, ContainerBuilder $container): void
@@ -64,5 +67,21 @@ class NfqAdminExtension extends Extension
     {
         $maxPerPage = $container->getParameter('global_max_per_page');
         $definition->addMethodCall('setOption', ['default_max_per_page', $maxPerPage]);
+    }
+
+    private function configureSearchServices(ContainerBuilder $container): void
+    {
+        $container
+            ->registerForAutoconfiguration(GenericSearchInterface::class)
+            ->addTag('nfq_admin.search')
+            ->addMethodCall('setEntityManager', [new Reference('doctrine.orm.entity_manager')]);
+    }
+
+    private function configureManagerServices(ContainerBuilder $container): void
+    {
+        $container
+            ->registerForAutoconfiguration(AdminManagerInterface::class)
+            ->addTag('nfq_admin.manager')
+            ->addMethodCall('setActions', [new Reference(GenericActionsInterface::class)]);
     }
 }

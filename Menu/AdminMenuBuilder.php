@@ -72,7 +72,6 @@ class AdminMenuBuilder implements ContainerAwareInterface
         $alreadyTaken = [];
 
         foreach ($menu->getChildren() as $key => $menuItem) {
-
             if ($menuItem->hasChildren()) {
                 $this->orderMenuItems($menuItem);
             }

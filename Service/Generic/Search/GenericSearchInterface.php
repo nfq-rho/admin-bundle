@@ -32,7 +32,7 @@ interface GenericSearchInterface
     /**
      * @return string[]
      */
-    public function getFields(): array;
+    public function getSearchFields(): array;
 
     public function getResults(Request $request): Query;
 

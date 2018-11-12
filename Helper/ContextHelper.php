@@ -11,7 +11,6 @@
 
 namespace Nfq\AdminBundle\Helper;
 
-
 class ContextHelper extends \ArrayObject
 {
     /**

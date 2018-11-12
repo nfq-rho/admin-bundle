@@ -11,10 +11,7 @@
 
 namespace Nfq\AdminBundle\Service\Admin;
 
-use Doctrine\ORM\Query;
 use Nfq\AdminBundle\Service\Generic\Actions\GenericActionsInterface;
-use Nfq\AdminBundle\Service\Generic\Search\GenericSearchInterface;
-use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Interface AdminManagerInterface
@@ -24,13 +21,9 @@ interface AdminManagerInterface
 {
     public function setActions(GenericActionsInterface $actions): void;
 
-    public function setSearch(GenericSearchInterface $search): void;
-
     public function getRepository();
 
     public function getEntity($id);
-
-    public function getEntities(Request $request): Query;
 
     public function delete(
         $entity,
