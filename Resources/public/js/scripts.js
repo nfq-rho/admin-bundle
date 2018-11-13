@@ -64,61 +64,70 @@ $(document).ready(function () {
         return this;
     };
 
-    $(this).bindSelect2();
+    $.fn.unbindModals = function(namespace) {
+        $('[data-toggle~=modal]').off('click.' + namespace);
+    };
+
+    $.fn.bindModals = function(namespace) {
+        $('[data-toggle~=modal]').on('click.' + namespace, function (e) {
+            e.preventDefault();
+            let _this = $(this),
+                spinner = $('.spinner'),
+                backdrop = (typeof _this.data('backdrop') === "undefined") ? 'static' : _this.data('backdrop'),
+                url = (typeof _this.attr('href') === "undefined")
+                    ? (typeof _this.data('href') === "undefined") ? null : _this.data('href')
+                    : _this.attr('href');
+
+            if (!url) {
+                return false;
+            }
+
+            if (url.indexOf("?") >= 0) {
+                if (url.indexOf('isModal') < 0) {
+                    url += '&isModal=1';
+                }
+            } else {
+                url += url.indexOf('#') === 0 ? '' : '?isModal=1';
+            }
+
+            if (url.indexOf('#') === 0) {
+                $(url).modal('open');
+            } else {
+                spinner.removeClass('hide');
+                $.get(url, function (response) {
+                    spinner.addClass('hide');
+                    let _divModal = $('<div class="modal fade"></div>'),
+                        divModal = $(_divModal);
+
+                    if (response.status === 'success') {
+                        divModal.append(response.content);
+
+                        divModal
+                            .modal({
+                                backdrop: backdrop
+                            })
+                            .on('shown.bs.modal', function () {
+                                modalShowCallback(divModal)
+                            })
+                            .on('hidden.bs.modal', function () {
+                                modalHideCallback(divModal);
+                            });
+                    } else if (response.status === 'redirect') {
+                        window.location.href = response.content;
+                    } else {
+                        modalFailureCallback(divModal, response);
+                    }
+                });
+            }
+        });
+    };
+
+    $(this)
+        .bindSelect2()
+        .bindModals('body');
 
     // Support for AJAX loaded modal window.
     // Focuses on first input textbox after it loads the window.
-    $('[data-toggle~=modal]').click(function (e) {
-        e.preventDefault();
-        let _this = $(this),
-            spinner = $('.spinner'),
-            backdrop = (typeof _this.data('backdrop') === "undefined") ? 'static' : _this.data('backdrop'),
-            url = (typeof _this.attr('href') === "undefined")
-                ? (typeof _this.data('href') === "undefined") ? null : _this.data('href')
-                : _this.attr('href');
-
-        if (!url) {
-            return false;
-        }
-
-        if (url.indexOf("?") >= 0) {
-            if (url.indexOf('isModal') < 0) {
-                url += '&isModal=1';
-            }
-        } else {
-            url += url.indexOf('#') == 0 ? '' : '?isModal=1';
-        }
-
-        if (url.indexOf('#') == 0) {
-            $(url).modal('open');
-        } else {
-            spinner.removeClass('hide');
-            $.get(url, function (response) {
-                spinner.addClass('hide');
-                let _divModal = $('<div class="modal fade"></div>'),
-                    divModal = $(_divModal);
-
-                if (response.status == 'success') {
-                    divModal.append(response.content);
-
-                    divModal
-                        .modal({
-                            backdrop: backdrop
-                        })
-                        .on('shown.bs.modal', function () {
-                            modalShowCallback(divModal)
-                        })
-                        .on('hidden.bs.modal', function () {
-                            modalHideCallback(divModal);
-                        });
-                } else if (response.status == 'redirect') {
-                    window.location.href = response.content;
-                } else {
-                    modalFailureCallback(divModal, response);
-                }
-            });
-        }
-    });
 
     //After click event is bind
     reopenForEditing();
@@ -148,7 +157,7 @@ $(document).ready(function () {
                 try {
                     response = $.parseJSON(response.text());
 
-                    if (response.status == 'redirect') {
+                    if (response.status === 'redirect') {
                         window.location = response.content;
                     } else {
                         let content = $(response.content).find('.content');
@@ -265,11 +274,15 @@ let modalHideCallback = function (divModal) {
         tinymce.remove();
     }
 
-    $(divModal).remove();
+    divModal
+        .unbindModals('modal')
+        .remove();
 };
 
 let modalShowCallback = function (divModal) {
-    divModal.bindSelect2();
+    divModal
+        .bindSelect2()
+        .bindModals('modal');
 
     bindXeditable(divModal.find('.myeditable'));
     bindDatepickers(divModal.find('.datepicker'));

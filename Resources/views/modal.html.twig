@@ -1,5 +1,6 @@
 {% trans_default_domain 'adminInterface' %}
 {% set currentLocale = app.request.attributes.get('_locale', app.request.locale) %}
+{% set isModal = true %}
 
 {% set hasFooterActions = false %}
 {% if block('page_box_footer_actions') is defined %}
@@ -8,6 +9,7 @@
         {% set hasFooterActions = true %}
     {% endif %}
 {% endif %}
+
 <div class="modal-dialog" style="width: {{ width|default('857px') }};" aria-labelledby="modalTitle">
     <div class="modal-content" role="document">
         <div class="modal-header">

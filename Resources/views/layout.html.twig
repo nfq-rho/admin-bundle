@@ -1,5 +1,7 @@
 {% trans_default_domain 'adminInterface' %}
-{% set currentLocale = app.request.locale %}
+{% set currentLocale = app.request.attributes.get('_locale', app.request.locale) %}
+{% set isModal = false %}
+
 <!DOCTYPE html{% block html_start %}{% endblock %}>
 <html lang="{{ currentLocale }}">
 <head>

@@ -8,9 +8,7 @@
 {% endblock %}
 
 {% block delete_form_theme %}
-    {% if delete_form is defined and delete_form is not empty %}
-        {% form_theme delete_form formTheme %}
-    {% elseif deleteForm is defined and deleteForm is not empty %}
+    {% if deleteForm is defined and deleteForm is not empty %}
         {% form_theme deleteForm formTheme %}
     {% endif %}
 {% endblock %}

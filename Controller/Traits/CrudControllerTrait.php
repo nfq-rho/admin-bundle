@@ -118,7 +118,7 @@ trait CrudControllerTrait
         return [
             'entity' => $entity,
             'form' => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
+            'deleteForm' => $deleteForm->createView(),
         ];
     }
 
@@ -153,7 +153,7 @@ trait CrudControllerTrait
 
         return [
             'entity' => $entity,
-            'delete_form' => $form->createView(),
+            'deleteForm' => $form->createView(),
         ];
     }
 
