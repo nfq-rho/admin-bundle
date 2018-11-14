@@ -16,6 +16,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormRegistryInterface;
 
 /**
  * Class FormManager
@@ -34,7 +35,10 @@ class FormManager
     public const CRUD_DELETE = 'delete';
 
     /** @var FormFactoryInterface */
-    protected $factory;
+    private $factory;
+
+    /** @var FormRegistryInterface */
+    private $registry;
 
     /** @var array */
     protected $methods = [
@@ -43,24 +47,17 @@ class FormManager
         self::CRUD_DELETE => 'POST',
     ];
 
-    /** @var string[]  */
+    /** @var string[] */
     private $defaultFormOptions = [
         'translation_domain' => 'adminInterface',
     ];
 
-    public function __construct(FormFactoryInterface $factory)
+    public function __construct(FormFactoryInterface $factory, FormRegistryInterface $registry)
     {
         $this->factory = $factory;
+        $this->registry = $registry;
     }
 
-    public function getFormFactory(): FormFactoryInterface
-    {
-        return $this->factory;
-    }
-
-    /**
-     * Builds delete form for controllers.
-     */
     public function getDeleteForm(string $uri, int $submit = self::SUBMIT_DELETE): FormInterface
     {
         $formBuilder = $this->getFormBuilder($uri, self::CRUD_DELETE, null, null, [], $submit);
@@ -79,9 +76,6 @@ class FormManager
         return $this;
     }
 
-    /**
-     * Builds edit form for controllers
-     */
     public function getEditForm(
         string $uri,
         string $formType,
@@ -105,9 +99,6 @@ class FormManager
         return $this;
     }
 
-    /**
-     * Create createForm for controllers.
-     */
     public function getCreateForm(
         string $uri,
         string $formType,
@@ -141,43 +132,26 @@ class FormManager
     ): FormBuilderInterface {
         $submitOptions = $this->getSubmitOptions($submit);
 
-        $formType = is_null($formType) ? FormType::class : $formType;
+        $formType = $formType ?? FormType::class;
 
         $formOptions = array_merge($this->defaultFormOptions, $formOptions);
 
-        $formBuilder = $this
-            ->getFormFactory()
-            ->createBuilder($formType, $data, $formOptions);
+        if (\is_object($data) && method_exists($data, 'getLocale')) {
+            $formName = $data->getLocale() . '_' . $this->registry->getType($formType)->getBlockPrefix();
+            $formBuilder = $this->factory->createNamedBuilder($formName, $formType, $data, $formOptions);
+        } else {
+            $formBuilder = $this->factory->createBuilder($formType, $data, $formOptions);
+        }
 
-        $formBuilder->setAction($action)->setMethod($this->methods[$method]);
+        $formBuilder
+            ->setAction($action)
+            ->setMethod($this->methods[$method]);
 
-        isset($submitOptions[self::SUBMIT_STANDARD]) && $formBuilder->add(
-            'submit',
-            SubmitType::class,
-            $submitOptions[self::SUBMIT_STANDARD]
-        );
-        isset($submitOptions[self::SUBMIT_CLOSE]) && $formBuilder->add(
-            'submit_close',
-            SubmitType::class,
-            $submitOptions[self::SUBMIT_CLOSE]
-        );
-        isset($submitOptions[self::SUBMIT_PREVIEW]) && $formBuilder->add(
-            'submit_preview',
-            SubmitType::class,
-            $submitOptions[self::SUBMIT_PREVIEW]
-        );
-        isset($submitOptions[self::SUBMIT_DELETE]) && $formBuilder->add(
-            'submit_delete',
-            SubmitType::class,
-            $submitOptions[self::SUBMIT_DELETE]
-        );
+        $this->addSubmitActions($submitOptions, $formBuilder);
 
         return $formBuilder;
     }
 
-    /**
-     * Sets submit options from given submit mode.
-     */
     private function getSubmitOptions(int $submitMask): array
     {
         $submitOptions = [];
@@ -211,5 +185,32 @@ class FormManager
         }
 
         return $submitOptions;
+    }
+
+    /**
+     * @param int[] $submitOptions
+     */
+    private function addSubmitActions(array $submitOptions, FormBuilderInterface $formBuilder): void
+    {
+        isset($submitOptions[self::SUBMIT_STANDARD]) && $formBuilder->add(
+            'submit',
+            SubmitType::class,
+            $submitOptions[self::SUBMIT_STANDARD]
+        );
+        isset($submitOptions[self::SUBMIT_CLOSE]) && $formBuilder->add(
+            'submit_close',
+            SubmitType::class,
+            $submitOptions[self::SUBMIT_CLOSE]
+        );
+        isset($submitOptions[self::SUBMIT_PREVIEW]) && $formBuilder->add(
+            'submit_preview',
+            SubmitType::class,
+            $submitOptions[self::SUBMIT_PREVIEW]
+        );
+        isset($submitOptions[self::SUBMIT_DELETE]) && $formBuilder->add(
+            'submit_delete',
+            SubmitType::class,
+            $submitOptions[self::SUBMIT_DELETE]
+        );
     }
 }
