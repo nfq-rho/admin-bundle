@@ -12,6 +12,7 @@
 namespace Nfq\AdminBundle\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository as BaseServiceEntityRepository;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -43,12 +44,32 @@ class ServiceEntityRepository extends BaseServiceEntityRepository
         return $qb;
     }
 
-    public function addArrayCriteria(QueryBuilder $qb, array $criteria): void
+    public function addCriteria(QueryBuilder $qb, $criteria): void
+    {
+        if (\is_array($criteria)) {
+            $this->addArrayCriteria($qb, $criteria);
+        } elseif ($criteria instanceof Criteria) {
+            $qb->addCriteria($criteria);
+        } else {
+            throw new \InvalidArgumentException('Criteria has to be array or Query\Expr');
+        }
+    }
+
+    protected function addArrayCriteria(QueryBuilder $qb, array $criteria): void
     {
         $aliases = $qb->getAllAliases();
 
+        $criteriaIndex = 0;
         foreach ($criteria as $key => $value) {
             $alias = $aliases[0];
+
+            $negate = false;
+
+            if (strpos($key, '!') === 0) {
+                $negate = true;
+                $key = substr($key, 1);
+            }
+
             if (strpos($key, '.') !== false) {
                 [$alias, $key] = explode('.', $key);
 
@@ -57,16 +78,26 @@ class ServiceEntityRepository extends BaseServiceEntityRepository
                 }
             }
 
-            $paramKey = ':param_' . $alias . '_' . $key;
+            $paramKey = ':param_' . $alias . '_' . $key . '_' . $criteriaIndex;
             if (\is_object($value) || \is_array($value)) {
-                $qb->andWhere($qb->expr()->in($alias . '.' . $key, $paramKey));
+                $expr = $negate
+                    ? $qb->expr()->notIn($alias . '.' . $key, $paramKey)
+                    : $qb->expr()->in($alias . '.' . $key, $paramKey);
             } elseif (\is_string($value) && (strpos($value, '%') === 0 || substr($value, -1) === '%')) {
-                $qb->andWhere($qb->expr()->like($alias . '.' . $key, $paramKey));
+                $expr = $negate
+                    ? $qb->expr()->notLike($alias . '.' . $key, $paramKey)
+                    : $qb->expr()->like($alias . '.' . $key, $paramKey);
             } else {
-                $qb->andWhere($qb->expr()->eq($alias . '.' . $key, $paramKey));
+                $expr = $negate
+                    ? $qb->expr()->neq($alias . '.' . $key, $paramKey)
+                    : $qb->expr()->eq($alias . '.' . $key, $paramKey);
             }
 
+            $qb->andWhere($expr);
+
             $qb->setParameter($paramKey, $value);
+
+            $criteriaIndex++;
         }
     }
 

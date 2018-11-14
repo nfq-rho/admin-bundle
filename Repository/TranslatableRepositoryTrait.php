@@ -12,6 +12,7 @@
 namespace Nfq\AdminBundle\Repository;
 
 use Doctrine\ORM\Query;
+use Doctrine\ORM\QueryBuilder;
 use Gedmo\Translatable\Query\TreeWalker\TranslationWalker;
 use Gedmo\Translatable\TranslatableListener;
 
@@ -20,10 +21,12 @@ trait TranslatableRepositoryTrait
     /** @var bool */
     private $useQueryCache = true;
 
-    public function getTranslatableQueryByCriteria(array $criteria, ?string $locale, bool $fallback = true): Query
+    public function getTranslatableQueryByCriteria($criteria, ?string $locale, bool $fallback = true): Query
     {
+        /** @var QueryBuilder $qb */
         $qb = $this->getQueryBuilder();
-        $this->addArrayCriteria($qb, $criteria);
+
+        $this->addCriteria($qb, $criteria);
 
         $query = $qb->getQuery();
 
@@ -33,14 +36,16 @@ trait TranslatableRepositoryTrait
     }
 
     public function getTranslatableQueryByCriteriaSorted(
-        array $criteria,
+        $criteria,
         ?string $locale,
         bool $fallback = true,
         string $sortBy = 'id',
         string $sortOrder = 'ASC'
     ): Query {
         $qb = $this->getQueryBuilder();
-        $this->addArrayCriteria($qb, $criteria);
+
+        $this->addCriteria($qb, $criteria);
+
         $qb->orderBy($this->getAlias() . '.' . $sortBy, $sortOrder);
 
         $query = $qb->getQuery();
@@ -53,7 +58,7 @@ trait TranslatableRepositoryTrait
     /**
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    public function getOneTranslatableByCriteria(array $criteria, ?string $locale, bool $fallback = true): ?object
+    public function getOneTranslatableByCriteria($criteria, ?string $locale, bool $fallback = true): ?object
     {
         $query = $this->getTranslatableQueryByCriteria($criteria, $locale, $fallback);
 
