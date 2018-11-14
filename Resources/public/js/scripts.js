@@ -1,11 +1,11 @@
 $(document).ready(function () {
     $(document).on('focusin', function (e) {
-        if ($(e.target).closest(".mce-window").length) {
+        if ($(e.target).closest('.mce-window').length) {
             e.stopImmediatePropagation();
         }
     });
 
-    $.fn.select2.defaults.set("theme", "bootstrap");
+    $.fn.select2.defaults.set('theme', 'bootstrap');
 
     $.fn.bindSelect2 = function () {
         $('.ajax-select2').each(function () {
@@ -16,73 +16,38 @@ $(document).ready(function () {
                 allowClear: true,
                 placeholder: _this.data('placeholder'),
                 ajax: {
-                    url: _this.data('href'),
+                    url: _this.data('ajax--url'),
                     dataType: 'json',
-                    type: "PUT",
+                    type: 'PUT',
                     quietMillis: 250,
-                    data: function (params) {
-                        let query = {
-                            q: params.term
-                        };
-
-                        return query;
-                    },
-                    processResults: function (data) {
-                        return {
-                            results: data,
-                        };
-                    }
-                    // results: function (response) {
-                    //     return {
-                    //         results: response
-                    //     };
-                    // }
                 }
-                // initSelection: function (item, callback) {
-                //     let id = item.val();
-                //     let text = item.data('option');
-                //
-                //     if (typeof text === 'undefined') {
-                //         if (id && _this.data('href')) {
-                //             $.getJSON(
-                //                 _this.data('href'),
-                //                 {'q': id, '_init': true},
-                //                 function (response) {
-                //                     let data = response[0];
-                //                     callback(data);
-                //                 }
-                //             );
-                //         }
-                //     } else {
-                //         let data = {id: id, text: text};
-                //         callback(data);
-                //     }
-                // }
             });
         });
 
         return this;
     };
 
-    $.fn.unbindModals = function(namespace) {
+    $.fn.unbindModals = function (namespace) {
         $('[data-toggle~=modal]').off('click.' + namespace);
+
+        return this;
     };
 
-    $.fn.bindModals = function(namespace) {
+    $.fn.bindModals = function (namespace) {
         $('[data-toggle~=modal]').on('click.' + namespace, function (e) {
             e.preventDefault();
             let _this = $(this),
                 spinner = $('.spinner'),
-                backdrop = (typeof _this.data('backdrop') === "undefined") ? 'static' : _this.data('backdrop'),
-                url = (typeof _this.attr('href') === "undefined")
-                    ? (typeof _this.data('href') === "undefined") ? null : _this.data('href')
+                backdrop = (typeof _this.data('backdrop') === 'undefined') ? 'static' : _this.data('backdrop'),
+                url = (typeof _this.attr('href') === 'undefined')
+                    ? (typeof _this.data('href') === 'undefined') ? null : _this.data('href')
                     : _this.attr('href');
 
             if (!url) {
                 return false;
             }
 
-            if (url.indexOf("?") >= 0) {
+            if (url.indexOf('?') >= 0) {
                 if (url.indexOf('isModal') < 0) {
                     url += '&isModal=1';
                 }
@@ -120,6 +85,8 @@ $(document).ready(function () {
                 });
             }
         });
+
+        return this;
     };
 
     $(this)
@@ -139,7 +106,7 @@ $(document).ready(function () {
             formNumber = formNumberParts[formNumberParts.length - 1],
             url = _this.attr('action');
 
-        if (url.indexOf("?") >= 0) {
+        if (url.indexOf('?') >= 0) {
             if (url.indexOf('isModal') < 0) {
                 url += '&isModal=1';
             }
@@ -178,7 +145,7 @@ $(document).ready(function () {
     });
 
     let hasPopovers = false;
-    $("[data-popup=popover]").each(function () {
+    $('[data-popup=popover]').each(function () {
         $(this).popover('show').click(function () {
             $(this).popover('disable').popover('hide');
         });
@@ -188,7 +155,7 @@ $(document).ready(function () {
 
     if (hasPopovers) {
         window.setTimeout(function () {
-            $("[data-popup=popover]").popover('hide');
+            $('[data-popup=popover]').popover('hide');
         }, 10000);
     }
 
@@ -196,8 +163,8 @@ $(document).ready(function () {
     runHolder();
     bindCountable();
     bindXeditable($('.myeditable'));
-    bindDatepickers($(".datepicker"));
-    preselectToggleButtons($("[data-toggle=buttons]"));
+    bindDatepickers($('.datepicker'));
+    preselectToggleButtons($('[data-toggle=buttons]'));
 
     $(document).on('change', '.tr-search-form input, .tr-search-form select', function () {
         $(this).closest('form').submit();
@@ -208,7 +175,7 @@ $(document).ready(function () {
         e.preventDefault();
     });
 
-    // Validates that the input string is a valid date formatted as "yyyy-mm-dd"
+    // Validates that the input string is a valid date formatted as 'yyyy-mm-dd'
     $.fn.isValidDate = function (dateString) {
         // First check for the pattern
         if (!/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
@@ -216,7 +183,7 @@ $(document).ready(function () {
         }
 
         // Parse the date parts to integers
-        let parts = dateString.split("-");
+        let parts = dateString.split('-');
         let year = parseInt(parts[0], 10);
         let month = parseInt(parts[1], 10);
         let day = parseInt(parts[2], 10);
@@ -253,7 +220,7 @@ let bindCountable = function () {
                 counter: $element.data('counterContainer') ? $element.data('counterContainer') : '#counter',
                 maxCount: $element.attr('maxlength') ? $element.attr('maxlength') : 100,
                 strictMax: true
-        };
+            };
         $element.simplyCountable(params);
     });
 };
@@ -291,13 +258,13 @@ let modalShowCallback = function (divModal) {
     bindCountable();
 
     // bindTooltips(divModal);
-    preselectToggleButtons($("[data-toggle=buttons]"));
+    preselectToggleButtons($('[data-toggle=buttons]'));
 };
 
 let bindTooltips = function ($element) {
     $element.tooltip({
-        selector: "[data-toggle~=tooltip]",
-        container: "body"
+        selector: '[data-toggle~=tooltip]',
+        container: 'body'
     });
 };
 
@@ -355,7 +322,7 @@ let bindXeditable = function ($element) {
     $element.editable({
         inputclass: 'xeditable-input-mod',
         ajaxOptions: {
-            type: "PUT"
+            type: 'PUT'
         }
     });
 };

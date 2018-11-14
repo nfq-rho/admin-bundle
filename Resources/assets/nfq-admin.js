@@ -20,6 +20,5 @@ global.$.AdminLTE.options = {};
 require('admin-lte/dist/js/adminlte.min');
 
 // ------ Theme itself ------
-// require('./default_avatar.png');
-require('./../public/js/plugins/jquery.simplyCountable')
-require('./../public/js/scripts')
+require('./../public/js/plugins/jquery.simplyCountable');
+require('./../public/js/scripts');

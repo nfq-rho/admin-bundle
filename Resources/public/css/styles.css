@@ -220,6 +220,15 @@ textarea.xeditable-input-mod {
     border-bottom-left-radius: 0;
 }
 
+/** Fix for select in field group */
+.input-group .select2-container .select2-selection--single {
+    height: 33px;
+}
+
+.input-group .select2-container .select2-selection--single .select2-selection__rendered {
+    margin-top: 0;
+}
+
 /** Fix for sidebar dropdown icons */
 
 .sidebar-menu li > a > .fa-angle-left,
