@@ -57,12 +57,14 @@ trait TranslatableCrudControllerTrait
     {
         $this->loadLocales();
 
+        $submitLocale = $request->request->get('submitLocale');
+
         $forms = [];
         foreach ($this->locales as $locale) {
             /** @var FormInterface $form  */
             [$entity, $form] = $this->getCreateFormAndEntity($locale);
 
-            if ($request->isMethod('POST') && $request->request->get($form->getName())['locale'] === $locale) {
+            if ($submitLocale === $locale && $request->isMethod('POST')) {
                 $form->handleRequest($request);
 
                 if ($form->isValid()) {
@@ -91,23 +93,24 @@ trait TranslatableCrudControllerTrait
     {
         $this->loadLocales();
 
-        //Correct locale for TranslatableListener is passed via event listener, so passing null here
-        $baseEntity = $this->getEntityForLocale($id);
+        $submitLocale = $request->request->get('submitLocale');
+        $entity = $this->getEntityForLocale($id, $submitLocale);
 
-        if (!$baseEntity) {
+        if (!$entity) {
             throw $this->createNotFoundException('Entity was not found');
         }
 
-        $submitLocale = null;
         if ($request->isMethod('POST')) {
-            if (false !== ($result = $this->doUpdate($request, $baseEntity)) instanceof RedirectResponse) {
+            $entity->setLocale($submitLocale);
+
+            $result = $this->doUpdate($request, $entity);
+
+            if ($result instanceof RedirectResponse) {
                 return $result;
             }
-
-            $submitLocale = $result->getData()->getLocale();
         }
 
-        $baseEntity = clone $baseEntity;
+        $entity = clone $entity;
 
         $forms = [];
         foreach ($this->locales as $locale) {
@@ -132,15 +135,12 @@ trait TranslatableCrudControllerTrait
 
         return [
             'forms' => $forms,
-            'entity' => $baseEntity,
+            'entity' => $entity,
             'submitLocale' => $submitLocale,
         ];
     }
 
-    /**
-     * @return FormInterface|RedirectResponse
-     */
-    private function doUpdate(Request $request, $entity)
+    private function doUpdate(Request $request, $entity): ?RedirectResponse
     {
         [$editForm,] = $this->getEditDeleteForms($entity);
         $editForm->handleRequest($request);
@@ -151,7 +151,7 @@ trait TranslatableCrudControllerTrait
             return $this->handleAfterSubmit($request, $editForm);
         }
 
-        return $editForm;
+        return null;
     }
 
     protected function loadLocales(bool $defaultFirst = false): void
