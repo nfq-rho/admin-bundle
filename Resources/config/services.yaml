@@ -9,7 +9,7 @@ services:
 
     Nfq\AdminBundle\:
         resource: '../../*'
-        exclude: '../../{DependencyInjection,Entity,Repository,Tests,Notices.php,NfqAdminBundle.php}'
+        exclude: '../../{DependencyInjection,Repository,Tests,Notices.php,NfqAdminBundle.php}'
 
     Nfq\AdminBundle\Controller\:
         resource: '../../Controller'
