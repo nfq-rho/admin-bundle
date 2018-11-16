@@ -1,4 +1,4 @@
-{% extends "form_div_layout.html.twig" %}
+{% extends 'form_div_layout.html.twig' %}
 
 {# Widgets #}
 
@@ -80,7 +80,8 @@
         {% if datetime is not defined or false == datetime %}
             <div {{ block('widget_container_attributes') -}}>
         {% endif %}
-        {{ form_widget(form.hour) }}:{{ form_widget(form.minute) }}{% if with_seconds %}:{{ form_widget(form.second) }}{% endif %}
+        {{ form_widget(form.hour) }}
+        :{{ form_widget(form.minute) }}{% if with_seconds %}:{{ form_widget(form.second) }}{% endif %}
         {% if datetime is not defined or false == datetime %}
             </div>
         {% endif %}
@@ -159,17 +160,17 @@
     {# Do no display the label if widget is not defined in order to prevent double label rendering #}
     {% if widget is defined %}
         {% if required %}
-    {% set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' required')|trim}) %}
-{% endif %}
+            {% set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' required')|trim}) %}
+        {% endif %}
         {% if parent_label_class is defined %}
-    {% set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' ' ~ parent_label_class)|trim}) %}
-{% endif %}
+            {% set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' ' ~ parent_label_class)|trim}) %}
+        {% endif %}
         {% if label is empty %}
-    {% set label = name|humanize %}
-{% endif %}
+            {% set label = name|humanize %}
+        {% endif %}
         <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>
-                {{ widget|raw }}
-                {{ label|trans({}, translation_domain) }}
+        {{ widget|raw }}
+        {{ label|trans({}, translation_domain) }}
         </label>
     {% endif %}
 {% endblock checkbox_radio_label %}
@@ -228,12 +229,46 @@
 
 {% block form_errors -%}
     {% if errors|length > 0 -%}
-    {% if form.parent %}<span class="help-block">{% else %}<div class="alert alert-danger">{% endif %}
-    <ul class="list-unstyled">
-        {%- for error in errors -%}
-    <li><span class="glyphicon glyphicon-exclamation-sign"></span> {{ error.message }}</li>
-{%- endfor -%}
-    </ul>
-    {% if form.parent %}</span>{% else %}</div>{% endif %}
+        {% if form.parent %}<span class="help-block">{% else %}<div class="alert alert-danger">{% endif %}
+        <ul class="list-unstyled">
+            {%- for error in errors -%}
+                <li><span class="glyphicon glyphicon-exclamation-sign"></span> {{ error.message }}</li>
+            {%- endfor -%}
+        </ul>
+        {% if form.parent %}</span>{% else %}</div>{% endif %}
     {%- endif %}
 {%- endblock form_errors %}
+
+{# File upload #}
+
+{% block vich_image_row -%}
+    {% set force_error = true %}
+    {{- block('form_row') }}
+{%- endblock %}
+
+{% block vich_image_widget %}
+    {% spaceless %}
+        <div class="vich-image">
+            <img {% if image_uri is defined %}src="{{ image_uri }}"{% endif %}
+                 alt="{{ 'admin.generic.image.preview_notice'|trans({}, 'adminInterface') }}" class="img-thumbnail"
+                 data-src="holder.js/100px200?text={{ 'admin.generic.image.preview_notice'|trans({}, 'adminInterface') }}"/>
+
+            {% if form.delete is defined %}
+                <br/>
+                {{ form_widget(form.delete) }}
+            {% endif %}
+            <hr/>
+
+            <div class="clearfix">
+                <div class="pull-left">
+                    {{ form_widget(form.file) }}
+                </div>
+
+                {% if download_uri %}
+                    <a class="pull-right btn btn-default"
+                       href="{{ download_uri }}">{{ translation_domain is same as(false) ? download_label : download_label|trans({}, translation_domain) }}</a>
+                {% endif %}
+            </div>
+        </div>
+    {% endspaceless %}
+{% endblock %}

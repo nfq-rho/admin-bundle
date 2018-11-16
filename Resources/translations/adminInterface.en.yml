@@ -52,6 +52,9 @@ admin:
         places:
             placeholder: Choose place
 
+        image:
+            preview_notice: Upload an image
+
     side_menu:
         dashboard: Dashboard
 

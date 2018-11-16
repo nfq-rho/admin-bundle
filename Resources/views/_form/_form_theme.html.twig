@@ -1,8 +1,6 @@
 {% set isModal = app.request.query.get('isModal') %}
-{% set formTheme = '@NfqAdmin/_form/bootstrap_3_horizontal_layout.html.twig' %}
-{% if isModal %}
-    {% set formTheme = '@NfqAdmin/editCreateForm.html.twig' %}
-{% endif %}
+{% set formTheme = isModal ? '@NfqAdmin/_form/_form_theme_modal.html.twig': '@NfqAdmin/_form/bootstrap_3_horizontal_layout.html.twig' %}
+
 {% block edit_form_theme %}
     {% form_theme form formTheme %}
 {% endblock %}
