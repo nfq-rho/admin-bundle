@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * This file is part of the "NFQ Bundles" package.
@@ -24,23 +24,21 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  */
 class ModalResponseListener implements EventSubscriberInterface
 {
-    /**
-     * @return array
-     */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             KernelEvents::RESPONSE => [['onKernelResponse', 10]],
         ];
     }
 
-    /**
-     * @param FilterResponseEvent $event
-     */
-    public function onKernelResponse(FilterResponseEvent $event)
+    public function onKernelResponse(FilterResponseEvent $event): void
     {
         $request = $event->getRequest();
         $response = $event->getResponse();
+
+        if ($request->attributes->has('_nfq_admin')) {
+            return;
+        }
 
         if (!$request->query->has('isModal') || false == $request->query->get('isModal', false)) {
             return;
@@ -73,13 +71,9 @@ class ModalResponseListener implements EventSubscriberInterface
         $event->setResponse($modalResponse);
     }
 
-    /**
-     * @param Request $request
-     */
-    protected function setTargetPath(Request $request)
+    protected function setTargetPath(Request $request): void
     {
-        if (!$request->hasSession()
-        ) {
+        if (!$request->hasSession()) {
             return;
         }
 

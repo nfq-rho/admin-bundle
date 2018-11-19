@@ -21,9 +21,6 @@ use Symfony\Component\HttpKernel\Event\GetResponseEvent;
  */
 class TranslatableLocaleListener
 {
-    /** @var string */
-    private $formLocaleField = 'locale';
-
     /** @var TranslatableListener */
     private $translatable;
 
@@ -34,11 +31,15 @@ class TranslatableLocaleListener
 
     public function onLateKernelRequest(GetResponseEvent $event): void
     {
-        if (empty($this->translatable)) {
+        if (null === $this->translatable) {
             return;
         }
 
         $request = $event->getRequest();
+
+        if (!$request->attributes->has('_nfq_admin')) {
+            return;
+        }
 
         $translatableLocale = $this->getTranslatableLocaleFromSubmittedForm($request);
         if (!$translatableLocale) {
@@ -52,16 +53,10 @@ class TranslatableLocaleListener
     {
         $translatableLocale = null;
 
-        if ($request->isMethod('POST')) {
-            $_request = $request->request;
-
-            if ($_request->count() > 0) {
-                $formName = array_keys($_request->all())[0];
-
-                return $request->get($formName . '[' . $this->formLocaleField . ']', null, true);
-            }
+        if ($request->isMethod('POST') && $request->request->has('submitLocale')) {
+            return $request->request->get('submitLocale');
         }
 
-        return $translatableLocale;
+        return null;
     }
 }
