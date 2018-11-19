@@ -9,7 +9,7 @@ services:
 
     Nfq\AdminBundle\:
         resource: '../../*'
-        exclude: '../../{DependencyInjection,Repository,Tests,Notices.php,NfqAdminBundle.php}'
+        exclude: '../../{DependencyInjection,Entity,Repository,Tests,Notices.php,NfqAdminBundle.php}'
 
     Nfq\AdminBundle\Controller\:
         resource: '../../Controller'
@@ -23,6 +23,9 @@ services:
     Nfq\AdminBundle\Form\Extension\TinyMCEExtension:
         tags:
             - { name: form.type_extension, extended_type: Symfony\Component\Form\Extension\Core\Type\TextareaType, alias: textarea }
+
+    Nfq\AdminBundle\ImageUpload\Naming\TimeLocaleNamer:
+        public: true
 
     Nfq\AdminBundle\Menu\AdminMenuListener:
         abstract: true

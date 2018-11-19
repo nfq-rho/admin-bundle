@@ -25,7 +25,7 @@ class Image
      * @Gedmo\Translatable(fallback=true)
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $name;
+    protected $name;
 
     /**
      * @var string
@@ -33,7 +33,7 @@ class Image
      * @Gedmo\Translatable(fallback=true)
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $altText;
+    protected $altText;
 
     /**
      * @var string
@@ -41,7 +41,7 @@ class Image
      * @Gedmo\Translatable(fallback=true)
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $copyright;
+    protected $copyright;
 
     /**
      * @var string
@@ -53,6 +53,7 @@ class Image
 
     /**
      * @var int
+     *
      * @Gedmo\Translatable(fallback=true)
      * @ORM\Column(type="integer", nullable=true)
      */
