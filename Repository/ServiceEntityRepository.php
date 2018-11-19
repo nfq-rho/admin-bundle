@@ -2,9 +2,7 @@
 
 /**
  * This file is part of the "NFQ Bundles" package.
- *
  * (c) NFQ Technologies UAB <info@nfq.com>
- *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
@@ -24,6 +22,7 @@ class ServiceEntityRepository extends BaseServiceEntityRepository
     public function createEntity()
     {
         $class = $this->getClassName();
+
         return new $class();
     }
 
@@ -70,7 +69,8 @@ class ServiceEntityRepository extends BaseServiceEntityRepository
                 $key = substr($key, 1);
             }
 
-            if (strpos($key, '.') !== false) {
+            // if alias is defined in criteria but it does not use DoctrineFunction. E.g. YEAR(t.created)
+            if (strpos($key, '.') !== false && strpos($key, '(') === false) {
                 [$alias, $key] = explode('.', $key);
 
                 if (!\in_array($alias, $aliases, true)) {
@@ -78,19 +78,22 @@ class ServiceEntityRepository extends BaseServiceEntityRepository
                 }
             }
 
-            $paramKey = ':param_' . $alias . '_' . $key . '_' . $criteriaIndex;
+            $keyHasAlias = strpos($key, '.') !== false;
+
+            $queryKey = $keyHasAlias ? $key : $alias . '.' . $key;
+            $paramKey = ':param_' . $alias . '_' . md5($key) . '_' . $criteriaIndex;
             if (\is_object($value) || \is_array($value)) {
                 $expr = $negate
-                    ? $qb->expr()->notIn($alias . '.' . $key, $paramKey)
-                    : $qb->expr()->in($alias . '.' . $key, $paramKey);
+                    ? $qb->expr()->notIn($queryKey, $paramKey)
+                    : $qb->expr()->in($queryKey, $paramKey);
             } elseif (\is_string($value) && (strpos($value, '%') === 0 || substr($value, -1) === '%')) {
                 $expr = $negate
-                    ? $qb->expr()->notLike($alias . '.' . $key, $paramKey)
-                    : $qb->expr()->like($alias . '.' . $key, $paramKey);
+                    ? $qb->expr()->notLike($queryKey, $paramKey)
+                    : $qb->expr()->like($queryKey, $paramKey);
             } else {
                 $expr = $negate
-                    ? $qb->expr()->neq($alias . '.' . $key, $paramKey)
-                    : $qb->expr()->eq($alias . '.' . $key, $paramKey);
+                    ? $qb->expr()->neq($queryKey, $paramKey)
+                    : $qb->expr()->eq($queryKey, $paramKey);
             }
 
             $qb->andWhere($expr);
