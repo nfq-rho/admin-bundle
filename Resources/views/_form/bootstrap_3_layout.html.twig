@@ -6,12 +6,34 @@
     {% if type is not defined or 'file' != type %}
         {% set attr = attr|merge({class: (attr.class|default('') ~ ' form-control')|trim}) %}
     {% endif %}
+
+    {% set hasCountable = false %}
+    {% if attr.class is defined and 'countable' in attr.class %}
+        {% set hasCountable = true %}
+        {% set attr = attr|merge({'data-counter-container': '#' ~ id ~ '_countable'}) %}
+    {% endif %}
+
     {{- parent() -}}
+
+    {% if hasCountable %}
+        <span class="countable-container badge"><span id="{{ id ~ '_countable' }}"></span> / {{ attr['data-maxlength']|default(0) }}</span>
+    {% endif %}
 {%- endblock form_widget_simple %}
 
 {% block textarea_widget -%}
     {% set attr = attr|merge({class: (attr.class|default('') ~ ' form-control')|trim}) %}
+
+    {% set hasCountable = false %}
+    {% if attr.class is defined and 'countable' in attr.class %}
+        {% set hasCountable = true %}
+        {% set attr = attr|merge({'data-counter-container': '#' ~ id ~ '_countable'}) %}
+    {% endif %}
+
     {{- parent() -}}
+
+    {% if hasCountable %}
+        <span class="countable-container badge"><span id="{{ id ~ '_countable' }}"></span> / {{ attr['data-maxlength']|default(0) }}</span>
+    {% endif %}
 {%- endblock textarea_widget %}
 
 {% block button_widget -%}

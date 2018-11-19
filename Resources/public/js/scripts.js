@@ -214,12 +214,12 @@ let bs_alert = function (message, type) {
 };
 
 let bindCountable = function () {
-    $.each($(document).find('.countable'), function (idx, el) {
+    $(document).find('input.countable, textarea.countable').each(function (idx, el) {
         let $element = $(el),
             params = {
                 counter: $element.data('counterContainer') ? $element.data('counterContainer') : '#counter',
-                maxCount: $element.attr('maxlength') ? $element.attr('maxlength') : 100,
-                strictMax: true
+                maxCount: $element.data('maxlength') ? $element.data('maxlength') : 100,
+                strictMax: false
             };
         $element.simplyCountable(params);
     });
@@ -354,7 +354,6 @@ let bindDatepickers = function ($element) {
         weekStart: 1,
         autoclose: true,
     }).on('apply.daterangepicker', function (ev, picker) {
-        debugger;
         $(this).val(picker.startDate.format('DD.MM.YYYY'));
     });
 };

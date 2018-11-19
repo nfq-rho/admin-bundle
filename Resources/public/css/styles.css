@@ -241,3 +241,11 @@ textarea.xeditable-input-mod {
     -o-transition: transform 0.5s ease;
     transition: transform 0.5s ease;
 }
+
+input.countable, textarea.countable {
+    padding-right: 72px;
+}
+.countable-container {
+    float: right;
+    margin: -26px 5px 0 0;
+}
