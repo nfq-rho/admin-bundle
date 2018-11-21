@@ -36,7 +36,7 @@ class ModalResponseListener implements EventSubscriberInterface
         $request = $event->getRequest();
         $response = $event->getResponse();
 
-        if ($request->attributes->has('_nfq_admin')) {
+        if (!$request->attributes->has('_nfq_admin')) {
             return;
         }
 
