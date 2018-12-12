@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "devDependencies": {
         "@fortawesome/fontawesome-free": "^5.4.1",
-        "@symfony/webpack-encore": "^0.20.1",
+        "@symfony/webpack-encore": "^0.21.0",
         "admin-lte": "~2.4.8",
         "bootstrap-sass": "^3.3.7",
         "datatables.net": "^1.10.19",
