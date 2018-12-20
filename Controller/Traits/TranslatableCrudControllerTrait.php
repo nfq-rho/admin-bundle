@@ -20,7 +20,6 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * Trait TranslatableCrudControllerTrait
  * @package Nfq\AdminBundle\Controller\Traits
- * @property ContainerInterface $container
  */
 trait TranslatableCrudControllerTrait
 {
@@ -156,10 +155,8 @@ trait TranslatableCrudControllerTrait
 
     protected function loadLocales(bool $defaultFirst = false): void
     {
-        $defaultLocale = $this->container->getParameter('locale');
-        $locales = $this->container->hasParameter('locales')
-            ? $this->container->getParameter('locales')
-            : [$defaultLocale];
+        $defaultLocale = $this->getParameter('locale');
+        $locales = $this->getParameter('locales');
 
         if ($defaultFirst) {
             //unset default locale and set it as first element in locales array
@@ -173,7 +170,7 @@ trait TranslatableCrudControllerTrait
 
     protected function getEntity($id)
     {
-        $locale = $this->container->get('request_stack')->getCurrentRequest()->getLocale();
+        $locale = $this->get('request_stack')->getCurrentRequest()->getLocale();
         return $this->getEntityForLocale($id, $locale);
     }
 }
