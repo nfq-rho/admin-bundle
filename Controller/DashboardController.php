@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * This file is part of the "NFQ Bundles" package.
@@ -12,21 +12,18 @@
 namespace Nfq\AdminBundle\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 /**
  * Class DashboardController
  * @package Nfq\AdminBundle\Controller
  */
-class DashboardController extends Controller
+class DashboardController extends AbstractController
 {
     /**
      * @Template()
-     * @param Request $request
-     * @return array
      */
-    public function indexAction(Request $request)
+    public function indexAction(): array
     {
         return [];
     }

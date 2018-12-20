@@ -18,25 +18,16 @@ namespace Nfq\AdminBundle\Decorated;
 interface DecoratedInterface
 {
     /**
-     * Executes methods of decorated service
-     *
-     * @param string $method
-     * @param array $args
      * @return mixed
      */
-    public function __call($method, $args);
+    public function __call(string $method, array $args);
 
     /**
-     * Sets decorated service
-     *
      * @param $decorated
-     * @return mixed
      */
-    public function setDecoratedService($decorated);
+    public function setDecoratedService($decorated): void;
 
     /**
-     * Returns decorated service.
-     *
      * @return object
      */
     public function getDecoratedService();
