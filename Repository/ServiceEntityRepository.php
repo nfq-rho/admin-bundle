@@ -54,46 +54,44 @@ class ServiceEntityRepository extends BaseServiceEntityRepository
         }
     }
 
+    /**
+     * @param string[] $criteria
+     */
     protected function addArrayCriteria(QueryBuilder $qb, array $criteria): void
     {
         $aliases = $qb->getAllAliases();
 
         $criteriaIndex = 0;
-        foreach ($criteria as $key => $value) {
+        foreach ($criteria as $field => $value) {
             $alias = $aliases[0];
 
             $negate = false;
+            $fieldHasAlias = strpos($field, $alias . '.') !== false;
 
-            if (strpos($key, '!') === 0) {
+            if (strpos($field, '!') === 0) {
                 $negate = true;
-                $key = substr($key, 1);
+                $field = substr($field, 1);
             }
 
-            // if alias is defined in criteria but it does not use DoctrineFunction. E.g. YEAR(t.created)
-            if (strpos($key, '.') !== false && strpos($key, '(') === false) {
-                [$alias, $key] = explode('.', $key);
+            $fieldKey = $fieldHasAlias ? $field : $alias . '.' . $field;
+            $paramKey = ':param_' . $alias . '_' . md5($field) . '_' . $criteriaIndex;
 
-                if (!\in_array($alias, $aliases, true)) {
-                    throw new \InvalidArgumentException("Invalid alias detected `{$alias}");
-                }
-            }
-
-            $keyHasAlias = strpos($key, '.') !== false;
-
-            $queryKey = $keyHasAlias ? $key : $alias . '.' . $key;
-            $paramKey = ':param_' . $alias . '_' . md5($key) . '_' . $criteriaIndex;
-            if (\is_object($value) || \is_array($value)) {
+            // Comparison operator detection
+            if (\is_array($value) && \in_array($value[0], ['gt', 'gte', 'lt', 'lte'], true)) {
+                $expr = $qb->expr()->{$value[0]}($fieldKey, $paramKey);
+                $value = $value[1];
+            } elseif (\is_object($value) || \is_array($value)) {
                 $expr = $negate
-                    ? $qb->expr()->notIn($queryKey, $paramKey)
-                    : $qb->expr()->in($queryKey, $paramKey);
+                    ? $qb->expr()->notIn($fieldKey, $paramKey)
+                    : $qb->expr()->in($fieldKey, $paramKey);
             } elseif (\is_string($value) && (strpos($value, '%') === 0 || substr($value, -1) === '%')) {
                 $expr = $negate
-                    ? $qb->expr()->notLike($queryKey, $paramKey)
-                    : $qb->expr()->like($queryKey, $paramKey);
+                    ? $qb->expr()->notLike($fieldKey, $paramKey)
+                    : $qb->expr()->like($fieldKey, $paramKey);
             } else {
                 $expr = $negate
-                    ? $qb->expr()->neq($queryKey, $paramKey)
-                    : $qb->expr()->eq($queryKey, $paramKey);
+                    ? $qb->expr()->neq($fieldKey, $paramKey)
+                    : $qb->expr()->eq($fieldKey, $paramKey);
             }
 
             $qb->andWhere($expr);
