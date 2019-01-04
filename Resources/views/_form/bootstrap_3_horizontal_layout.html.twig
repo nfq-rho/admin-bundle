@@ -1,7 +1,7 @@
 {% extends '@NfqAdmin/_form/bootstrap_3_layout.html.twig' %}
 
 {% block form_start -%}
-    {% set attr = attr|merge({class: (attr.class|default('') ~ ' form-horizontal')|trim}) %}
+    {% set attr = attr|merge({class: ('form-horizontal ' ~ attr.class|default(''))|trim}) %}
     {{- parent() -}}
 {%- endblock form_start %}
 
@@ -12,7 +12,7 @@
         {% if label is same as(false) %}
             <div class="{{ block('form_label_class') }}"></div>
         {% else %}
-            {% set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' ' ~ block('form_label_class'))|trim}) %}
+            {% set label_attr = label_attr|merge({class: (block('form_label_class') ~ ' ' ~ label_attr.class|default(''))|trim}) %}
             {{- parent() -}}
         {% endif %}
     {% endspaceless %}
@@ -27,8 +27,9 @@
 {% block form_row -%}
     {% spaceless %}
         <div class="form-group{% if (not compound or force_error|default(false)) and not valid %} has-error{% endif %}">
-            {{ form_label(form) }}
-            <div class="{{ block('form_group_class') }}">
+            {% set label = form_label(form) %}
+            {{ label|raw }}
+            <div class="{% if label %}{{ block('form_group_class') }}{% else %}{{ block('form_group_full_class') }}{% endif %}">
                 {{ form_widget(form) }}
                 {{ form_errors(form) }}
             </div>
@@ -70,3 +71,7 @@
 {% block form_group_class -%}
     col-sm-10
 {%- endblock form_group_class %}
+
+{% block form_group_full_class -%}
+    col-sm-12
+{%- endblock form_group_full_class %}

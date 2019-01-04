@@ -4,7 +4,7 @@
 
 {% block form_widget_simple -%}
     {% if type is not defined or 'file' != type %}
-        {% set attr = attr|merge({class: (attr.class|default('') ~ ' form-control')|trim}) %}
+        {% set attr = attr|merge({class: ('form-control ' ~ attr.class|default(''))|trim}) %}
     {% endif %}
 
     {% set hasCountable = false %}
@@ -21,7 +21,7 @@
 {%- endblock form_widget_simple %}
 
 {% block textarea_widget -%}
-    {% set attr = attr|merge({class: (attr.class|default('') ~ ' form-control')|trim}) %}
+    {% set attr = attr|merge({class: ('form-control ' ~ attr.class|default(''))|trim}) %}
 
     {% set hasCountable = false %}
     {% if attr.class is defined and 'countable' in attr.class %}
@@ -111,7 +111,7 @@
 {%- endblock time_widget %}
 
 {% block choice_widget_collapsed -%}
-    {% set attr = attr|merge({class: (attr.class|default('') ~ ' form-control')|trim}) %}
+    {% set attr = attr|merge({class: ('form-control ' ~ attr.class|default(''))|trim}) %}
     {{- parent() -}}
 {%- endblock %}
 
