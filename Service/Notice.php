@@ -11,7 +11,6 @@
 
 namespace Nfq\AdminBundle\Service;
 
-use Nfq\AdminBundle\Notices;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 /**

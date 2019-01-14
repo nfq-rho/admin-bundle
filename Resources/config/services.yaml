@@ -44,7 +44,6 @@ services:
 
     nfq_admin.notice_listener:
         class: Nfq\AdminBundle\EventListener\NoticeListener
-        arguments: [ '@Nfq\AdminBundle\Service\Notice' ]
         tags:
             - { name: kernel.event_listener, event: generic.after_save, method: onMessage, priority: -10 }
             - { name: kernel.event_listener, event: generic.after_insert, method: onMessage, priority: -10 }
