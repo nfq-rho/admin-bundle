@@ -30,8 +30,9 @@
             {% set label = form_label(form) %}
             {{ label|raw }}
             <div class="{% if label %}{{ block('form_group_class') }}{% else %}{{ block('form_group_full_class') }}{% endif %}">
-                {{ form_widget(form) }}
-                {{ form_errors(form) }}
+                {{- form_widget(form) -}}
+                {{- form_help(form) -}}
+                {{- form_errors(form) -}}
             </div>
         </div>
     {% endspaceless %}
