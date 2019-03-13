@@ -48,7 +48,7 @@ class GenericActions implements GenericActionsInterface
         $this->ed->dispatch($before->getEventName(), $before);
         if ($before->isOk()) {
             $this->em->persist($entity);
-            $this->em->flush($entity);
+            $this->em->flush();
         }
         $this->ed->dispatch($after->getEventName(), $after);
     }
@@ -58,7 +58,7 @@ class GenericActions implements GenericActionsInterface
         $this->ed->dispatch($before->getEventName(), $before);
         if ($before->isOk()) {
             $this->em->remove($entity);
-            $this->em->flush($entity);
+            $this->em->flush();
         }
         $this->ed->dispatch($after->getEventName(), $after);
     }
