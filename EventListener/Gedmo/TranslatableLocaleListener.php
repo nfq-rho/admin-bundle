@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * This file is part of the "NFQ Bundles" package.
@@ -21,34 +21,25 @@ use Symfony\Component\HttpKernel\Event\GetResponseEvent;
  */
 class TranslatableLocaleListener
 {
-    /**
-     * @var string
-     */
-    private $formLocaleField = 'locale';
-
-    /**
-     * @var TranslatableListener
-     */
+    /** @var TranslatableListener */
     private $translatable;
 
-    /**
-     * @param $translatable
-     */
-    public function __construct($translatable)
+    public function __construct(TranslatableListener $translatable)
     {
         $this->translatable = $translatable;
     }
 
-    /**
-     * @param GetResponseEvent $event
-     */
-    public function onLateKernelRequest(GetResponseEvent $event)
+    public function onLateKernelRequest(GetResponseEvent $event): void
     {
-        if (empty($this->translatable)) {
+        if (null === $this->translatable) {
             return;
         }
 
         $request = $event->getRequest();
+
+        if (!$request->attributes->has('_nfq_admin')) {
+            return;
+        }
 
         $translatableLocale = $this->getTranslatableLocaleFromSubmittedForm($request);
         if (!$translatableLocale) {
@@ -58,24 +49,14 @@ class TranslatableLocaleListener
         $this->translatable->setTranslatableLocale($translatableLocale);
     }
 
-    /**
-     * @param Request $request
-     * @return string|null
-     */
-    private function getTranslatableLocaleFromSubmittedForm(Request $request)
+    private function getTranslatableLocaleFromSubmittedForm(Request $request): ?string
     {
         $translatableLocale = null;
 
-        if ($request->isMethod('POST')) {
-            $_request = $request->request;
-
-            if ($_request->count() > 0) {
-                $formName = array_keys($_request->all())[0];
-
-                return $request->get($formName . '[' . $this->formLocaleField . ']', null, true);
-            }
+        if ($request->isMethod('POST') && $request->request->has('submitLocale')) {
+            return $request->request->get('submitLocale');
         }
 
-        return $translatableLocale;
+        return null;
     }
 }

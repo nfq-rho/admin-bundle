@@ -1,0 +1,22 @@
+<!-- sidebar menu: : style can be found in sidebar.less -->
+{% from "@NfqAdmin/_macro/menu.html.twig" import menu_item %}
+<ul class="sidebar-menu" data-widget="tree">
+    {% if app.environment == 'dev' %}
+        {% set item = {
+            'route':  url('admin_dashboard'),
+            'hasChildren': '',
+            'label': 'admin.side_menu.dashboard',
+            'identifier': 'dashboard',
+            'icon': 'fa fa-home',
+            'isActive': true,
+            'badge': false
+        } %}
+        {{ menu_item(item) }}
+    {% endif %}
+
+    {% if menu is defined %}
+        {% for item in menu %}
+            {{ menu_item(item) }}
+        {% endfor %}
+    {% endif %}
+</ul>

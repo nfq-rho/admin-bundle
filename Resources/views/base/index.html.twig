@@ -1,0 +1,28 @@
+{% trans_default_domain 'adminInterface' %}
+{% extends '@NfqAdmin/layout.html.twig' %}
+
+{% block page_content %}
+    <div class="box box-default">
+        <div class="box-header with-border">
+            {% block page_box_header %}{% endblock %}
+        </div>
+        <div class="box-body">
+            <br />
+            {% block page_box_body %}{% endblock %}
+
+            {% block page_box_footer_actions %}{% endblock %}
+
+            {% if pagination is defined %}
+                <div class="row">
+                    {% include '@NfqAdmin/base/_blocks/_pagination.html.twig' with {
+                        pagination: pagination.getPagination(),
+                        showingFrom: pagination.getShowingFrom(),
+                        showingTo: pagination.getShowingTo(),
+                        totalItemCount: pagination.getTotalItemCount,
+                        itemCountPerPage: pagination.getItemNumberPerPage
+                    } only %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

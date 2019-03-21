@@ -1,0 +1,15 @@
+{# You should override this template #}
+{# And example of pagination if using KnpPaginatorBundle. Copy and paste it to your template #}
+{#{% trans_default_domain 'adminInterface' %}#}
+{#{% if totalItemCount > 0 %}#}
+    {#<div class="col-sm-6">#}
+        {#{{ 'admin.generic.paging.showing'|trans }} {{ showingFrom }} {{ 'admin.generic.paging.showing_to'|trans }} {{ showingTo }} {{ 'admin.generic.paging.showing_of'|trans }} {{ totalItemCount }} {{ 'admin.generic.paging.showing_entries'|trans }}#}
+    {#</div>#}
+    {#<div class="col-sm-5 pull-right">#}
+        {#<div class="pull-right">#}
+            {#{% if totalItemCount > itemCountPerPage %}#}
+                {#{{ knp_pagination_render(pagination) }}#}
+            {#{% endif %}#}
+        {#</div>#}
+    {#</div>#}
+{#{% endif %}#}

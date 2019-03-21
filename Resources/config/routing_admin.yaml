@@ -1,0 +1,3 @@
+admin_dashboard:
+    path: /
+    controller: Nfq\AdminBundle\Controller\DashboardController::indexAction

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * This file is part of the "NFQ Bundles" package.
@@ -11,7 +11,6 @@
 
 namespace Nfq\AdminBundle\Form;
 
-use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -22,59 +21,21 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 abstract class TranslatableType extends AbstractType
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $locale;
 
-    /**
-     * @param FormBuilderInterface $builder
-     * @param array $options
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $this->locale = $options['locale'];
         $builder->add('locale', HiddenType::class);
 
-        $this->callBuildForm($builder, $options);
+        parent::buildForm($builder, $options);
     }
 
-    /**
-     * @param FormBuilderInterface $builder
-     * @param array $options
-     * @return void
-     */
-    abstract protected function callBuildForm(FormBuilderInterface $builder, array $options);
-
-    /**
-     * @param OptionsResolver $resolver
-     */
-    public function configureOptions(OptionsResolver $resolver)
-    {
-        $this->setDefaultOptions($resolver);
-    }
-
-    /**
-     * @param OptionsResolver $resolver
-     */
-    public function setDefaultOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setRequired(['locale']);
 
-        $this->callSetDefaultOptions($resolver);
-    }
-
-    /**
-     * @param OptionsResolver $resolver
-     * @return void
-     */
-    abstract protected function callSetDefaultOptions(OptionsResolver $resolver);
-
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return 'translatable';
+        parent::configureOptions($resolver);
     }
 }

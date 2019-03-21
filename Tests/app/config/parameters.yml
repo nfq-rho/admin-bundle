@@ -1,7 +1,0 @@
-parameters:
-    global_max_per_page: 20
-    secret: ThisTokenIsNotSoSecretChangeIt
-    locale: en_LT
-    locales:
-        - lt_LT
-        - en_LT

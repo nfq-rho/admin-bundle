@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * This file is part of the "NFQ Bundles" package.
@@ -12,8 +12,6 @@
 namespace Nfq\AdminBundle\Service\Admin;
 
 use Nfq\AdminBundle\Service\Generic\Actions\GenericActionsInterface;
-use Nfq\AdminBundle\Service\Generic\Search\GenericSearchInterface;
-use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Interface AdminManagerInterface
@@ -21,23 +19,27 @@ use Symfony\Component\HttpFoundation\Request;
  */
 interface AdminManagerInterface
 {
-    /**
-     * @param GenericActionsInterface $actions
-     * @return void
-     */
-    public function setActions($actions);
+    public function setActions(GenericActionsInterface $actions): void;
 
-    /**
-     * @param GenericSearchInterface $search
-     * @return void
-     */
-    public function setSearch(GenericSearchInterface $search);
+    public function getRepository();
 
-    /**
-     * @param Request $request
-     * @return mixed
-     */
-    public function getResults(Request $request);
+    public function getEntity($id);
 
+    public function delete(
+        $entity,
+        string $beforeEventName = 'generic.before_delete',
+        string $afterEventName = 'generic.after_delete'
+    ): void;
 
+    public function insert(
+        $entity,
+        string $beforeEventName = 'generic.before_insert',
+        string $afterEventName = 'generic.after_insert'
+    );
+
+    public function save(
+        $entity,
+        string $beforeEventName = 'generic.before_save',
+        string $afterEventName = 'generic.after_save'
+    );
 }

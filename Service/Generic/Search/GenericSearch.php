@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * This file is part of the "NFQ Bundles" package.
@@ -11,9 +11,10 @@
 
 namespace Nfq\AdminBundle\Service\Generic\Search;
 
+use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -22,58 +23,44 @@ use Symfony\Component\HttpFoundation\Request;
  */
 abstract class GenericSearch implements GenericSearchInterface
 {
-    /**
-     * @var EntityManager $entityManager
-     */
-    protected $entityManager;
+    /** @var EntityManagerInterface */
+    private $em;
 
-    /**
-     * @var array
-     */
-    protected $fields;
+    /** @var array */
+    protected $searchFields = ['id',];
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $alias = 'search';
 
     /**
-     * @var string
+     * @param string[] $searchFields
      */
-    protected $locale;
-
-    /**
-     * @param array $fields
-     */
-    public function __construct($fields)
+    public function __construct(array $searchFields = [])
     {
-        $this->fields = $fields;
+        $this->searchFields = $searchFields;
+    }
+
+    public function setEntityManager(EntityManagerInterface $em): void
+    {
+        $this->em = $em;
+    }
+
+    public function getEntityManager(): EntityManagerInterface
+    {
+        return $this->em;
     }
 
     /**
-     * @param EntityManager $manager
+     * @return string[]
      */
-    public function setEntityManager(EntityManager $manager)
+    public function getSearchFields(): array
     {
-        $this->entityManager = $manager;
+        return $this->searchFields;
     }
 
-    /**
-     * @return array
-     */
-    public function getFields()
+    public function getResults(Request $request): Query
     {
-        return $this->fields;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getResults(Request $request, $defSort = 'search.id', $defDirection = 'DESC')
-    {
-        $this->prepareRequest($request, $defSort, $defDirection);
-
-        $queryBuilder = $this->buildQuery($request);
+        $queryBuilder = $this->createQueryBuilder($request);
 
         $query = $queryBuilder->getQuery();
 
@@ -83,61 +70,58 @@ abstract class GenericSearch implements GenericSearchInterface
                 ->setHint('knp_paginator.fetch_join_collection', false);
         }
 
-        $this->setQueryHints($query);
+        $this->setQueryHints($request, $query);
 
         return $query;
     }
 
-    /**
-     * @param Query $query
-     */
-    protected function setQueryHints(Query $query)
-    {
-
-    }
-
-    /**
-     * Used for custom query extending.
-     *
-     * @param Request $request
-     * @param QueryBuilder $queryBuilder
-     */
-    protected function extendQuery(Request $request, QueryBuilder $queryBuilder)
-    {
-
-    }
-
-    /**
-     * @param QueryBuilder $currentQueryBuilder
-     * @return int|null
-     */
-    protected function getResultCount(QueryBuilder $currentQueryBuilder)
+    protected function getResultCount(QueryBuilder $queryBuilder): ?int
     {
         return null;
     }
 
-    /**
-     * @param Request $request
-     * @param QueryBuilder $queryBuilder
-     */
-    protected function getWhere(Request $request, QueryBuilder $queryBuilder)
+    protected function createQueryBuilder(Request $request): QueryBuilder
     {
-        $token = $request->get('search', null);
-        ($token === null && $token !== '') && $token = $request->get('q', null);
+        $queryBuilder = $this->getRepository()->createQueryBuilder($this->alias);
 
-        if ($token === null || $token === '') {
+        $this->extendQuery($request, $queryBuilder);
+
+        $this->getWhere($request, $queryBuilder);
+
+        return $queryBuilder;
+    }
+
+    /**
+     * Used for custom query extending.
+     */
+    protected function extendQuery(Request $request, QueryBuilder $queryBuilder): void
+    {
+    }
+
+    protected function setQueryHints(Request $request, Query $query): void
+    {
+    }
+
+    /**
+     * Builds main part of the search query. Use extendQuery() if you want to add additional conditions
+     */
+    private function getWhere(Request $request, QueryBuilder $queryBuilder): void
+    {
+        $token = $request->get('search', $request->get('q', null));
+
+        if (empty($token)) {
             return;
         }
 
         $where = $queryBuilder->expr()->orX();
         $classMetaData = $this->getClassMetaData();
 
-        $fields = $request->get('_sByFld', $this->getFields());
+        $fields = $request->get('_sByFld', $this->getSearchFields());
 
         foreach ($fields as $idx => $_field) {
             $expr = null;
 
-            list($field, $aliasedField) = $this->resolveField($_field);
+            [$field, $aliasedField] = $this->resolveField($_field);
             $fieldType = $classMetaData->getTypeOfField($field);
 
             switch ($fieldType) {
@@ -157,13 +141,17 @@ abstract class GenericSearch implements GenericSearchInterface
                 case 'time':
                 case 'year':
                     if ($this->hasValidDateSymbols($token)) {
-                        $expr = $queryBuilder->expr()->like($aliasedField,
-                            $queryBuilder->expr()->literal('%' . $token . '%'));
+                        $expr = $queryBuilder->expr()->like(
+                            $aliasedField,
+                            $queryBuilder->expr()->literal('%' . $token . '%')
+                        );
                     }
                     break;
                 default:
-                    $expr = $queryBuilder->expr()->like($aliasedField,
-                        $queryBuilder->expr()->literal('%' . $token . '%'));
+                    $expr = $queryBuilder->expr()->like(
+                        $aliasedField,
+                        $queryBuilder->expr()->literal('%' . $token . '%')
+                    );
                     break;
             }
 
@@ -173,69 +161,18 @@ abstract class GenericSearch implements GenericSearchInterface
         $queryBuilder->andWhere($where);
     }
 
-    /**
-     * @param Request $request
-     * @return QueryBuilder
-     */
-    private function buildQuery(Request $request)
-    {
-        $queryBuilder = $this->getRepository()->createQueryBuilder($this->alias);
-
-        $this->getWhere($request, $queryBuilder);
-
-        $this->extendQuery($request, $queryBuilder);
-
-        return $queryBuilder;
-    }
-
-    /**
-     * @param Request $request
-     * @param string $defSort
-     * @param string $defDirection
-     */
-    private function prepareRequest(Request $request, $defSort, $defDirection)
-    {
-        $this->locale = $request->getLocale();
-
-        $sort = $request->query->get('sort', $defSort);
-        $direction = strtoupper($request->query->get('direction', $defDirection));
-
-        $request->query->add([
-            'sort' => $sort,
-            'direction' => $direction,
-        ]);
-
-
-        //This fix was added  due to the way KNPs paginator checks for sorting parameters
-        $_GET['sort'] = $sort;
-        $_GET['direction'] = $direction;
-    }
-
-    /**
-     * @return \Doctrine\ORM\Mapping\ClassMetadata
-     */
-    private function getClassMetaData()
+    private function getClassMetaData(): ClassMetadata
     {
         $entityClass = $this->getRepository()->getClassName();
-        $classMetaData = $this->entityManager->getClassMetadata($entityClass);
-
-        return $classMetaData;
+        return $this->em->getClassMetadata($entityClass);
     }
 
-    /**
-     * @param mixed $token
-     * @return bool
-     */
-    private function hasValidDateSymbols($token)
+    private function hasValidDateSymbols(string $token): bool
     {
         return (bool)preg_match('~[0-9:\-\s]+~', $token);
     }
 
-    /**
-     * @param string $field
-     * @return array
-     */
-    private function resolveField($field)
+    private function resolveField(string $field): array
     {
         //Some alias is set, do nothing
         if (strpos($field, '.') !== false) {

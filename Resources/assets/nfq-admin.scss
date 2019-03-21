@@ -1,0 +1,19 @@
+$icon-font-path: "~bootstrap-sass/assets/fonts/bootstrap/";
+$fa-font-path: "~@fortawesome/fontawesome-free/webfonts/";
+
+@import "~bootstrap-sass/assets/stylesheets/bootstrap";
+@import "~@fortawesome/fontawesome-free/css/all.min.css";
+//@import "~@fortawesome/fontawesome-free/scss/fontawesome";
+//@import "~@fortawesome/fontawesome-free/scss/regular";
+//@import "~@fortawesome/fontawesome-free/scss/solid";
+//@import "~@fortawesome/fontawesome-free/scss/brands";
+@import "~daterangepicker/daterangepicker.css";
+
+@import "~admin-lte/dist/css/AdminLTE.min.css";
+@import "~admin-lte/dist/css/skins/skin-black.min.css";
+@import "~select2/dist/css/select2.min.css";
+@import "~select2-bootstrap-theme/dist/select2-bootstrap.min.css";
+
+@import "../public/css/styles.css";
+
+@import "nfq-admin-extensions";

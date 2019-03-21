@@ -1,0 +1,13 @@
+<form id="search-form" action="{{ searchUri }}" method="get">
+    <div class="row">
+        <div class="col-lg-10">
+            {% block search_col1 %}
+            {% endblock %}
+        </div>
+        <div class="col-lg-2">
+            {% block search_buttons %}
+                {% include '@NfqAdmin/base/_blocks/_searchPanel_buttons.html.twig' %}
+            {% endblock %}
+        </div>
+    </div>
+</form>

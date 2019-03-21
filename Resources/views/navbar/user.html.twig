@@ -1,0 +1,45 @@
+{% trans_default_domain 'adminInterface' %}
+{% import '@NfqAdmin/_macro/generic.html.twig' as macro %}
+<li class="dropdown user user-menu">
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+        {{ macro.avatar(user.avatar, user.username, 'user-image') }}
+        <span class="hidden-xs">{{ user.email }}</span>
+    </a>
+    <ul class="dropdown-menu">
+        <!-- User image -->
+        <li class="user-header">
+            {{ macro.avatar(user.avatar, user.username) }}
+            <p>
+                {{ user.email }}
+                {#<small>{{ 'Member since %date%'|trans({'%date%': user.memberSince|date('m.Y') }) }}</small>#}
+            </p>
+        </li>
+        {#{% if links %}#}
+            {#<!-- Menu Body -->#}
+            {#<li class="user-body">#}
+                {#{% for link in links %}#}
+                    {#<div class="col-xs-4 text-center">#}
+                        {#<a href="{{ path(link.path, link.parameters) }}">{{ link.title }}</a>#}
+                    {#</div>#}
+                {#{% endfor %}#}
+            {#</li>#}
+        {#{% endif %}#}
+        {% if showLogoutLink or showProfileLink %}
+            <!-- Menu Footer-->
+            <li class="user-footer">
+                {% if showProfileLink %}
+                    <div class="pull-left">
+                        <a href="{{ path('nfq_user_user_update', {'id' : user.id}) }}"
+                           class="btn btn-default btn-flat">{{ 'admin.header_menu.profile'|trans }}</a>
+                    </div>
+                {% endif %}
+                {% if showLogoutLink %}
+                    <div class="pull-right">
+                        <a href="{{ logout_path() }}"
+                           class="btn btn-default btn-flat">{{ 'admin.header_menu.logout'|trans }}</a>
+                    </div>
+                {% endif %}
+            </li>
+        {% endif %}
+    </ul>
+</li>

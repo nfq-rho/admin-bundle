@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * This file is part of the "NFQ Bundles" package.
@@ -19,26 +19,17 @@ use Nfq\AdminBundle\PlaceManager\Repository\PlaceAwareRepositoryInterface;
  */
 abstract class PlaceManager implements PlaceManagerInterface
 {
-    /**
-     * @var array
-     */
-    protected $places;
+    /** @var array */
+    protected $places = [];
 
     /**
      * {@inheritdoc}
      */
-    abstract public function getItemsInPlace($placeId, $locale);
+    abstract public function getItemsInPlace(string $placeId, string $locale, string $sortOrder = 'ASC'): array;
 
-    /**
-     * @return PlaceAwareRepositoryInterface
-     */
-    abstract protected function getPlaceAwareRepository();
+    abstract protected function getPlaceAwareRepository(): PlaceAwareRepositoryInterface;
 
-    /**
-     * @param mixed $item
-     * @param string $key
-     */
-    public function formatPlaceChoice(&$item, $key)
+    public function formatPlaceChoice(array &$item, string $key): void
     {
         $item = sprintf('%s (%d/%d)', $item['title'], $this->getUsedPlaceSlots($key), $item['limit']);
     }
@@ -46,7 +37,7 @@ abstract class PlaceManager implements PlaceManagerInterface
     /**
      * {@inheritdoc}
      */
-    public function getPlaceChoices()
+    public function getPlaceChoices(): array
     {
         $places = $this->getPlaces();
         array_walk($places, [$this, 'formatPlaceChoice']);
@@ -57,7 +48,7 @@ abstract class PlaceManager implements PlaceManagerInterface
     /**
      * {@inheritdoc}
      */
-    public function getPlaces()
+    public function getPlaces(): array
     {
         return $this->places;
     }
@@ -65,7 +56,7 @@ abstract class PlaceManager implements PlaceManagerInterface
     /**
      * {@inheritdoc}
      */
-    public function setPlaces(array $places)
+    public function setPlaces(array $places): void
     {
         $this->places = [];
 
@@ -74,51 +65,29 @@ abstract class PlaceManager implements PlaceManagerInterface
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function placeExists($placeId)
+    public function placeExists(string $placeId): bool
     {
         return $placeId && isset($this->places[$placeId]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getPlace($placeId, $check = true)
+    public function getPlace(string $placeId): array
     {
-        if ($check && !$this->placeExists($placeId)) {
-            return [];
-        }
-
-        return $this->places[$placeId];
+        return $this->placeExists($placeId) ? $this->places[$placeId] : [];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getPlaceLimit($placeId)
+    public function getPlaceLimit(string $placeId): int
     {
         $place = $this->getPlace($placeId, true);
 
-        return ($place) ? $place['limit'] : 0;
+        return $place['limit'] ?? 0;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getUsedPlaceSlots($placeId)
+    public function getUsedPlaceSlots(string $placeId): int
     {
         return $this->getPlaceAwareRepository()->getUsedPlaceSlots($placeId);
     }
 
-    /**
-     * Checks if given place has empty slots available.
-     *
-     * @param string $placeId
-     * @return bool|int
-     */
-    public function hasEmptySlots($placeId)
+    public function hasEmptySlots(string $placeId): bool
     {
         if ($this->placeExists($placeId)) {
             $count = $this->getUsedPlaceSlots($placeId);
@@ -126,6 +95,6 @@ abstract class PlaceManager implements PlaceManagerInterface
             return ($count <= $this->getPlace($placeId, false)['limit']);
         }
 
-        return -1;
+        return false;
     }
 }

@@ -1,0 +1,14 @@
+{% trans_default_domain 'adminInterface' %}
+<ol class="breadcrumb">
+    <li>
+        <a href="{{ path('admin_dashboard') }}">
+            <i class="fas fa-tachometer-alt"></i>
+            {{ 'admin.generic.dashboard'|trans }}
+        </a>
+    </li>
+    {% if active %}
+        {% for item in active %}
+            <li><a href="{{ item.route is empty ? '#' : '/' in item.route ? item.route : path(item.route, item.routeArgs) }}">{{ item.label|trans }}</a></li>
+        {% endfor %}
+    {% endif %}
+</ol>

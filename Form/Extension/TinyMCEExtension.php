@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * This file is part of the "NFQ Bundles" package.
@@ -24,29 +24,26 @@ use Symfony\Component\Form\FormView;
  */
 class TinyMCEExtension extends AbstractTypeExtension
 {
-    /**
-     * @inheritdoc
-     */
-    public function buildView(FormView $view, FormInterface $form, array $options)
+    public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         if (isset($options['attr']['class']) && strpos($options['attr']['class'], 'tinymce') !== false) {
             $this->setElementId($view);
         }
     }
 
-    /**
-     * @param FormView $view
-     */
-    private function setElementId(FormView $view)
+    private function setElementId(FormView $view): void
     {
         $view->vars['id'] .= '_' . substr(md5(mt_rand(0, 250) . time() . mt_rand(251, 500)), 0, 10);
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getExtendedType()
+    // Kept for BC
+    public function getExtendedType(): string
     {
         return TextareaType::class;
+    }
+
+    public static function getExtendedTypes(): array
+    {
+        return [TextareaType::class];
     }
 }

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * This file is part of the "NFQ Bundles" package.
@@ -17,56 +17,28 @@ namespace Nfq\AdminBundle\Twig;
  */
 class TestExtension extends \Twig_Extension
 {
-    /**
-     * @return array
-     */
-    public function getFunctions()
+    public function getFunctions(): array
     {
         return [
             new \Twig_SimpleFunction('isActiveLocale', [$this, 'isActiveLocale']),
         ];
     }
 
-    /**
-     * @return array
-     */
-    public function getTests()
+    public function getTests(): array
     {
         return [
             new \Twig_SimpleTest('boolean', [$this, 'isBoolean']),
         ];
     }
 
-    /**
-     * @param array $context
-     * @param $locale
-     * @return bool
-     */
-    public function isActiveLocale(&$context, $locale)
+    public function isActiveLocale(array &$context, string $locale): bool
     {
-        if ((isset($context['submitLocale']) && $context['submitLocale'] == $locale)
-            || (!isset($context['submitLocale']) && $context['currentLocale'] == $locale)
-        ) {
-            return true;
-        } else {
-            return false;
-        }
+        return (isset($context['submitLocale']) && $context['submitLocale'] === $locale)
+            || (!isset($context['submitLocale']) && $context['currentLocale'] === $locale);
     }
 
-    /**
-     * @param mixed $value
-     * @return bool
-     */
-    public function isBoolean($value)
+    public function isBoolean($value): bool
     {
-        return is_bool($value);
-    }
-
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return 'simple_tests';
+        return \is_bool($value);
     }
 }

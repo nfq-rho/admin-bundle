@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * This file is part of the "NFQ Bundles" package.
@@ -19,10 +19,7 @@ trait DecoratedTrait
 {
     private $decorated;
 
-    /**
-     * @inheritdoc
-     */
-    public function __call($method, $args)
+    public function __call(string $method, array $args)
     {
         $methodAvailable = [$this->decorated, $method];
         if (is_callable($methodAvailable)) {
@@ -30,18 +27,12 @@ trait DecoratedTrait
         }
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getDecoratedService()
     {
         return $this->decorated;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function setDecoratedService($decorated)
+    public function setDecoratedService($decorated): void
     {
         $this->decorated = $decorated;
     }

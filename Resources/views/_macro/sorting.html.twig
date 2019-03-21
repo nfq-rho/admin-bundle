@@ -1,3 +1,4 @@
+{% trans_default_domain 'adminInterface' %}
 {% macro sortUrl(name, sortField, translation, searchField) %}
     {% set _sort = app.request.query.get('sort') %}
     {% if app.request.query.get('direction') == 'ASC' %}
@@ -23,19 +24,19 @@
         &nbsp;
         {% if searchField in currentByField %}
             {% set resetField = currentByField|unsetByValue(searchField) %}
-            <a href="{{ url(name, app.request.query.all|merge({'_sByFld': resetField})) }}"><i class="fa fa-minus-circle">&nbsp;</i></a>
+            <a href="{{ url(name, app.request.query.all|merge({'_sByFld': resetField})) }}"><i class="fas fa-minus-circle">&nbsp;</i></a>
         {% else %}
-            <a href="{{ url(name, app.request.query.all|merge({'_sByFld': newByField})) }}"><i class="fa fa-plus-circle">&nbsp;</i></a>
+            <a href="{{ url(name, app.request.query.all|merge({'_sByFld': newByField})) }}"><i class="fas fa-plus-circle">&nbsp;</i></a>
         {% endif %}
     {% endif %}
 
     <a href="{{ _url }}" class="{{ _cls|default('sorting') }}"></a>
 {% endmacro %}
 
-{% macro getHiddenFields() %}
+{% macro getHiddenFields(default_max_per_page) %}
     <input type="hidden" name="sort" value="{{ app.request.get('sort') }}" />
     <input type="hidden" name="direction" value="{{ app.request.get('direction') }}" />
-    <input type="hidden" name="perPage" value="{{ app.request.get('perPage') }}" />
+    <input type="hidden" name="perPage" value="{{ app.request.get('perPage')|default(default_max_per_page) }}" />
 {% endmacro %}
 
 {% macro getSearchFields() %}

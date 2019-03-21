@@ -1,3 +1,0 @@
-_nfq_admin_routing:
-    resource: "@NfqAdminBundle/Resources/config/routing_admin.yml"
-    prefix:   /admin

@@ -36,7 +36,7 @@ class HasEmptySlotsValidator extends ConstraintValidator implements ContainerAwa
 
         $placeManager = $this->getPlaceManager($constraint->manager);
 
-        foreach($value as $slotId) {
+        foreach ($value as $slotId) {
             if (false === $placeManager->hasEmptySlots($slotId)) {
                 $this->context->buildViolation($constraint->message)
                     ->setParameter('%limit%', $placeManager->getPlace($slotId)['limit'])
@@ -45,11 +45,7 @@ class HasEmptySlotsValidator extends ConstraintValidator implements ContainerAwa
         }
     }
 
-    /**
-     * @param $manager
-     * @return PlaceManagerInterface
-     */
-    private function getPlaceManager($manager)
+    private function getPlaceManager(string $manager): PlaceManagerInterface
     {
         if (!$this->container->has($manager)) {
             throw new \InvalidArgumentException(sprintf('Given place manager `%s` does not exist', $manager));

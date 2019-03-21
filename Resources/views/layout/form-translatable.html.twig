@@ -1,0 +1,45 @@
+{% trans_default_domain 'adminInterface' %}
+{% set reopenLocale = app.request.get('reopen_locale') %}
+<div class="row">
+    <div class="col-lg-12">
+        <ul class="nav nav-tabs language-tabs" role="tablist">
+            {% block locale_tabs %}
+                {% for locale, form in forms %}
+                    <li class="{% if ((reopenLocale and locale is same as (reopenLocale)) or (reopenLocale is empty and isActiveLocale(_context, locale))) %}active{% endif %}">
+                        <a href="#{{ locale }}-tab" role="tab" data-toggle="tab">{{ locale }}</a>
+                    </li>
+                {% endfor %}
+            {% endblock %}
+        </ul>
+        <br/>
+        <div class="tab-content">
+            {% for locale, formGroup in forms %}
+                {% if  formGroup.edit is defined %}
+                    {% set form = formGroup.edit %}
+                {% else %}
+                    {% set form = formGroup %}
+                {% endif %}
+
+                {% set deleteForm = formGroup.delete|default(false) %}
+
+                <div class="tab-pane fade in {% if ((reopenLocale and locale is same as (reopenLocale)) or (reopenLocale is empty and isActiveLocale(_context, locale))) %}active{% endif %}"
+                     id="{{ locale }}-tab">
+
+                    {% include '@NfqAdmin/_form/_form_theme.html.twig' with {'form': form, 'deleteForm': deleteForm|default(false)} only %}
+
+                    <div class="row">
+                        <div class="col-lg-12">
+                            {% block locale_form %}
+                                {{ form(form) }}
+
+                                {% if deleteForm is defined %}
+                                    {{ form(deleteForm) }}
+                                {% endif %}
+                            {% endblock %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>

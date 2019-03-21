@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * This file is part of the "NFQ Bundles" package.
@@ -11,7 +11,7 @@
 
 namespace Nfq\AdminBundle\Service\Generic\Actions;
 
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Nfq\AdminBundle\Event\GenericEvent;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -21,65 +21,45 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  */
 class GenericActions implements GenericActionsInterface
 {
-    /**
-     * @var EntityManager
-     */
+    /** @var EntityManagerInterface */
     protected $em;
 
-    /**
-     * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
-     */
-    protected $dispatcher;
+    /** @var EventDispatcherInterface */
+    protected $ed;
 
-    /**
-     * @param EntityManager $em
-     * @param EventDispatcherInterface $dispatcher
-     */
-    public function __construct(EntityManager $em, EventDispatcherInterface $dispatcher)
+    public function __construct(EntityManagerInterface $em, EventDispatcherInterface $ed)
     {
         $this->em = $em;
-        $this->dispatcher = $dispatcher;
+        $this->ed = $ed;
     }
 
-    /**
-     * @return EventDispatcherInterface
-     */
-    public function getEventDispatcher()
+    public function getEventDispatcher(): EventDispatcherInterface
     {
-        return $this->dispatcher;
+        return $this->ed;
     }
 
-    /**
-     * @return EntityManager
-     */
-    public function getEntityManager()
+    public function getEntityManager(): EntityManagerInterface
     {
         return $this->em;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function save(GenericEvent $before, $entity, GenericEvent $after)
+    public function save(GenericEvent $before, $entity, GenericEvent $after): void
     {
-        $this->dispatcher->dispatch($before->getEventName(), $before);
+        $this->ed->dispatch($before->getEventName(), $before);
         if ($before->isOk()) {
             $this->em->persist($entity);
-            $this->em->flush($entity);
+            $this->em->flush();
         }
-        $this->dispatcher->dispatch($after->getEventName(), $after);
+        $this->ed->dispatch($after->getEventName(), $after);
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function delete(GenericEvent $before, $entity, GenericEvent $after)
+    public function delete(GenericEvent $before, $entity, GenericEvent $after): void
     {
-        $this->dispatcher->dispatch($before->getEventName(), $before);
+        $this->ed->dispatch($before->getEventName(), $before);
         if ($before->isOk()) {
             $this->em->remove($entity);
-            $this->em->flush($entity);
+            $this->em->flush();
         }
-        $this->dispatcher->dispatch($after->getEventName(), $after);
+        $this->ed->dispatch($after->getEventName(), $after);
     }
 }

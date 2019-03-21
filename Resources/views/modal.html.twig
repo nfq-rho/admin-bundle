@@ -1,17 +1,31 @@
-{% set currentLocale = app.request.attributes.get('_locale') %}
-{% if width is not defined %}
-    {% set width = '875px' %}
+{% trans_default_domain 'adminInterface' %}
+{% set currentLocale = app.request.attributes.get('_locale', app.request.locale) %}
+{% set isModal = true %}
+
+{% set hasFooterActions = false %}
+{% if block('page_box_footer_actions') is defined %}
+    {% set _footerActionBlock = block('page_box_footer_actions') %}
+    {% if _footerActionBlock is not empty %}
+        {% set hasFooterActions = true %}
+    {% endif %}
 {% endif %}
-<div class="modal-dialog" style="width: {{ width }};">
-    <div class="modal-content">
+
+<div class="modal-dialog" style="width: {{ width|default('857px') }};" aria-labelledby="modalTitle">
+    <div class="modal-content" role="document">
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <h4 class="modal-title">{% block title %}Title{% endblock %}</h4>
+            <h4 class="modal-title" id="modalTitle">{% block page_box_header %}Title{% endblock %}</h4>
         </div>
         <div class="modal-body">
-            <div class="content">
-                {% block content %}{% endblock %}
-            </div>
+            {% block page_box_body %}{% endblock %}
         </div>
+        {% if hasFooterActions %}
+            <div class="modal-footer">
+                {{ _footerActionBlock|raw }}
+                {#<button type="button" class="btn btn-default" data-dismiss="modal">{{ 'admin.generic.close'|trans }}</button>#}
+            </div>
+        {% endif %}
     </div>
 </div>
+
+{% block extra_js %}{% endblock %}

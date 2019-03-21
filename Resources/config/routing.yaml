@@ -1,0 +1,6 @@
+_nfq_admin_routing:
+    resource: '@NfqAdminBundle/Resources/config/routing_admin.yaml'
+    trailing_slash_on_root: false
+    prefix:   /admin
+    defaults:
+        _nfq_admin: true

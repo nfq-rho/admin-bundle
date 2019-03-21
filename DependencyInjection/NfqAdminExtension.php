@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * This file is part of the "NFQ Bundles" package.
@@ -11,27 +11,77 @@
 
 namespace Nfq\AdminBundle\DependencyInjection;
 
+use Nfq\AdminBundle\Helper\ContextHelper;
+use Nfq\AdminBundle\Service\Admin\AdminManagerInterface;
+use Nfq\AdminBundle\Service\Generic\Actions\GenericActionsInterface;
+use Nfq\AdminBundle\Service\Generic\Search\GenericSearchInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader;
 
 /**
- * This is the class that loads and manages your bundle configuration
- *
- * To learn more see {@link http://symfony.com/doc/current/cookbook/bundles/extension.html}
+ * Class NfqAdminExtension
+ * @package Nfq\AdminBundle\DependencyInjection
  */
 class NfqAdminExtension extends Extension
 {
-    /**
-     * {@inheritDoc}
-     */
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $configuration = new Configuration();
         $this->processConfiguration($configuration, $configs);
 
-        $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
-        $loader->load('services.yml');
+        $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
+        $loader->load('services.yaml');
+
+        $contextHelperDef = $container->getDefinition(ContextHelper::class);
+
+        $this->configureMenu($contextHelperDef, $container);
+        $this->configureSidebar($contextHelperDef, $container);
+        $this->configurePaging($contextHelperDef, $container);
+
+        $contextHelperDef->addMethodCall('setOption', ['default_avatar', 'bundles/nfqadmin/images/default_avatar.png']);
+
+        $this->configureSearchServices($container);
+        $this->configureManagerServices($container);
+    }
+
+    private function configureMenu(Definition $definition, ContainerBuilder $container): void
+    {
+        $bundles = $container->getParameter('kernel.bundles');
+        $knpMenu['enable'] = isset($bundles['KnpMenuBundle']);
+        $knpMenu['breadcrumb_menu'] = false;
+        $knpMenu['control_sidebar'] = false;
+
+        $definition->addMethodCall('setOption', ['knp_menu', $knpMenu]);
+    }
+
+    private function configureSidebar(Definition $definition, ContainerBuilder $container): void
+    {
+        $definition->addMethodCall('setOption', ['control_sidebar', false]);
+    }
+
+    private function configurePaging(Definition $definition, ContainerBuilder $container): void
+    {
+        $maxPerPage = $container->getParameter('global_max_per_page');
+        $definition->addMethodCall('setOption', ['default_max_per_page', $maxPerPage]);
+    }
+
+    private function configureSearchServices(ContainerBuilder $container): void
+    {
+        $container
+            ->registerForAutoconfiguration(GenericSearchInterface::class)
+            ->addTag('nfq_admin.search')
+            ->addMethodCall('setEntityManager', [new Reference('doctrine.orm.entity_manager')]);
+    }
+
+    private function configureManagerServices(ContainerBuilder $container): void
+    {
+        $container
+            ->registerForAutoconfiguration(AdminManagerInterface::class)
+            ->addTag('nfq_admin.manager')
+            ->addMethodCall('setActions', [new Reference(GenericActionsInterface::class)]);
     }
 }

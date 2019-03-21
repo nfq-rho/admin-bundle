@@ -1,0 +1,16 @@
+<li class="dropdown">
+    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+        <i class="fas fa-user fa-fw"></i> <i class="fas fa-caret-down"></i>
+    </a>
+    {% if 'knp_menu' is loaded %}
+        {#{{ knp_menu_render('NfqAdminBundle:AdminMenuBuilder:buildHeaderMenu', { 'template': '@NfqAdmin/Menu/_knp_menu.html.twig'} ) }}#}
+    {% else %}
+        <ul class="dropdown-menu dropdown-user">
+            <li>
+                <a class="logout-link" href="{{ url('admin_logout', [], true) }}">
+                    <i class="fas fa-sign-out fa-fw"></i> Logout
+                </a>
+            </li>
+        </ul>
+    {% endif %}
+</li>

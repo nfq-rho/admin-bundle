@@ -1,2 +1,0 @@
-nfq_admin:
-    resource: "@NfqAdminBundle/Resources/config/routing.yml"

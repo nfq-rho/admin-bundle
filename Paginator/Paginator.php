@@ -23,76 +23,28 @@ use Nfq\AdminBundle\Paginator\Adapters\PaginatorAdapterInterface;
  */
 class Paginator implements DecoratedInterface
 {
-    use DecoratedTrait {
-        setDecoratedService as parentSetDecoratedService;
-    }
-
-    private $tempDecorated;
+    use DecoratedTrait;
 
     /**
-     * @var
+     * @var array
      */
-    private $adapters;
+    private $adapters = [];
 
     /**
      * @var int
      */
     private $maxPerPage;
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setDecoratedService($decorated)
-    {
-        $this->tempDecorated = $decorated;
-    }
-
-    /**
-     * @param PaginatorAdapterInterface $adapter
-     */
-    public function addAdapter(PaginatorAdapterInterface $adapter)
+    public function addAdapter(PaginatorAdapterInterface $adapter): void
     {
         $this->adapters[] = $adapter;
     }
 
-    /**
-     * @return PaginatorAdapterInterface
-     */
-    private function getAdapter()
-    {
-        $decoratedClass = get_class($this->tempDecorated);
-
-        /** @var PaginatorAdapterInterface $adapter */
-        foreach ($this->adapters as $adapter) {
-            if ($adapter::supports($decoratedClass)) {
-
-                $adapter->setPaginator($this->tempDecorated);
-
-                return $adapter;
-            }
-        }
-
-        return new DummyPaginatorAdapter();
-    }
-
-    /**
-     * @param int $maxPerPage
-     *
-     * @return Paginator
-     */
-    public function setMaxPerPage($maxPerPage)
+    public function setMaxPerPage(int $maxPerPage): void
     {
         $this->maxPerPage = $maxPerPage;
-
-        return $this;
     }
 
-    /**
-     * @param Request $request
-     * @param string $target
-     * @param array $options
-     * @return mixed
-     */
     public function getPagination(Request $request, $target, array $options = [])
     {
         $adapter = $this->getAdapter();
@@ -103,18 +55,28 @@ class Paginator implements DecoratedInterface
             ->setMaxPerPage($this->filterMaxPerPageValue($request))
             ->setOptions($options);
 
-        $this->parentSetDecoratedService($adapter);
-
-        return $this->getDecoratedService();
+        return $adapter;
     }
 
-    /**
-     * @param Request $request
-     * @return int
-     */
-    private function filterMaxPerPageValue(Request $request)
+    private function getAdapter(): PaginatorAdapterInterface
     {
-        $value = $request->query->get('perPage', null);
-        return is_numeric($value) && $value > 0  ? (int) $value : $this->maxPerPage;
+        $decoratedPaginator = $this->getDecoratedService();
+        $decoratedClass = get_class($decoratedPaginator);
+
+        /** @var PaginatorAdapterInterface $adapter */
+        foreach ($this->adapters as $adapter) {
+            if ($adapter::supports($decoratedClass)) {
+                $adapter->setPaginator($decoratedPaginator);
+
+                return $adapter;
+            }
+        }
+
+        return new DummyPaginatorAdapter();
+    }
+
+    private function filterMaxPerPageValue(Request $request): int
+    {
+        return (int)$request->query->get('perPage', $this->maxPerPage);
     }
 }

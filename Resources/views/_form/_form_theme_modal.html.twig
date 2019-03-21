@@ -1,0 +1,31 @@
+{% extends '@NfqAdmin/_form/bootstrap_3_horizontal_layout.html.twig' %}
+{% block form_start %}
+    {% spaceless %}
+        {% set formNumber = random() %}
+        <div style="display: none">
+            <iframe name="modal_frame_{{ formNumber }}" id="modal_frame_{{ formNumber }}" class="modal_frame"></iframe>
+        </div>
+        {% set method = method|upper %}
+        {% if method in ["GET", "POST"] %}
+            {% set form_method = method %}
+        {% else %}
+            {% set form_method = "POST" %}
+        {% endif %}
+        {% set attr = attr|merge({'target': (attr.role|default('modal_frame_' ~ formNumber)) }) %}
+        {% set attr = attr|merge({'role': (attr.role|default('form')) }) %}
+        {% set attr = attr|merge({'class': (attr.class|default('') ~ ' form-horizontal modal_form')|trim}) %}
+        <form method="{{ form_method|lower }}" action="{{ action }}" id="modal_form_{{ formNumber }}" {% for attrname, attrvalue in attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}{% if multipart %} enctype="multipart/form-data"{% endif %}>
+        {% if form_method != method %}
+            <input type="hidden" name="_method" value="{{ method }}" />
+        {% endif %}
+    {% endspaceless %}
+{% endblock form_start %}
+
+{% block form_end %}
+    {% spaceless %}
+        {% if not render_rest is defined or render_rest %}
+            {{ form_rest(form) }}
+        {% endif %}
+        </form>
+    {% endspaceless %}
+{% endblock form_end %}

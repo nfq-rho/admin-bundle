@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * This file is part of the "NFQ Bundles" package.
@@ -30,11 +30,7 @@ class ArrayUtilsExtension extends \Twig_Extension
         ];
     }
 
-    /**
-     * @param array $array
-     * @return array
-     */
-    public function unique(array $array)
+    public function unique(array $array): array
     {
         return array_unique($array);
     }
@@ -44,7 +40,7 @@ class ArrayUtilsExtension extends \Twig_Extension
      * @param mixed $key
      * @return array
      */
-    public function unsetByKey(array $array, $key)
+    public function unsetByKey(array $array, $key): array
     {
         if (isset($array[$key])) {
             unset($array[$key]);
@@ -76,10 +72,7 @@ class ArrayUtilsExtension extends \Twig_Extension
         return array_values($array);
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
         return 'array_utils';
     }

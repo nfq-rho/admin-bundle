@@ -1,0 +1,50 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+        bind:
+            $bundles: '%kernel.bundles%'
+
+    Nfq\AdminBundle\:
+        resource: '../../*'
+        exclude: '../../{DependencyInjection,Entity,Repository,Tests,Notices.php,NfqAdminBundle.php}'
+
+    Nfq\AdminBundle\Controller\:
+        resource: '../../Controller'
+        tags: ['controller.service_arguments']
+
+    Nfq\AdminBundle\EventListener\Gedmo\TranslatableLocaleListener:
+        tags:
+            # translatable sets locale after router processing
+            - { name: kernel.event_listener, event: kernel.request, method: onLateKernelRequest, priority: -10 }
+
+    Nfq\AdminBundle\Form\Extension\TinyMCEExtension:
+        tags:
+            - { name: form.type_extension, extended_type: Symfony\Component\Form\Extension\Core\Type\TextareaType, alias: textarea }
+
+    Nfq\AdminBundle\ImageUpload\Naming\TimeLocaleNamer:
+        public: true
+
+    Nfq\AdminBundle\Menu\AdminMenuListener:
+        abstract: true
+
+    Nfq\AdminBundle\Paginator\Adapters\KnpPaginatorAdapter:
+        tags:
+            - { name: nfq_admin.paginator_adapter }
+
+    Nfq\AdminBundle\PlaceManager\Validator\Constraints\HasEmptySlotsValidator:
+        calls:
+            - [ setContainer, [ '@service_container' ]]
+        tags:
+            - { name: validator.constraint_validator, alias: nfq_admin_validator_has_empty_slots }
+
+    Nfq\AdminBundle\Service\Generic\Actions\GenericActionsInterface: '@Nfq\AdminBundle\Service\Generic\Actions\GenericActions'
+
+    nfq_admin.notice_listener:
+        class: Nfq\AdminBundle\EventListener\NoticeListener
+        tags:
+            - { name: kernel.event_listener, event: generic.after_save, method: onMessage, priority: -10 }
+            - { name: kernel.event_listener, event: generic.after_insert, method: onMessage, priority: -10 }
+            - { name: kernel.event_listener, event: generic.after_delete, method: onMessage, priority: -10 }

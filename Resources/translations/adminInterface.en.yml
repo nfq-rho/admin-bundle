@@ -1,0 +1,71 @@
+admin:
+    title: AdminNFQ
+
+    header:
+        title: '<b>Admin</b>NFQ'
+        title_short: '<b>N</b>FQ'
+
+    home_title: Welcome!
+    home_subtitle: Welcome to NFQ Admin panel
+
+    button:
+        delete: Delete
+        submit: Save
+        submit_close: Save & Close
+        submit_preview: Save & Preview
+
+    generic:
+        message:
+            saved_successfully: Your data was saved successfully!
+            updated_successfully: Your data was updated successfully!
+            deleted_successfully: Your data was removed successfully!
+
+        toggle_nav: Toggle navigation
+        search: Search
+        online: Online
+        close: Close
+        actions: Actions
+        remove: Remove
+        paging:
+            showing: Showing
+            showing_to: to
+            showing_of: of
+            showing_entries: entries
+            next: Next
+            previous: Previous
+            first: First
+            last: Last
+            clear: Clear
+            type: Type
+            value: Value
+            group: Group
+            element: Element
+            from: From
+            to: To
+            per_page: Per page
+        reset_search_params: Reset search and sorting params
+        choose: Choose
+        yes: Yes
+        no: No
+        note: Note
+        welcome: Welcome!
+        places:
+            placeholder: Choose place
+
+        image:
+            preview_notice: Upload an image
+
+    side_menu:
+        dashboard: Dashboard
+
+    header_menu:
+        logout: Logout
+        profile: Profile
+        settings: Settings
+
+    security:
+        back_to_login: Back to login
+
+    footer:
+        copyright: '<strong>Copyright &copy; %year% <a href="#"></a>.</strong> All rights reserved.'
+        right_side: Let\'s come on
